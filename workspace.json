@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "projects": {
+    "frontend": {
+      "root": "apps/frontend",
+      "sourceRoot": "apps/frontend/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nxext/svelte:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/frontend",
+            "entryFile": "apps/frontend/src/main.ts",
+            "tsConfig": "apps/frontend/tsconfig.app.json",
+            "svelteConfig": "apps/frontend/svelte.config.js",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "apps/frontend/public/**",
+                "output": "./"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "dev": false
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nxext/svelte:build",
+          "options": {
+            "outputPath": "dist/apps/frontend",
+            "entryFile": "apps/frontend/src/main.ts",
+            "tsConfig": "apps/frontend/tsconfig.app.json",
+            "svelteConfig": "apps/frontend/svelte.config.js",
+            "assets": [
+              {
+                "glob": "/*",
+                "input": "apps/frontend/public/**",
+                "output": "./"
+              }
+            ],
+            "watch": true,
+            "serve": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/frontend/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "check": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "svelte-check",
+            "cwd": "apps/frontend"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/frontend"
+          ],
+          "options": {
+            "jestConfig": "apps/frontend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "frontend-e2e": {
+      "root": "apps/frontend-e2e",
+      "sourceRoot": "apps/frontend-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/frontend-e2e/cypress.json",
+            "tsConfig": "apps/frontend-e2e/tsconfig.e2e.json",
+            "devServerTarget": "frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "frontend:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/frontend-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  }
+}
