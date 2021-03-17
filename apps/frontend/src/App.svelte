@@ -1,30 +1,17 @@
 <script lang="ts">
+	import Card from "./Card.svelte";
 	export let name: string;
 </script>
 
 <main>
-	<h1>Welcome to {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<Card>
+		<h1 class="bg-clip-text text-transparent font-bold text-3xl bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Welcome to {name}!</h1>
+		<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	</Card>
 </main>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+<style global lang="postcss">
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
 </style>
