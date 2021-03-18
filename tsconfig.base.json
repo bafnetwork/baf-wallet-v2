@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"]
+      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
+      "@baf-wallet/api-client": ["libs/api-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

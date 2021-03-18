@@ -8,9 +8,7 @@
       "targets": {
         "build": {
           "executor": "@nxext/svelte:build",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/frontend",
             "entryFile": "apps/frontend/src/main.ts",
@@ -24,11 +22,7 @@
               }
             ]
           },
-          "configurations": {
-            "production": {
-              "dev": false
-            }
-          }
+          "configurations": { "production": { "dev": false } }
         },
         "serve": {
           "executor": "@nxext/svelte:build",
@@ -51,23 +45,16 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "apps/frontend/**/*.{ts,tsx,js,jsx}"
-            ]
+            "lintFilePatterns": ["apps/frontend/**/*.{ts,tsx,js,jsx}"]
           }
         },
         "check": {
           "executor": "@nrwl/workspace:run-commands",
-          "options": {
-            "command": "svelte-check",
-            "cwd": "apps/frontend"
-          }
+          "options": { "command": "svelte-check", "cwd": "apps/frontend" }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/frontend"
-          ],
+          "outputs": ["coverage/apps/frontend"],
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
             "passWithNoTests": true
@@ -88,18 +75,12 @@
             "devServerTarget": "frontend:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "frontend:serve:production"
-            }
+            "production": { "devServerTarget": "frontend:serve:production" }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "apps/frontend-e2e/**/*.{js,ts}"
-            ]
-          }
+          "options": { "lintFilePatterns": ["apps/frontend-e2e/**/*.{js,ts}"] }
         }
       }
     },
@@ -110,17 +91,11 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/interfaces/**/*.ts"
-            ]
-          }
+          "options": { "lintFilePatterns": ["libs/interfaces/**/*.ts"] }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/interfaces"
-          ],
+          "outputs": ["coverage/libs/interfaces"],
           "options": {
             "jestConfig": "libs/interfaces/jest.config.js",
             "passWithNoTests": true
@@ -136,16 +111,12 @@
       "targets": {
         "build": {
           "executor": "@nrwl/node:build",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/api",
             "main": "apps/api/src/main.ts",
             "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": [
-              "apps/api/src/assets"
-            ]
+            "assets": ["apps/api/src/assets"]
           },
           "configurations": {
             "production": {
@@ -163,33 +134,66 @@
         },
         "serve": {
           "executor": "@nrwl/node:execute",
+          "options": { "buildTarget": "api:build" }
+        },
+        "tsoa": {
+          "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "buildTarget": "api:build"
+            "commands": [
+              { "command": "rm -r apps/api/build; mkdir apps/api/build" },
+              {
+                "command": "yarn tsoa --configuration apps/api/tsoa.json spec-and-routes && tsc"
+              }
+            ]
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "apps/api/**/*.ts"
-            ]
-          }
+          "options": { "lintFilePatterns": ["apps/api/**/*.ts"] }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/api"
-          ],
+          "outputs": ["coverage/apps/api"],
           "options": {
             "jestConfig": "apps/api/jest.config.js",
             "passWithNoTests": true
           }
         }
       }
+    },
+    "api-client": {
+      "root": "libs/api-client",
+      "sourceRoot": "libs/api-client/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/api-client/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api-client"],
+          "options": {
+            "jestConfig": "libs/api-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "autogen": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "rm -r libs/api-client/src/build; mkdir libs/api-client/src/build"
+              },
+              {
+                "command": "yarn openapi-generator-cli generate -i ./swagger/swagger.json --generator-name typescript-fetch -o libs/api-client/src/build"
+              }
+            ]
+          }
+        }
+      }
     }
   },
-  "cli": {
-    "defaultCollection": "@nrwl/express"
-  },
+  "cli": { "defaultCollection": "@nrwl/express" },
   "defaultProject": "api"
 }

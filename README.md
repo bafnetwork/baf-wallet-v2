@@ -2,6 +2,15 @@
 
 # BafWallet
 
+## Setup
+In order to get up and running with this projects, first install dependencies.
+Make sure you have both yarn and npm
+```
+npm i
+```
+
+
+
 This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
