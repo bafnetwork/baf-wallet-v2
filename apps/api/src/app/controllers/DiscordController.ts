@@ -15,6 +15,6 @@ export class UsersController extends Controller {
   @SuccessResponse('204')
   @Post('widthdraw')
   public async getUser(): Promise<void> {
-    discordWithdrawStuff()
+    discordWithdrawStuff();
   }
 }

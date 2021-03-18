@@ -5,7 +5,7 @@
 
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
-import { RegisterRoutes } from "../build/routes";
+import { RegisterRoutes } from '../build/routes';
 
 const app = express();
 
