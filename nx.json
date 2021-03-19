@@ -17,6 +17,9 @@
   },
   "projects": {
     "frontend": { "tags": [] },
-    "frontend-e2e": { "tags": [], "implicitDependencies": ["frontend"] }
+    "frontend-e2e": { "tags": [], "implicitDependencies": ["frontend"] },
+    "interfaces": { "tags": [] },
+    "api": { "tags": [] },
+    "api-client": { "tags": [] }
   }
 }
