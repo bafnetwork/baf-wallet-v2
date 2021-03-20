@@ -28,12 +28,10 @@
     @tailwind utilities;
 </style>
 
-<main>
-	{#await initProm}
-		<p>Loading...</p>
-	{:then loggedIn}
-		<Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
-	{:catch error}
-		<p>An error occured loading the page</p>
-	{/await}
-</main>
+{#await initProm}
+	<p>Loading...</p>
+{:then loggedIn}
+	<Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
+{:catch error}
+	<p>An error occured loading the page</p>
+{/await}

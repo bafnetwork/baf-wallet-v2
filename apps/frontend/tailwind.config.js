@@ -1,8 +1,7 @@
 module.exports = {
-  purge: [],
   purge: {
     content: ['./src/**/*.svelte'],
-    enabled: production, // disable purge in dev
+    enabled: process.env.production, // disable purge in dev
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -11,5 +10,10 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 };
