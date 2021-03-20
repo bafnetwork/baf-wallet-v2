@@ -1,17 +1,39 @@
 <script lang="ts">
-	import Card from "./Card.svelte";
-	export let name: string;
-</script>
+	import Router from 'svelte-spa-router'
+	import Login from './pages/Login.svelte'
+	import Account from './pages/Account.svelte'
+	import ApproveRedirect from './pages/ApproveRedirect.svelte'
+	import NotFound404 from './pages/NotFound404.svelte';
+	
+	const routesLoggedIn = {
+		'/': Account,
+		'/approve-redirect/:toAccount/:amount': ApproveRedirect,
+		'/*': NotFound404
+	}
+	const routesLoggedOut = {
+		'/login': Login,
+		'/:attemptedRoute': Login
+	}
 
-<main>
-	<Card>
-		<h1 class="bg-clip-text text-transparent font-bold text-3xl bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Welcome to {name}!</h1>
-		<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-	</Card>
-</main>
+	// TODO: implement with state 
+	async function init() : Promise<boolean> {
+		return true
+	}
+	const initProm = init()
+</script>
 
 <style global lang="postcss">
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
 </style>
+
+<main>
+	{#await initProm}
+		<p>Loading...</p>
+	{:then loggedIn}
+		<Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
+	{:catch error}
+		<p>An error occured loading the page</p>
+	{/await}
+</main>
