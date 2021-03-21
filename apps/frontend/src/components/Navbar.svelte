@@ -1,6 +1,6 @@
 <script lang="ts">
     import { link } from "svelte-spa-router"
-    import Button from "./Button.svelte"
+    import Button from "./base/Button.svelte"
 
     const openSendTxModal = () => {}
 </script>
