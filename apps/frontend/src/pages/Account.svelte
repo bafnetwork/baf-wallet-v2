@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     // import { crossfade } from "svelte/types/runtime/transition";
     import Button from "../components/base/Button.svelte";
     import Card from "../components/base/Card.svelte"

@@ -2,7 +2,7 @@
   export let label: string
   export let placeholder: any
   export let value: any;
-  export let required 
+  export let required;
 </script>
 
 <label class="block">
