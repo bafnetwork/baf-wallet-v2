@@ -9,6 +9,7 @@
   const routesLoggedIn = {
     '/': Account,
     '/approve-redirect/:toAccount/:amount': ApproveRedirect,
+    '/login': Login,
     '/*': NotFound404,
   };
   const routesLoggedOut = {
