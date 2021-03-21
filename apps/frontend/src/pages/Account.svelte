@@ -5,6 +5,7 @@
     import Dropdown from "../components/base/Dropdown.svelte";
     import Layout from "../components/Layout.svelte";
     import Listbalances from "../components/Listbalances.svelte";
+import SendForm from "../components/SendForm.svelte";
 </script>
 
 <Layout>
@@ -20,6 +21,9 @@
     <div class="mt-8">
       <h3 class="text-2xl text-center">Balances</h3>
       <Listbalances />
+    </div>
+    <div class="mt-8">
+      <SendForm />
     </div>
   </Card>
 </Layout>
