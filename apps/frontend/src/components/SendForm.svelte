@@ -14,9 +14,9 @@
   />
   <InputNumeric
     label="Sending to"
-    placeholder="0 NEAR"
+    placeholder="0 Near"
     bind:value={amount}
-    required="true"
+    required=true
   />
   <div class="flex p-3 justify-center">
     <Button type="submit">Submit</Button>
