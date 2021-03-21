@@ -1,4 +1,4 @@
-import * as BN from "bn.js";
+import type * as BN from "bn.js";
 
 export interface KeyState {
   pubkey: string,

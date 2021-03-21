@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Balance, TOKEN } from '@baf-wallet/interfaces';
+  import type { Balance } from '@baf-wallet/interfaces';
+  import { TOKEN } from '@baf-wallet/interfaces';
   import AmountFormatter from './base/AmountFormatter.svelte';
 
   export const balances: Balance[] = [{ tok: TOKEN.Near, balance: '100000000000000000000000000' }];
