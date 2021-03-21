@@ -1,3 +1,5 @@
-export function interfaces(): string {
-  return 'interfaces';
+export interface KeyState {
+  pubkey: string,
+  privkey: string
 }
+
