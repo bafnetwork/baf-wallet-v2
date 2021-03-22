@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Balance } from '../interfaces';
   import { TOKEN } from '../interfaces';
-  // import AmountFormatter from './base/AmountFormatter.svelte';
+  import AmountFormatter from './base/AmountFormatter.svelte';
 
   export const balances: Balance[] = [{ tok: TOKEN.Near, balance: '100000000000000000000000000' }];
 </script>
@@ -19,7 +19,7 @@
         {#each balances as bal}
           <td class="border text-center">{bal.tok}</td>
           <td class="border text-center">
-            <!-- <AmountFormatter {bal} /> -->
+            <AmountFormatter {bal} />
           </td>
         {/each}
       </tr>
