@@ -1,11 +1,11 @@
 <script>
-    // import { crossfade } from "svelte/types/runtime/transition";
-    import Button from "../components/base/Button.svelte";
-    import Card from "../components/base/Card.svelte"
-    import Dropdown from "../components/base/Dropdown.svelte";
-    import Layout from "../components/Layout.svelte";
-    import Listbalances from "../components/Listbalances.svelte";
-import SendForm from "../components/SendForm.svelte";
+  // import { crossfade } from "svelte/types/runtime/transition";
+  import Button from '../components/base/Button.svelte';
+  import Card from '../components/base/Card.svelte';
+  import Dropdown from '../components/base/Dropdown.svelte';
+  import Layout from '../components/Layout.svelte';
+  import Listbalances from '../components/Listbalances.svelte';
+  import SendForm from '../components/SendForm.svelte';
 </script>
 
 <Layout>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Balance } from '@baf-wallet/interfaces';
-  import { TOKEN } from '@baf-wallet/interfaces';
+  import type { Balance } from '../../interfaces';
+  import { TOKEN } from '../../interfaces';
   import { formatNearAmount as nearFormat } from 'near-api-js/lib/utils/format';
 
   export let bal: Balance;
