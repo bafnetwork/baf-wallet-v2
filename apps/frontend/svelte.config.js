@@ -4,7 +4,10 @@ module.exports = {
   // for more information about preprocessors
   preprocess: sveltePreprocess({
     postcss: {
-      plugins: [require('tailwindcss')(__dirname + "/tailwind.config.js"), require('autoprefixer')],
+      plugins: [
+        require('tailwindcss')(__dirname + '/tailwind.config.js'),
+        require('autoprefixer'),
+      ],
     },
   }),
 };
