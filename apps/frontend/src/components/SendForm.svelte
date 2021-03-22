@@ -27,7 +27,7 @@
     label="Sending to"
     placeholder="0 Near"
     bind:value={amount}
-    required=true
+    required={true}
   />
   <div class="flex flex-row justify-around pt-3">
     {#if onCancel !== undefined}
