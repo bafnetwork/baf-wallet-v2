@@ -7,20 +7,29 @@
   import Listbalances from '../components/Listbalances.svelte';
   import SendForm from '../components/SendForm.svelte';
   import SendModal from '../components/SendModal.svelte';
+  import TxModal from '../components/TxModal.svelte';
 
   let visible: boolean;
   const openModal = () => {
     console.log("hi");
     visible = true;
   };
+
+  let txModalVisible: boolean;
+  const openTxModal = () => {
+    console.log("yooo");
+    txModalVisible = true;
+  }
 </script>
 
 <Layout>
   <Card>
     <h1 class="text-4xl">AccountPage</h1>
-    <Button onClick={openModal}>Bruh</Button>
+    <Button onClick={openModal}>Open SendModal</Button>
+    <Button onClick={openTxModal}>Open TxModal</Button>
     <!-- svelte-ignore missing-declaration -->
     <SendModal bind:visible={visible}/>
+    <TxModal bind:visible={txModalVisible} txLink="https://explorer.near.org/"/>
     <Dropdown
       items={['NEAR', 'ETH', 'SOL', 'BTC'].map((name) => ({
         label: name,

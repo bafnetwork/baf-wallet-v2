@@ -2,6 +2,7 @@
     import Card from "./Card.svelte"
 
     export let visible = false;
+    export let variant: "primary" | "secondary" = "primary";
     let overlay: HTMLElement;
 
     function closeModal() {
