@@ -2,14 +2,14 @@
   export let label: string
   export let placeholder: string
   export let value: string;
-  export let required: string;
+  export let required: boolean;
 </script>
 
 <label class="block">
   <span class="text-gray-700">{label}</span>
   <input
     type="text"
-    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
     {placeholder}
     bind:value
     {required}

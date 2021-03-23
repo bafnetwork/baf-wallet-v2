@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Modal from "./components/base/Modal.svelte";
   import Router from 'svelte-spa-router';
   import Login from './pages/Login.svelte';
   import Account from './pages/Account.svelte';
@@ -31,7 +32,9 @@
 {#await initProm}
   <p>Loading...</p>
 {:then loggedIn}
-  <Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
+  <Modal>
+    <Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
+  </Modal>
 {:catch error}
   <p>An error occured loading the page: {error.toString()}</p>
 {/await}
