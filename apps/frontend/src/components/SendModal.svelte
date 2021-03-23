@@ -1,21 +1,14 @@
 <script lang="ts">
-    import Modal from "./base/Modal.svelte";
     import Card from "./base/Card.svelte";
     import SendForm from "./SendForm.svelte";
-    export let visible: boolean = false;
+    import XButton from "./base/XButton.svelte";
 
-    const postSubmitHook = () => {
-        visible = false;
-    }
-
-    const onCancel = () => {
-        visible = false;
-    }
+    import { getContext } from 'svelte';
+    const { close } = getContext('modal');
 </script>
 
-<Modal bind:visible={visible}>
-    <Card classExtra="w-1/4 flex flex-col">
-        <h1 class="pb-5 text-3xl">Send</h1>
-        <SendForm {postSubmitHook} {onCancel}/>
-    </Card>
-</Modal>
+<Card classExtra="w-1/4 flex flex-col relative">
+    <XButton onClick={close}/>
+    <h1 class="pb-5 text-3xl">Send</h1>
+    <SendForm postSubmitHook={close} onCancel={close}/>
+</Card>
