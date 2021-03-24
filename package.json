@@ -59,7 +59,7 @@
     "@yelo/rollup-node-external": "^1.0.1",
     "autoprefixer": "^10.2.5",
     "cypress": "^6.0.1",
-    "dotenv": "6.2.0",
+    "dotenv": "^6.2.0",
     "eslint": "7.10.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
@@ -83,11 +83,17 @@
   },
   "dependencies": {
     "@toruslabs/torus-direct-web-sdk": "^4.7.1",
+    "@types/dotenv": "^8.2.0",
+    "@types/ws": "^7.4.0",
     "body-parser": "^1.19.0",
+    "discord.js": "^12.5.1",
     "express": "^4.17.1",
     "near-api-js": "^0.39.0",
+    "pm2": "^4.5.5",
+    "reflect-metadata": "^0.1.13",
     "svelte-spa-router": "^3.1.0",
     "tslib": "^2.1.0",
-    "tsoa": "^3.5.2"
+    "tsoa": "^3.5.2",
+    "typedi": "^0.10.0"
   }
 }
