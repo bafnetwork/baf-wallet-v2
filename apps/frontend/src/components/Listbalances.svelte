@@ -10,15 +10,15 @@
   <table class="table-auto">
     <thead>
       <tr>
-        <th>Coin</th>
+        <th>Asset</th>
         <th>Balance</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         {#each balances as bal}
-          <td class="border text-center">{bal.tok}</td>
-          <td class="border text-center">
+          <td class="text-center border">{bal.tok}</td>
+          <td class="text-center border">
             <AmountFormatter {bal} />
           </td>
         {/each}
