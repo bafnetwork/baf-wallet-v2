@@ -7,13 +7,13 @@
     interface DropdownOption {
         [key: string]: any
     }
+    export let selected: string;
     export let items: DropdownItem[];
-    export let multiple: any | undefined = undefined;
     const options: DropdownOption[] = items.map(item => ({ key: item.label, item}));
 </script>
 
 
-<select {multiple} class="block w-full mt-1 rounded-md">
+<select bind:value={selected} class="block w-full mt-1 rounded-md">
     {#each options as option (option.key)}
         <option value={option.item.value}>{option.item.label}</option>
     {/each}
