@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors') // disable purge in dev
+
 module.exports = {
   purge: {
     content: ['./src/**/*.svelte'],
@@ -5,7 +7,7 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    colors
   },
   variants: {
     extend: {},
