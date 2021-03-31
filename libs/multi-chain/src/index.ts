@@ -1,1 +1,1 @@
-export * from './lib/multi-chain';
+export * from './lib//near';

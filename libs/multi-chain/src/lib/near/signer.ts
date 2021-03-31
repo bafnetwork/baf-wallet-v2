@@ -1,13 +1,12 @@
-import { Signer } from '../multi-chain';
+import { Signer } from '../interfaces/base-classes';
 import {
-  connect,
   KeyPair,
   keyStores,
   providers,
   transactions,
   utils,
 } from 'near-api-js';
-import { Chain } from '../types/chains';
+import { Chain } from '../interfaces/chains';
 import { NetworkId } from './types';
 import { sha256 } from 'js-sha256';
 

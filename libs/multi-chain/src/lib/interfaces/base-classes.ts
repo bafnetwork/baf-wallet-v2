@@ -1,4 +1,4 @@
-import { Chain } from "./types/chains";
+import { Chain } from "./chains";
 
 export abstract class Signer {
   chain: Chain
