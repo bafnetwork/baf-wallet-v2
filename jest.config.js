@@ -5,5 +5,6 @@ module.exports = {
     '<rootDir>/apps/api',
     '<rootDir>/libs/api-client',
     '<rootDir>/apps/bot',
+    '<rootDir>/libs/multi-chain',
   ],
 };

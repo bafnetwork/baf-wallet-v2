@@ -20,6 +20,7 @@
     "frontend-e2e": { "tags": [], "implicitDependencies": ["frontend"] },
     "api": { "tags": [] },
     "api-client": { "tags": [] },
-    "bot": { "tags": [] }
+    "bot": { "tags": [] },
+    "multi-chain": { "tags": [] }
   }
 }
