@@ -273,6 +273,31 @@
           }
         }
       }
+    },
+    "multi-chain": {
+      "root": "libs/multi-chain",
+      "sourceRoot": "libs/multi-chain/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/multi-chain/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/multi-chain"
+          ],
+          "options": {
+            "jestConfig": "libs/multi-chain/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
