@@ -1,4 +1,4 @@
-import { Chain } from './chains';
+import { Chain } from '@baf-wallet/interfaces';
 
 export abstract class Signer {
   chain: Chain;

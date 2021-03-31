@@ -6,8 +6,8 @@ import {
   transactions,
   utils,
 } from 'near-api-js';
-import { Chain } from '../interfaces/chains';
-import { NetworkId } from './types';
+import { Chain } from '@baf-wallet/interfaces';
+import { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 
 interface NearSendOpts {
@@ -23,7 +23,7 @@ export class NearSigner extends Signer {
   constructor(
     privKey: string,
     private accountId: string,
-    private networkId: NetworkId
+    private networkId: NearNetworkId
   ) {
     super(Chain.NEAR);
     this.keyStore = new keyStores.InMemoryKeyStore();

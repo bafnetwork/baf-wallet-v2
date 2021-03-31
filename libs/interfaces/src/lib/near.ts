@@ -1,4 +1,4 @@
-export enum NetworkId {
+export enum NearNetworkId {
   DEVNET = 'testnet',
   TESTNET = 'testnet'
 }

@@ -21,6 +21,8 @@
     "api": { "tags": [] },
     "api-client": { "tags": [] },
     "bot": { "tags": [] },
-    "multi-chain": { "tags": [] }
+    "multi-chain": { "tags": [] },
+    "redirect-generator": { "tags": [] },
+    "interfaces": { "tags": [] }
   }
 }
