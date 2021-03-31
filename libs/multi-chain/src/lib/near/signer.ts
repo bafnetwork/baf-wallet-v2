@@ -43,7 +43,7 @@ export class NearSigner extends Signer {
   }
 
   public static getImplicitAccountId(pubkey: string) {
-    return Buffer.from(utils.PublicKey.fromString(pubkey).data).toString('hex')
+    return Buffer.from(utils.PublicKey.fromString(pubkey).data).toString('hex');
   }
 
   public async sendTX(opts: NearSendOpts) {

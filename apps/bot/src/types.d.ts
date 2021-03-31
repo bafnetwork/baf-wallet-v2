@@ -10,8 +10,8 @@ import {
   PresenceData,
   TextChannel,
   User,
-} from "discord.js";
-import { Command } from "./Command";
+} from 'discord.js';
+import { Command } from './Command';
 
 export interface BotClient extends Client {
   settings: BotSettings;

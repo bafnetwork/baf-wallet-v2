@@ -12,15 +12,15 @@ export abstract class Signer<SendOpts> {
   // Return an explorer link
   abstract sendTX(chainOpts?: SendOpts): Promise<string>;
 
-  public static deserializeSendTXOpts<SendOpts>(opts: string) : SendOpts {
+  public static deserializeSendTXOpts<SendOpts>(opts: string): SendOpts {
     try {
-      return decodeURIComponent(JSON.stringify(opts)) as any as SendOpts
+      return (decodeURIComponent(JSON.stringify(opts)) as any) as SendOpts;
     } catch (e) {
-      throw `Error deserializing ${opts}: ${e}`
+      throw `Error deserializing ${opts}: ${e}`;
     }
   }
 
   public static serializeSendTXOpts(opts: any) {
-    return encodeURIComponent(JSON.stringify(opts))
+    return encodeURIComponent(JSON.stringify(opts));
   }
 }

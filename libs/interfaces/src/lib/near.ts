@@ -1,4 +1,4 @@
 export enum NearNetworkId {
   DEVNET = 'testnet',
-  TESTNET = 'testnet'
+  TESTNET = 'testnet',
 }

@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Message as DiscordMessage } from "discord.js";
-import { BotClient, BotEvent } from "../types";
+import { Message as DiscordMessage } from 'discord.js';
+import { BotClient, BotEvent } from '../types';
 
 export default class Message implements BotEvent {
   constructor(private readonly client: BotClient) {}
 
   name(): string {
-    return "message";
+    return 'message';
   }
 
   public async run(args?: any): Promise<void> {
     if (!(args instanceof DiscordMessage)) {
       // TODO use winston
-      console.error("invalid args for Message event");
+      console.error('invalid args for Message event');
       return args;
     }
 

@@ -5,7 +5,7 @@ import { Signer } from '@baf-wallet/multi-chain';
 
 interface NearCreateUrlOpts {
   actions: transactions.Action[];
-  receiverAccountId: string
+  receiverAccountId: string;
 }
 
 export class NearGenerator extends RedirectGenerator {
@@ -14,6 +14,6 @@ export class NearGenerator extends RedirectGenerator {
   }
 
   public createURL(opts: NearCreateUrlOpts) {
-    return `${this.baseURL}/${Signer.serializeSendTXOpts(opts)}`
+    return `${this.baseURL}/${Signer.serializeSendTXOpts(opts)}`;
   }
 }

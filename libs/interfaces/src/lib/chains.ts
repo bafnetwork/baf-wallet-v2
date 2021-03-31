@@ -1,3 +1,3 @@
 export enum Chain {
-  NEAR = "near",
+  NEAR = 'near',
 }

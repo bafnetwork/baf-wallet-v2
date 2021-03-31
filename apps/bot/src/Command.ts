@@ -1,11 +1,11 @@
-import { Guild, Message, User } from "discord.js";
+import { Guild, Message, User } from 'discord.js';
 import {
   AnyChannel,
   BotClient,
   CommandOptions,
   EmbedOrMessage,
   UserCooldown,
-} from "./types";
+} from './types';
 
 export abstract class Command {
   public conf: CommandOptions;
@@ -14,11 +14,12 @@ export abstract class Command {
   constructor(protected client: BotClient, options: CommandOptions) {
     this.conf = {
       name: options.name,
-      description: options.description ?? "No information specified.",
-      usage: options.usage ?? "No usage specified.",
-      category: options.category ?? "Information",
+      description: options.description ?? 'No information specified.',
+      usage: options.usage ?? 'No usage specified.',
+      category: options.category ?? 'Information',
       cooldown: options.cooldown ?? 1000,
-      requiredPermissions: options.requiredPermissions ?? ["READ_MESSAGES"] as any,
+      requiredPermissions:
+        options.requiredPermissions ?? (['READ_MESSAGES'] as any),
     };
     this.cooldowns = new Set();
   }
@@ -44,7 +45,7 @@ export abstract class Command {
 
     if (!hasPermission || onCooldown) {
       await message.channel.send(
-        "You do not have permission for this command or you are on cooldown."
+        'You do not have permission for this command or you are on cooldown.'
       );
       return false;
     }
