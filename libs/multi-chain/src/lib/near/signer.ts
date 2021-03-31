@@ -38,11 +38,15 @@ export class NearSigner extends Signer {
     );
   }
 
-  async awaitConstructorInit() {
+  public async awaitConstructorInit() {
     return this.initProm;
   }
 
-  async sendTX(opts: NearSendOpts) {
+  public static getImplicitAccountId(pubkey: string) {
+    return Buffer.from(utils.PublicKey.fromString(pubkey).data).toString('hex')
+  }
+
+  public async sendTX(opts: NearSendOpts) {
     const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
     const pubkey = keyPair.getPublicKey();
     const accessKey = await this.provider.query(

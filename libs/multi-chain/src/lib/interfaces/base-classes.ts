@@ -1,14 +1,14 @@
-import { Chain } from "./chains";
+import { Chain } from './chains';
 
 export abstract class Signer {
-  chain: Chain
+  chain: Chain;
 
   constructor(_chain: Chain) {
-    this.chain = _chain
+    this.chain = _chain;
   }
 
   abstract awaitConstructorInit(): Promise<void>;
-  
+
   // Return an explorer link
-  abstract sendTX(chainOpts?: any) : Promise<string>;
+  abstract sendTX(chainOpts?: any): Promise<string>;
 }
