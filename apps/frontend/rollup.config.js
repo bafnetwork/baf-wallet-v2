@@ -1,32 +1,3 @@
-// const dependencies = require('../../package.json').dependencies;
-// const nodePolyfills = require('rollup-plugin-node-polyfills');
-// const commonjs = require('@rollup/plugin-commonjs');
-
-// module.exports = (rollupConfig, opts) => {
-//   console.log(rollupConfig.external);
-//   const plugins = [
-//     commonjs(),
-//     nodePolyfills(),
-//     json({ compact: true }),
-//     ...rollupConfig.plugins,
-//   ];
-//   return {
-//     ...rollupConfig,
-//     // external: [],//Object.keys(dependencies),
-//     onwarn: (warning) => {
-//       // Skip certain warnings
-
-//       // should intercept ... but doesn't in some rollup versions
-//       if (warning.code === 'THIS_IS_UNDEFINED') {
-//         return;
-//       }
-
-//       // console.warn everything else
-//       console.warn(warning.message);
-//     },
-//     plugins,
-//   };
-// };
 const svelte = require('rollup-plugin-svelte');
 const commonjs = require('@rollup/plugin-commonjs');
 const resolve = require('@rollup/plugin-node-resolve');
@@ -86,6 +57,9 @@ module.exports = (r, o) => {
           },
           typescript: {
             extensions: ['.svelte', '.ts'],
+            include: ['libs/**/*.ts'],
+            exclude: ['*.spec.ts'],
+            tsconfig: 'apps/frontend/tsconfig.json',
             plugins: [
               jsonPlug({
                 compact: true,

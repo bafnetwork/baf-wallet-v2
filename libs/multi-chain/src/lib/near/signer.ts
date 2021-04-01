@@ -10,15 +10,15 @@ import { Chain } from '@baf-wallet/interfaces';
 import { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 
-interface NearSendOpts {
+export interface NearSendTXOpts {
   actions: transactions.Action[];
   receiverAccountId: string;
 }
 
-export class NearSigner extends Signer {
-  keyStore: keyStores.InMemoryKeyStore;
-  initProm: Promise<void>;
-  provider: providers.JsonRpcProvider;
+export class NearSigner extends Signer<NearSendTXOpts> {
+  private keyStore: keyStores.InMemoryKeyStore;
+  private initProm: Promise<void>;
+  private provider: providers.JsonRpcProvider;
 
   constructor(
     privKey: string,
@@ -46,7 +46,7 @@ export class NearSigner extends Signer {
     return Buffer.from(utils.PublicKey.fromString(pubkey).data).toString('hex');
   }
 
-  public async sendTX(opts: NearSendOpts) {
+  public async sendTX(opts: NearSendTXOpts) {
     const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
     const pubkey = keyPair.getPublicKey();
     const accessKey = await this.provider.query(
