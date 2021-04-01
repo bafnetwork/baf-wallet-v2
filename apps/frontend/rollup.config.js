@@ -75,6 +75,7 @@ module.exports = (r, o) => {
       }),
       typescript({
         sourceMap: !production,
+        include: ['../../libs/**/*.ts'],
         tsconfig: 'apps/frontend/tsconfig.app.json',
         rootDir: 'apps/frontend/',
       }),
@@ -103,6 +104,10 @@ module.exports = (r, o) => {
       // instead of npm run dev), minify
       production && terser(),
     ],
+    // exclude the @baf-wallet/... paths
+    external: (id) => Object.keys(
+      require('../../tsconfig.base.json').compilerOptions.paths
+    ).includes(id),
     watch: {
       clearScreen: false,
     },

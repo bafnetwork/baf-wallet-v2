@@ -4,7 +4,7 @@
   import { NearSigner } from '@baf-wallet/multi-chain';
   import { KeyStore } from '../state/keys.svelte';
   import { getNearNetworkId } from '@baf-wallet/interfaces';
-  import { constants } from '../config/constants';
+  // import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
 
   export let params = {} as any;
@@ -13,7 +13,7 @@
   const signer = new NearSigner(
     $KeyStore.privkey,
     NearSigner.getImplicitAccountId($KeyStore.pubkey),
-    getNearNetworkId(constants.env)
+    getNearNetworkId(0)
   );
 
   // async function onApprove() {
