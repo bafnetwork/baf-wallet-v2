@@ -1,9 +1,9 @@
-import { Collection } from "discord.js";
-import { Service } from "typedi";
-import { Command } from "../Command";
-import commandClasses from "../commands";
-import eventClasses from "../events";
-import { BotClient } from "../types";
+import { Collection } from 'discord.js';
+import { Service } from 'typedi';
+import { Command } from '../Command';
+import commandClasses from '../commands';
+import eventClasses from '../events';
+import { BotClient } from '../types';
 
 @Service()
 export class ActionManager {

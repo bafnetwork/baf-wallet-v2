@@ -1,6 +1,6 @@
-import { Chain } from './chains';
+import { Chain } from '@baf-wallet/interfaces';
 
-export abstract class Signer {
+export abstract class Signer<SendOpts> {
   chain: Chain;
 
   constructor(_chain: Chain) {
@@ -10,5 +10,17 @@ export abstract class Signer {
   abstract awaitConstructorInit(): Promise<void>;
 
   // Return an explorer link
-  abstract sendTX(chainOpts?: any): Promise<string>;
+  abstract sendTX(chainOpts?: SendOpts): Promise<string>;
+
+  public static deserializeSendTXOpts<SendOpts>(opts: string): SendOpts {
+    try {
+      return (decodeURIComponent(JSON.stringify(opts)) as any) as SendOpts;
+    } catch (e) {
+      throw `Error deserializing ${opts}: ${e}`;
+    }
+  }
+
+  public static serializeSendTXOpts(opts: any) {
+    return encodeURIComponent(JSON.stringify(opts));
+  }
 }

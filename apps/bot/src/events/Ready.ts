@@ -1,4 +1,4 @@
-import { BotClient, BotEvent } from "../types";
+import { BotClient, BotEvent } from '../types';
 
 export default class Ready implements BotEvent {
   private readonly client: BotClient;
@@ -7,7 +7,7 @@ export default class Ready implements BotEvent {
   }
 
   name(): string {
-    return "ready";
+    return 'ready';
   }
 
   public async run(): Promise<void> {

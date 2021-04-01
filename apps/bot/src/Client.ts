@@ -1,14 +1,13 @@
-
-import { Client as DiscordClient, Collection } from "discord.js";
-import { connect } from "near-api-js";
-import { InMemoryKeyStore } from "near-api-js/lib/key_stores";
-import "reflect-metadata";
-import { Service } from "typedi";
-import { Command } from "./Command";
-import { settings as configuration } from "./config/config";
-import getConfig from "./getConfig";
-import { ActionManager } from "./managers/ActionManager";
-import { BotClient, BotSettings } from "./types";
+import { Client as DiscordClient, Collection } from 'discord.js';
+import { connect } from 'near-api-js';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import 'reflect-metadata';
+import { Service } from 'typedi';
+import { Command } from './Command';
+import { settings as configuration } from './config/config';
+import getConfig from './getConfig';
+import { ActionManager } from './managers/ActionManager';
+import { BotClient, BotSettings } from './types';
 
 @Service()
 export class Client extends DiscordClient implements BotClient {
