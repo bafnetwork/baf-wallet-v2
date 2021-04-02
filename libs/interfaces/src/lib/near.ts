@@ -1,7 +1,7 @@
 import { Envs } from "./configs";
 
 export enum NearNetworkId {
-  DEVNET = 'devnet',
+  DEVNET = 'testnet',
   TESTNET = 'testnet',
   MAINNET = 'mainnet',
 }

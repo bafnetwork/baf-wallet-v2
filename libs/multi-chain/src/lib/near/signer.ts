@@ -50,6 +50,7 @@ export class NearSigner extends Signer<NearSendTXOpts> {
   public async sendTX(opts: NearSendTXOpts) {
     const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
     const pubkey = keyPair.getPublicKey();
+    console.log(this.accountId, pubkey.toString())
     const accessKey = await this.provider.query(
       `access_key/${this.accountId}/${pubkey.toString()}`,
       ''

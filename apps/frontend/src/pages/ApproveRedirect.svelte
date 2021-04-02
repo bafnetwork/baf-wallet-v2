@@ -1,3 +1,4 @@
+<!-- TODO: have it so that the pubkey can be intialized correctly -->
 <script lang="ts">
   import Card from '../components/base/Card.svelte';
   import Button from '../components/base/Button.svelte';
@@ -5,7 +6,7 @@
   import { getNearNetworkId } from '@baf-wallet/interfaces';
   import { KeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
-  import { Signer, utils } from 'near-api-js';
+  import { utils } from 'near-api-js';
   
   export let params = {} as any;
   const optsStr: string = params.opts;
