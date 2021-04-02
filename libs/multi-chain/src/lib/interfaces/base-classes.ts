@@ -14,7 +14,7 @@ export abstract class Signer<SendOpts> {
 
   public static deserializeSendTXOpts<SendOpts>(opts: string): SendOpts {
     try {
-      return (decodeURIComponent(JSON.stringify(opts)) as any) as SendOpts;
+      return JSON.parse(decodeURIComponent(opts)) as any as SendOpts;
     } catch (e) {
       throw `Error deserializing ${opts}: ${e}`;
     }

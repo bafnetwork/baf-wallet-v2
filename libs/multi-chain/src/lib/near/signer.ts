@@ -9,6 +9,7 @@ import {
 import { Chain } from '@baf-wallet/interfaces';
 import type { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
+import { Buffer } from 'buffer';
 
 export interface NearSendTXOpts {
   actions: transactions.Action[];
