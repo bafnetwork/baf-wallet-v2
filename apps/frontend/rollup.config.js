@@ -1,3 +1,33 @@
+
+// const dependencies = require('../../package.json').dependencies;
+// const nodePolyfills = require('rollup-plugin-node-polyfills');
+// const commonjs = require('@rollup/plugin-commonjs');
+
+// module.exports = (rollupConfig, opts) => {
+//   console.log(rollupConfig.external);
+//   const plugins = [
+//     commonjs(),
+//     nodePolyfills(),
+//     json({ compact: true }),
+//     ...rollupConfig.plugins,
+//   ];
+//   return {
+//     ...rollupConfig,
+//     // external: [],//Object.keys(dependencies),
+//     onwarn: (warning) => {
+//       // Skip certain warnings
+
+//       // should intercept ... but doesn't in some rollup versions
+//       if (warning.code === 'THIS_IS_UNDEFINED') {
+//         return;
+//       }
+
+//       // console.warn everything else
+//       console.warn(warning.message);
+//     },
+//     plugins,
+//   };
+// };
 const svelte = require('rollup-plugin-svelte');
 const commonjs = require('@rollup/plugin-commonjs');
 const resolve = require('@rollup/plugin-node-resolve');
@@ -8,9 +38,12 @@ const json = require('@rollup/plugin-json');
 const autoPreprocess = require('svelte-preprocess');
 const typescript = require('@rollup/plugin-typescript');
 const nodePolyfills = require('rollup-plugin-node-polyfills');
+const localResolve = require('rollup-plugin-local-resolve');
 const jsonPlug = require('@rollup/plugin-json');
+const copy = require('rollup-plugin-copy');
+const replace = require('@rollup/plugin-replace')
 
-module.exports = (r, o) => {
+module.exports = (rollup, options) => {
   const production = !process.env.ROLLUP_WATCH;
 
   function serve() {
@@ -41,12 +74,18 @@ module.exports = (r, o) => {
   return {
     input: 'apps/frontend/src/main.ts',
     output: {
+      // TODO: enable for debugging
       sourcemap: true,
       format: 'iife',
       name: 'app',
       file: 'dist/apps/frontend/bundle.js',
     },
     plugins: [
+      copy({
+        targets: [
+          { src: 'apps/frontend/public/**/*', dest: 'dist/apps/frontend' },
+        ],
+      }),
       svelte({
         preprocess: autoPreprocess({
           postcss: {
@@ -57,14 +96,6 @@ module.exports = (r, o) => {
           },
           typescript: {
             extensions: ['.svelte', '.ts'],
-            include: ['libs/**/*.ts'],
-            exclude: ['*.spec.ts'],
-            tsconfig: 'apps/frontend/tsconfig.json',
-            plugins: [
-              jsonPlug({
-                compact: true,
-              }),
-            ],
           },
         }),
       }),
@@ -73,28 +104,32 @@ module.exports = (r, o) => {
         dedupe: ['svelte'],
         preferBuiltins: false,
       }),
-      typescript({
-        sourceMap: !production,
-        include: ['../../libs/**/*.ts'],
-        tsconfig: 'apps/frontend/tsconfig.app.json',
-        rootDir: 'apps/frontend/',
-      }),
-      // we'll extract any component CSS out into
-      // a separate file - better for performance
-      css({ output: 'bundle.css' }),
-      json({ compact: true }),
-
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
       // some cases you'll need additional configuration -
       // consult the documentation for details:
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
-      commonjs(),
+      typescript({
+        sourceMap: true,
+        tsconfig: 'apps/frontend/tsconfig.app.json',
+        exclude: ["node_modules/**"]
+      }),
+      // we'll extract any component CSS out into
+      // a separate file - better for performance
+      css({ output: 'bundle.css' }),
+      localResolve(),
+      json({ compact: true }),
+      commonjs({ sourceMap: false }),
+      // A fix for the following issue with pure type files: https://github.com/rollup/rollup/issues/2332
+      replace({
+        'Object.defineProperty(exports, "__esModule", { value: true });': '',
+        delimiters: ['\n', '\n']
+      }),
       nodePolyfills(),
 
       // In dev mode, call `npm run start` once
       // the bundle has been generated
-      !production && serve(),
+      // !production && serve(),
 
       // Watch the `public` directory and refresh the
       // browser on changes when not in production
@@ -104,12 +139,9 @@ module.exports = (r, o) => {
       // instead of npm run dev), minify
       production && terser(),
     ],
-    // exclude the @baf-wallet/... paths
-    external: (id) => Object.keys(
-      require('../../tsconfig.base.json').compilerOptions.paths
-    ).includes(id),
     watch: {
       clearScreen: false,
+      exclude: ['node_modules/**']
     },
   };
 };

@@ -7,7 +7,7 @@ import {
   utils,
 } from 'near-api-js';
 import { Chain } from '@baf-wallet/interfaces';
-import { NearNetworkId } from '@baf-wallet/interfaces';
+import type { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 
 export interface NearSendTXOpts {
