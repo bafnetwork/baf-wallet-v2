@@ -20,7 +20,8 @@
       "@baf-wallet/redirect-generator": [
         "libs/redirect-generator/src/index.ts"
       ],
-      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"]
+      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
+      "@baf-wallet/trust-wallet-assets": ["libs/trust-wallet-assets/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
