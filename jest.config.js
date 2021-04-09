@@ -7,5 +7,6 @@ module.exports = {
     '<rootDir>/apps/bot',
     '<rootDir>/libs/multi-chain',
     '<rootDir>/libs/redirect-generator',
+    '<rootDir>/libs/crypto',
   ],
 };
