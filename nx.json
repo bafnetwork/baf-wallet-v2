@@ -23,6 +23,7 @@
     "bot": { "tags": [] },
     "multi-chain": { "tags": [] },
     "redirect-generator": { "tags": [] },
-    "interfaces": { "tags": [] }
+    "interfaces": { "tags": [] },
+    "trust-wallet-assets": { "tags": [] }
   }
 }
