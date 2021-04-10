@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: "./apps/bot/src/environments/dev/.env"});
 
 export const environment = {
   production: false,

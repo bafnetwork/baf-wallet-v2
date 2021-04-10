@@ -20,7 +20,7 @@ export abstract class Signer<SendOpts> {
     }
   }
 
-  public static serializeSendTXOpts(opts: any) {
+  public static serializeSendTXOpts(opts: any): string {
     return encodeURIComponent(JSON.stringify(opts));
   }
 }
