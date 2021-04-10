@@ -4,8 +4,8 @@
   import Card from "../components/base/Card.svelte";
   export let params = {} as any
   // TODO: use EIP-712: https://github.com/Mrtenz/eip-712/tree/master/src if it's JSON, or expect a hash
-  const txStr = '{ "to": "0x420", "amount": 69, "data": { "msg": "BAF token when" }}';
-  const tx = JSON.parse(txStr);
+  // const txStr = '{ "to": "0x420", "amount": 69, "data": { "msg": "BAF token when" }}';
+  // const tx = JSON.parse(txStr);
   const nonce = params.nonce
   const appName = "BAF DAO";
   // import Card from '../components/base/Card.svelte';
@@ -14,12 +14,14 @@
   // import { constants } from '../config/constants';
   // import { utils } from 'near-api-js';
 
-  // export let params = {} as any;
-  // const optsStr: string = params.opts;
+  const optsStr: string = decodeURIComponent(params.opts);
+  const opts = JSON.parse(optsStr);
   let privkey = ""//$KeyStore.privkey
   let pubkey = ""//$KeyStore.pubkey
   let signer = createSigner(privkey, pubkey);
   let signerProm = signer.awaitConstructorInit()
+  const data = opts.actions;
+  const recipient = opts.receiverAccountId;
 
   // async function onApprove() {
   //   signer.sendTX(opts);
@@ -34,14 +36,13 @@
     <Card classExtra="flex flex-col divide">
       <h1 class="pb-2 text-xl text-center">{appName} would like to execute a transaction</h1>
       <div class="flex flex-row justify-center">
-        <span class="mx-2">To: {tx.to}</span>
-        <span class="mx-2">Amount: {tx.amount}</span>
+        <span class="mx-2">To: {recipient}</span>
       </div>
-      {#if tx.data}
+      {#if data}
         <span class="mx-2 text-center">Data</span>
         <div class="flex flex-row justify-center">
           <code>
-            {JSON.stringify(tx.data, null, 2)}
+            {JSON.stringify(data, null, 2)}
           </code>
         </div>
       {/if}
