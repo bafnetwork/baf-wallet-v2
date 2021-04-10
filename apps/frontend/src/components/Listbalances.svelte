@@ -7,7 +7,7 @@
 </script>
 
 <div class="container mx-auto sm">
-  <table class="table-auto">
+  <table class="w-full table-auto">
     <thead>
       <tr>
         <th>Asset</th>
@@ -26,9 +26,3 @@
     </tbody>
   </table>
 </div>
-
-<style>
-  table {
-    width: 100%;
-  }
-</style>
