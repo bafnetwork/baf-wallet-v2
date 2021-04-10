@@ -3,6 +3,7 @@ import { Command } from '../Command';
 import { BotClient } from '../types';
 import { transactions } from 'near-api-js';
 import { NearGenerator, NearCreateUrlOpts } from '@baf-wallet/redirect-generator';
+import { environment } from "../environments/environment";
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
@@ -55,7 +56,7 @@ export default class SendMoney extends Command {
         actions: [transactions.transfer(amount)],
         receiverAccountId: recipient,
       }
-      const linkGenerator = new NearGenerator("https://localhost:4200");
+      const linkGenerator = new NearGenerator(environment.BASE_WALLET_URL);
       await super.respond(
         message.channel,
         linkGenerator.createURL(tx)
