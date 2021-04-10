@@ -7,6 +7,7 @@
   import Card from '../components/base/Card.svelte';
   import Layout from '../components/Layout.svelte';
   import Listbalances from '../components/Listbalances.svelte';
+  import History from '../components/History.svelte';
 
   let viewMode: "assets" | "history" = "assets";
 
@@ -54,8 +55,8 @@
       </div>
     </div>
     <div class="flex flex-row justify-around">
-      <h2 on:click={() => viewMode = "assets"} class={`transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "z-10 bg-white" : "hover:bg-blueGray-200"}`}>Assets</h2>
-      <h2 on:click={() => viewMode = "history"} class={`transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "hover:bg-blueGray-200" : "z-10 bg-white"}`}>History</h2>
+      <button on:click={() => viewMode = "assets"} class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "z-10 bg-white" : "hover:bg-blueGray-200"}`}>Assets</button>
+      <button on:click={() => viewMode = "history"} class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "hover:bg-blueGray-200" : "z-10 bg-white"}`}>History</button>
     </div>
     {#if viewMode === "assets"}
       <div class="container z-10 pb-4 mx-auto transition duration-150 ease-in-out bg-white rounded-md">
@@ -63,7 +64,7 @@
       </div>
     {:else}
       <div class="z-10 pb-4 transition duration-150 ease-in-out bg-white rounded-md">
-        <div>TODO: History component</div>
+        <History />
       </div>
     {/if}
   </Card>
