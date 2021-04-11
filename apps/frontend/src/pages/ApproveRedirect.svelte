@@ -2,30 +2,40 @@
 <script lang="ts">
   import Card from '../components/base/Card.svelte';
   import Button from '../components/base/Button.svelte';
-  import { NearSendTXOpts, NearSigner } from '@baf-wallet/multi-chain';
-  import { getNearNetworkId } from '@baf-wallet/interfaces';
+  import {
+    NearAccountSingelton,
+    NearSendTXOpts,
+    NearSigner,
+  } from '@baf-wallet/multi-chain';
+  import { CryptoCurves, getNearNetworkId } from '@baf-wallet/interfaces';
   import { KeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
-  
+  import { curve } from 'elliptic';
+
   export let params = {} as any;
   const optsStr: string = params.opts;
-  const opts: NearSendTXOpts= NearSigner.deserializeSendTXOpts(optsStr)
+  const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
   async function getSigner() {
     let privkey = $KeyStore.privkey;
     let pubkey = $KeyStore.pubkey;
-    console.log(privkey, pubkey)
+    console.log(privkey, pubkey);
     if (!pubkey || !privkey) {
       throw 'not-logged-in';
     }
+    const networkId = getNearNetworkId(constants.env);
     const signer = new NearSigner(
       privkey,
-      NearSigner.getImplicitAccountId(pubkey),
-      getNearNetworkId(constants.env)
+      NearAccountSingelton.getAccountNameFromPubkey(
+        pubkey,
+        CryptoCurves.secp256k1,
+        networkId
+      ),
+      networkId
     );
     await signer.awaitConstructorInit();
-    console.log(opts)
+    console.log(opts);
     return signer;
   }
 
@@ -45,7 +55,7 @@
       Transfering {utils.format.formatNearAmount(
         opts.actions[0].transfer.deposit.toString()
       )}
-      <Button onClick = {() => onApprove(signer)}>Approve</Button>
+      <Button onClick={() => onApprove(signer)}>Approve</Button>
       <Button>Decline</Button>
     </Card>
   {/if}

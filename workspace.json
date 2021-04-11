@@ -333,27 +333,6 @@
           }
         }
       }
-    },
-    "crypto": {
-      "root": "libs/crypto",
-      "sourceRoot": "libs/crypto/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/crypto/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/crypto"],
-          "options": {
-            "jestConfig": "libs/crypto/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
     }
   }
 }

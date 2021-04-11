@@ -9,7 +9,9 @@ import * as bs58 from 'bs58';
 import { Account } from 'near-api-js';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
-const secp256k1Pubkey = 'BfaBf538323A1D21453b5F6a374A07867D867196'; // TODO: derive from torus
+const secp256k1Pubkey = new Uint8Array(
+  Buffer.from('BfaBf538323A1D21453b5F6a374A07867D867196', 'hex')
+); // TODO: derive from torus
 (global as any).window = {
   name: 'nodejs',
 };

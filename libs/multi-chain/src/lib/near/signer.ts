@@ -43,10 +43,6 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     return this.initProm;
   }
 
-  public static getImplicitAccountId(pubkey: string) {
-    return Buffer.from(utils.PublicKey.fromString(pubkey).data).toString('hex');
-  }
-
   public async sendTX(opts: NearSendTXOpts) {
     const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
     const pubkey = keyPair.getPublicKey();

@@ -3,12 +3,15 @@
  * This is only a minimal backend to get started.
  */
 
+import { NearAccountSingelton } from '@baf-wallet/multi-chain';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { RegisterRoutes } from '../build/routes';
 
 const app = express();
 
+const 
+NearAccountSingelton.setConfig()
 app.use(
   bodyParser.urlencoded({
     extended: true,

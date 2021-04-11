@@ -1,23 +1,12 @@
 import { CryptoCurves, NearNetworkId } from '@baf-wallet/interfaces';
-import {
-  Account,
-  connect,
-  ConnectConfig,
-  InMemorySigner,
-  KeyPair,
-  Near,
-} from 'near-api-js';
+import { Account, connect, ConnectConfig, KeyPair, Near } from 'near-api-js';
 import {
   AccountCreator,
-  LocalAccountCreator,
   UrlAccountCreator,
 } from 'near-api-js/lib/account_creator';
-import {
-  InMemoryKeyStore,
-  KeyStore,
-  UnencryptedFileSystemKeyStore,
-} from 'near-api-js/lib/key_stores';
-import { dirname } from 'path';
+import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
+import { PublicKey } from '@baf-wallet/interfaces';
+import * as bs58 from 'bs58';
 
 interface NearSingletonParams {
   connectConfig: ConnectConfig;
@@ -73,11 +62,22 @@ export class NearAccountSingelton {
     );
     return this.nearSingleton;
   }
-  getAccountNameFromPubkey(pubkey: string, curve: CryptoCurves): string {
-    return `${curve}_${pubkey}.${
-      this.params.connectConfig.networkId === NearNetworkId.MAINNET
-        ? 'near'
-        : this.params.connectConfig.networkId
+
+  getAccountNameFromPubkey(pubkey: PublicKey, curve: CryptoCurves) {
+    return NearAccountSingelton.getAccountNameFromPubkey(
+      pubkey,
+      curve,
+      this.params.connectConfig.networkId as NearNetworkId
+    );
+  }
+
+  static getAccountNameFromPubkey(
+    pubkey: PublicKey,
+    curve: CryptoCurves,
+    networkId: NearNetworkId
+  ): string {
+    return `${curve}_${bs58.encode(pubkey)}.${
+      networkId === NearNetworkId.MAINNET ? 'near' : networkId
     }`.toLowerCase();
   }
 

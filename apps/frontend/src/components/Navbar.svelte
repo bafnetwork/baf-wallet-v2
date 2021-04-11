@@ -3,7 +3,7 @@
 
   import { link } from 'svelte-spa-router';
   import Button from './base/Button.svelte';
-  import { NearSigner } from '@baf-wallet/multi-chain';
+  import { formatKey } from '@baf-wallet/multi-chain';
   const openSendTxModal = () => {};
 </script>
 
@@ -14,6 +14,5 @@
   <a class="text-lg text-white" href="/history" use:link>History</a>
   <a class="text-lg text-white" href="/apps" use:link>Apps</a>
   <Button onClick={openSendTxModal} color="white">Send</Button>
-  {$KeyStore.pubkey}
-  {NearSigner.getImplicitAccountId($KeyStore.pubkey)}
+  {formatKey($KeyStore.secp256k1Pubkey)}
 </div>
