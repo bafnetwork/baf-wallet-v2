@@ -1,6 +1,17 @@
-import { CryptoCurves } from '@baf-wallet/interfaces';
-import { Account, connect, ConnectConfig, InMemorySigner, Near } from 'near-api-js';
-import { LocalAccountCreator } from 'near-api-js/lib/account_creator';
+import { CryptoCurves, NearNetworkId } from '@baf-wallet/interfaces';
+import {
+  Account,
+  connect,
+  ConnectConfig,
+  InMemorySigner,
+  KeyPair,
+  Near,
+} from 'near-api-js';
+import {
+  AccountCreator,
+  LocalAccountCreator,
+  UrlAccountCreator,
+} from 'near-api-js/lib/account_creator';
 import {
   InMemoryKeyStore,
   KeyStore,
@@ -16,11 +27,12 @@ interface NearSingletonParams {
 export class NearAccountSingelton {
   private static nearSingleton: NearAccountSingelton | null;
   private static initParams: NearSingletonParams | null;
-  private static keyStore: KeyStore;
 
   private constructor(
     public near: Near,
     public masterAccount: Account,
+    public accountCreator: AccountCreator,
+    private keyStore: KeyStore,
     private params: NearSingletonParams
   ) {}
 
@@ -35,27 +47,45 @@ export class NearAccountSingelton {
     if (this.nearSingleton) {
       return this.nearSingleton;
     }
-    this.keyStore =
+    const keyStore =
       this.initParams.connectConfig.deps?.keyStore || new InMemoryKeyStore();
     this.initParams.connectConfig.deps = {
       ...(this.initParams.connectConfig.deps?.keyStore || {}),
-      keyStore: this.keyStore,
+      keyStore: keyStore,
     };
     const near = await connect(this.initParams.connectConfig);
 
     // const masterAccount = (near.accountCreator as LocalAccountCreator).masterAccount;
     // near.connection.provider
     const masterAccount = await near.account(this.initParams.masterAccountId);
-    
+    const urlAccountCreator = new UrlAccountCreator(
+      near.connection,
+      this.initParams.connectConfig.helperUrl
+    );
+
     // masterAccount.connection.signer;
     this.nearSingleton = new NearAccountSingelton(
       near,
       masterAccount,
+      urlAccountCreator,
+      keyStore,
       this.initParams
     );
     return this.nearSingleton;
   }
   getAccountNameFromPubkey(pubkey: string, curve: CryptoCurves): string {
-    return `${curve}:${pubkey}.${this.params.connectConfig.networkId}`;
+    return `${curve}_${pubkey}.${
+      this.params.connectConfig.networkId === NearNetworkId.MAINNET
+        ? 'near'
+        : this.params.connectConfig.networkId
+    }`.toLowerCase();
+  }
+
+  async updateKeyPair(accountId: string, keyPair: KeyPair) {
+    await this.keyStore.setKey(
+      this.params.connectConfig.networkId,
+      accountId,
+      keyPair
+    );
   }
 }
