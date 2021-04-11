@@ -3,5 +3,10 @@ export enum CryptoCurves {
   ed25519 = 'ed25519',
 }
 
-export type PublicKey = Uint8Array
-export type SecretKey = Uint8Array
+export enum KeyFormats {
+  bs58,
+  hex
+}
+
+export type PublicKey = Buffer
+export type SecretKey = Buffer

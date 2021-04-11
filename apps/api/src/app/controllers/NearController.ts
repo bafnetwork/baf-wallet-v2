@@ -28,11 +28,9 @@ export class NearController extends Controller {
   public async createNearAccount(
     @Body() requestBody: CreateNearAccountParams
   ): Promise<void> {
-    const pubkey = new Uint8Array(
-      Buffer.from(
-        '60cf347dbc59d31c1358c8e5cf5e45b822ab85b79cb32a9f3d98184779a9efc2',
-        'hex'
-      )
+    const pubkey = Buffer.from(
+      '60cf347dbc59d31c1358c8e5cf5e45b822ab85b79cb32a9f3d98184779a9efc2',
+      'hex'
     ); // TODO: derive from torus
     const msg = ChainUtil.createUserVerifyMessage(
       requestBody.discordUser,
@@ -40,7 +38,7 @@ export class NearController extends Controller {
     );
     if (
       !ChainUtil.verifySignedSecp256k1(
-        Buffer.from(pubkey),
+        pubkey,
         msg,
         requestBody.signature
       )

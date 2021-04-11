@@ -1,4 +1,4 @@
-import { CryptoCurves, NearNetworkId } from '@baf-wallet/interfaces';
+import { CryptoCurves, KeyFormats, NearNetworkId, SecretKey } from '@baf-wallet/interfaces';
 import { Account, connect, ConnectConfig, KeyPair, Near } from 'near-api-js';
 import {
   AccountCreator,
@@ -6,7 +6,8 @@ import {
 } from 'near-api-js/lib/account_creator';
 import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
 import { PublicKey } from '@baf-wallet/interfaces';
-import * as bs58 from 'bs58';
+import { formatKey } from '../utils';
+import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
 interface NearSingletonParams {
   connectConfig: ConnectConfig;
@@ -76,16 +77,16 @@ export class NearAccountSingelton {
     curve: CryptoCurves,
     networkId: NearNetworkId
   ): string {
-    return `${curve}_${bs58.encode(pubkey)}.${
+    return `${curve}_${formatKey(pubkey, KeyFormats.bs58)}.${
       networkId === NearNetworkId.MAINNET ? 'near' : networkId
     }`.toLowerCase();
   }
 
-  async updateKeyPair(accountId: string, keyPair: KeyPair) {
+  async updateKeyPair(accountId: string, secret: SecretKey) {
     await this.keyStore.setKey(
       this.params.connectConfig.networkId,
       accountId,
-      keyPair
+      new KeyPairEd25519(formatKey(secret, KeyFormats.bs58))
     );
   }
 }

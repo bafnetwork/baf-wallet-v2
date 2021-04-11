@@ -2,28 +2,42 @@
   name: 'nodejs',
 };
 window.name = 'nodejs';
-import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
+import {
+  CryptoCurves,
+  Envs,
+  getNearNetworkId,
+} from '@baf-wallet/interfaces';
 import { NearAccountSingelton } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
-import * as bs58 from 'bs58';
 import { Account } from 'near-api-js';
-import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
-const secp256k1Pubkey = new Uint8Array(
-  Buffer.from('BfaBf538323A1D21453b5F6a374A07867D867196', 'hex')
+const secp256k1Pubkey = Buffer.from(
+  'BfaBf538323A1D21453b5F6a374A07867D867196',
+  'hex'
 ); // TODO: derive from torus
 (global as any).window = {
   name: 'nodejs',
 };
 
-const alicePubkey = bs58.encode(
-  Buffer.from('emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=', 'base64')
+const defaultNearConfig = {
+  masterAccountId: 'levtester.testnet',
+  connectConfig: {
+    networkId: getNearNetworkId(Envs.DEV),
+    nodeUrl: 'https://rpc.testnet.near.org',
+    keyPath: '/home/lev/.near-credentials/testnet/levtester.testnet.json',
+    explorerUrl: 'https://explorer.testnet.near.org',
+    helperUrl: 'https://helper.testnet.near.org',
+    masterAccount: 'levtester.testnet',
+  },
+};
+
+const alicePubkey = Buffer.from(
+  'emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=',
+  'base64'
 );
-const aliceSecret = bs58.encode(
-  Buffer.from(
-    '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
-    'base64'
-  )
+const aliceSecret = Buffer.from(
+  '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
+  'base64'
 );
 
 jest.setTimeout(30000);
@@ -49,7 +63,10 @@ describe('Create a dummy near account on the testnet', () => {
       secp256k1Pubkey,
       CryptoCurves.secp256k1
     );
-    nearAccount.updateKeyPair(accountName, new KeyPairEd25519(aliceSecret));
+    nearAccount.updateKeyPair(
+      accountName,
+      aliceSecret
+    );
 
     const account = await nearAccount.near.account(accountName);
     try {

@@ -23,17 +23,17 @@
   async function init(): Promise<boolean> {
     KeyStore.set({
       //  ed25519Pubkey:
-      secp256k1Pubkey: new Uint8Array(
-        Buffer.from('BfaBf538323A1D21453b5F6a374A07867D867196', 'hex')
+      secp256k1Pubkey: Buffer.from(
+        'BfaBf538323A1D21453b5F6a374A07867D867196',
+        'hex'
       ),
-      ed25519Pubkey: new Uint8Array(
-        Buffer.from('emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=', 'base64')
+      ed25519Pubkey: Buffer.from(
+        'emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=',
+        'base64'
       ),
-      secret: new Uint8Array(
-        Buffer.from(
-          '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
-          'base64'
-        )
+      secret: Buffer.from(
+        '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
+        'base64'
       ),
     });
     return true;
