@@ -18,8 +18,8 @@
   const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
   async function getSigner() {
-    let privkey = $KeyStore.privkey;
-    let pubkey = $KeyStore.pubkey;
+    let privkey = $KeyStore.secret;
+    let pubkey = $KeyStore.ed25519Pubkey;
     console.log(privkey, pubkey);
     if (!pubkey || !privkey) {
       throw 'not-logged-in';
@@ -28,7 +28,7 @@
     const signer = new NearSigner(
       privkey,
       NearAccountSingelton.getAccountNameFromPubkey(
-        pubkey,
+        $KeyStore.secp256k1Pubkey,
         CryptoCurves.secp256k1,
         networkId
       ),
@@ -63,5 +63,5 @@
   {#if e.toString() === 'not-logged-in'}
     Please login to approve or reject this transaction
   {:else}{/if}
-  The following error occured: {e}
+  The following error occured: {console.error(e) || ""}
 {/await}

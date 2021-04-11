@@ -6,10 +6,11 @@ import {
   transactions,
   utils,
 } from 'near-api-js';
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, KeyFormats, SecretKey } from '@baf-wallet/interfaces';
 import type { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 import { Buffer } from 'buffer';
+import { formatKey } from '../utils';
 
 export interface NearSendTXOpts {
   actions: transactions.Action[];
@@ -22,13 +23,13 @@ export class NearSigner extends Signer<NearSendTXOpts> {
   private provider: providers.JsonRpcProvider;
 
   constructor(
-    privKey: string,
+    privKey: SecretKey,
     private accountId: string,
     private networkId: NearNetworkId
   ) {
     super(Chain.NEAR);
     this.keyStore = new keyStores.InMemoryKeyStore();
-    const keyPair = KeyPair.fromString(privKey);
+    const keyPair = KeyPair.fromString(formatKey(privKey, KeyFormats.bs58));
     this.initProm = this.keyStore.setKey(
       this.networkId,
       this.accountId,
@@ -61,6 +62,7 @@ export class NearSigner extends Signer<NearSendTXOpts> {
       opts.actions,
       recentBlockHash
     );
+    console.log(transaction.actions)
     const serializedTx = utils.serialize.serialize(
       transactions.SCHEMA,
       transaction

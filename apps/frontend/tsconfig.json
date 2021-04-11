@@ -6,7 +6,7 @@
     "importsNotUsedAsValues": "error",
     "isolatedModules": true,
     "sourceMap": true,
-    "types": ["svelte"],
+    "types": ["node", "svelte"],
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,

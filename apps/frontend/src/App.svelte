@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Buffer } from 'buffer';
+  (window as any).Buffer = Buffer;
   import Modal from './components/base/Modal.svelte';
   import Router from 'svelte-spa-router';
   import Login from './pages/Login.svelte';
@@ -6,7 +8,7 @@
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { KeyStore } from './state/keys.svelte';
-  import { Buffer } from 'buffer';
+  // TODO: make better
 
   const routesLoggedIn = {
     '/': Account,
