@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "cli": {
+    "defaultCollection": "@nrwl/express"
+  },
+  "defaultProject": "api",
   "projects": {
     "frontend": {
       "root": "apps/frontend",
@@ -374,9 +378,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/express"
-  },
-  "defaultProject": "api"
+  }
 }

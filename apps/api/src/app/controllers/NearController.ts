@@ -12,10 +12,12 @@ import {
 import { createNearAccount } from '../service/near';
 import { CryptoCurves } from '@baf-wallet/interfaces';
 import { ChainUtil } from '@baf-wallet/multi-chain';
+import { ec } from 'elliptic';
 
 interface CreateNearAccountParams {
   discordUser: string;
-  privKey: string;
+  nonce: string;
+  signature: ec.Signature;
 }
 
 @Route('near')
@@ -27,7 +29,11 @@ export class NearController extends Controller {
   ): Promise<void> {
     const pubkey =
       '60cf347dbc59d31c1358c8e5cf5e45b822ab85b79cb32a9f3d98184779a9efc2'; // TODO: derive from torus
-    if (!ChainUtil.verifyKeypairSecp256k1(pubkey, requestBody.privKey)) {
+    const msg = ChainUtil.createUserVerifyMessage(
+      requestBody.discordUser,
+      requestBody.nonce
+    );
+    if (!ChainUtil.verifySignedSecp256k1(Buffer.from(pubkey, 'hex'), msg, requestBody.signature)) {
       this.setStatus(403);
       throw 'Proof that the sender owns this public key must provided';
     }

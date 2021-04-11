@@ -10,6 +10,7 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "lib": ["ES2017", "DOM"],
     "forceConsistentCasingInFileNames": true
   },
   "files": [],

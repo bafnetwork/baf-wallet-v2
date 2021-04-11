@@ -1,5 +1,6 @@
-import { CryptoCurves, NearNetworkId } from '@baf-wallet/interfaces';
+import { CryptoCurves, Envs, getNearNetworkId, NearNetworkId } from '@baf-wallet/interfaces';
 import { NearAccountSingelton } from '@baf-wallet/multi-chain';
+import { PublicKey } from 'near-api-js/lib/utils';
 
 // Or should we do local
 // const masterAccount = new Account()
@@ -8,19 +9,23 @@ import { NearAccountSingelton } from '@baf-wallet/multi-chain';
 // TODO: put into constants
 
 const defaultNearConfig = {
-  masterAccountId: 'levtest.testnet',
+  masterAccountId: 'levtester.testnet',
   connectConfig: {
-    networkId: NearNetworkId.DEVNET,
+    networkId: getNearNetworkId(Envs.DEV),
     nodeUrl: 'https://rpc.testnet.near.org',
     keyPath: '/home/lev/.near-credentials/testnet/levtester.testnet.json',
+    explorerUrl: 'https://explorer.testnet.near.org',
+    masterAccount: 'levtester.testnet'
   },
 };
 
-// Check the found public key verifies the signature produced by (nonce + userId) 
+// Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
   pubkey: string,
+  derivedEd25519Pubkey: string,
   curve = CryptoCurves.secp256k1
 ) {
+  console.log(window === undefined)
   if (curve !== CryptoCurves.secp256k1) {
     throw 'Only secp256k1 curves are currently supported';
   }
@@ -28,7 +33,12 @@ export async function createNearAccount(
   const near = await NearAccountSingelton.get();
   await near.masterAccount.createAccount(
     near.getAccountNameFromPubkey(pubkey, curve),
-    pubkey,
+    PublicKey.fromString(derivedEd25519Pubkey),
     '10000000000000000000'
-  );
+  )
+  // await masterAccount.createAccount(
+  //   near.getAccountNameFromPubkey(pubkey, curve),
+  //   PublicKey.fromString(derivedEd25519Pubkey),
+  //   '10000000000000000000'
+  // );
 }

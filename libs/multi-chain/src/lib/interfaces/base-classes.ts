@@ -37,4 +37,8 @@ export abstract class ChainUtil {
     let validSig = ecSecp.verify(msgHash, signedMsg, pubkey);
     return validSig;
   }
+
+  public static createUserVerifyMessage(userId: string, nonce: string) {
+    return `${userId}:${nonce}`
+  }
 }
