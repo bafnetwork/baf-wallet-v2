@@ -1,4 +1,3 @@
-
 // const dependencies = require('../../package.json').dependencies;
 // const nodePolyfills = require('rollup-plugin-node-polyfills');
 // const commonjs = require('@rollup/plugin-commonjs');
@@ -41,7 +40,7 @@ const nodePolyfills = require('rollup-plugin-node-polyfills');
 const localResolve = require('rollup-plugin-local-resolve');
 const jsonPlug = require('@rollup/plugin-json');
 const copy = require('rollup-plugin-copy');
-const replace = require('@rollup/plugin-replace')
+const replace = require('@rollup/plugin-replace');
 
 module.exports = (rollup, options) => {
   const production = !process.env.ROLLUP_WATCH;
@@ -112,7 +111,7 @@ module.exports = (rollup, options) => {
       typescript({
         sourceMap: true,
         tsconfig: 'apps/frontend/tsconfig.app.json',
-        exclude: ["node_modules/**"]
+        exclude: ['node_modules/**'],
       }),
       // we'll extract any component CSS out into
       // a separate file - better for performance
@@ -123,7 +122,7 @@ module.exports = (rollup, options) => {
       // A fix for the following issue with pure type files: https://github.com/rollup/rollup/issues/2332
       replace({
         'Object.defineProperty(exports, "__esModule", { value: true });': '',
-        delimiters: ['\n', '\n']
+        delimiters: ['\n', '\n'],
       }),
       nodePolyfills(),
 
@@ -141,7 +140,7 @@ module.exports = (rollup, options) => {
     ],
     watch: {
       clearScreen: false,
-      exclude: ['node_modules/**']
+      exclude: ['node_modules/**'],
     },
   };
 };

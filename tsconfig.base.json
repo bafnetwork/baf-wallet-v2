@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017" ],
+    "lib": ["es2017"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -22,7 +22,9 @@
       ],
       "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
       "@baf-wallet/crypto": ["libs/crypto/src/index.ts"],
-      "@baf-wallet/trust-wallet-assets": ["libs/trust-wallet-assets/src/index.ts"]
+      "@baf-wallet/trust-wallet-assets": [
+        "libs/trust-wallet-assets/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

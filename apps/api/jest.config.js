@@ -5,12 +5,12 @@ module.exports = {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
     },
-    "window": undefined
+    window: undefined,
   },
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  testEnvironment: "node",
+  testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/api',
 };

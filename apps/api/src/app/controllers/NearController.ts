@@ -33,7 +33,13 @@ export class NearController extends Controller {
       requestBody.discordUser,
       requestBody.nonce
     );
-    if (!ChainUtil.verifySignedSecp256k1(Buffer.from(pubkey, 'hex'), msg, requestBody.signature)) {
+    if (
+      !ChainUtil.verifySignedSecp256k1(
+        Buffer.from(pubkey, 'hex'),
+        msg,
+        requestBody.signature
+      )
+    ) {
       this.setStatus(403);
       throw 'Proof that the sender owns this public key must provided';
     }

@@ -1,5 +1,5 @@
 import { Chain } from '@baf-wallet/interfaces';
-import { ec,  } from 'elliptic';
+import { ec } from 'elliptic';
 import * as sha3 from 'js-sha3';
 const ecSecp = new ec('secp256k1');
 
@@ -39,6 +39,6 @@ export abstract class ChainUtil {
   }
 
   public static createUserVerifyMessage(userId: string, nonce: string) {
-    return `${userId}:${nonce}`
+    return `${userId}:${nonce}`;
   }
 }

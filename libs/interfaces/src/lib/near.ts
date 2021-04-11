@@ -1,4 +1,4 @@
-import { Envs } from "./configs";
+import { Envs } from './configs';
 
 export enum NearNetworkId {
   DEVNET = 'testnet',
@@ -6,14 +6,14 @@ export enum NearNetworkId {
   MAINNET = 'mainnet',
 }
 
-export function getNearNetworkId(env: Envs) : NearNetworkId {
+export function getNearNetworkId(env: Envs): NearNetworkId {
   switch (env) {
     case Envs.DEV:
-      return NearNetworkId.DEVNET
+      return NearNetworkId.DEVNET;
     case Envs.TEST:
-      return NearNetworkId.TESTNET
+      return NearNetworkId.TESTNET;
     case Envs.PROD:
-      return NearNetworkId.MAINNET
+      return NearNetworkId.MAINNET;
     default:
       return NearNetworkId.DEVNET;
   }

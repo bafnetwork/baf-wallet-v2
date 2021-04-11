@@ -6,7 +6,7 @@ import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
 import { NearAccountSingelton } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import * as bs58 from 'bs58';
-import { Account  } from 'near-api-js';
+import { Account } from 'near-api-js';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
 const secp256k1Pubkey = 'BfaBf538323A1D21453b5F6a374A07867D867196'; // TODO: derive from torus
