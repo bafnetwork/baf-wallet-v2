@@ -96,9 +96,7 @@ const config: Configuration = {
             preprocess: SveltePreprocess({
               scss: true,
               sass: true,
-              postcss: {
-                plugins: [Autoprefixer],
-              },
+              postcss: true,
             }),
           },
         },
@@ -143,6 +141,10 @@ const config: Configuration = {
           'css-loader',
         ],
       },
+
+      // {
+      //   loader: 'postcss-loader'
+      // },
 
       // Rule: TypeScript
       {
