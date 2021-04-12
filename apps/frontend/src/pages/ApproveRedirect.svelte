@@ -10,8 +10,8 @@
   import { CryptoCurves, getNearNetworkId } from '@baf-wallet/interfaces';
   import { KeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
-  import { utils } from 'near-api-js';
-  import { curve } from 'elliptic';
+  import { transactions, utils } from 'near-api-js';
+  import { BN } from 'bn.js';
 
   export let params = {} as any;
   const optsStr: string = params.opts;
@@ -20,7 +20,6 @@
   async function getSigner() {
     let privkey = $KeyStore.secret;
     let pubkey = $KeyStore.ed25519Pubkey;
-    console.log(privkey, pubkey);
     if (!pubkey || !privkey) {
       throw 'not-logged-in';
     }
@@ -40,9 +39,15 @@
   }
 
   async function onApprove(signer: NearSigner) {
-    signer.sendTX(opts);
+    console.log(opts);
+    // opts.actions = [transactions.transfer(new BN(1000))]
+    const ret = await signer.sendTX(opts);
+    console.log(ret);
   }
 </script>
+
+<!-- TODO: you are going to have to figure out a better way to pass data back and forth for the tx -->
+
 
 {#await getSigner()}
   Loading...
@@ -53,7 +58,7 @@
   {:else}
     <Card>
       Transfering {utils.format.formatNearAmount(
-        opts.actions[0].transfer.deposit.toString()
+        (opts.actions[0].transfer.deposit BN).toString()
       )}
       <Button onClick={() => onApprove(signer)}>Approve</Button>
       <Button>Decline</Button>
@@ -63,5 +68,5 @@
   {#if e.toString() === 'not-logged-in'}
     Please login to approve or reject this transaction
   {:else}{/if}
-  The following error occured: {console.error(e) || ""}
+  The following error occured: {console.error(e) || ''}
 {/await}

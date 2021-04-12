@@ -35,7 +35,8 @@ const { terser } = require('rollup-plugin-terser');
 const css = require('rollup-plugin-css-only');
 const json = require('@rollup/plugin-json');
 const autoPreprocess = require('svelte-preprocess');
-const typescript = require('@rollup/plugin-typescript');
+// const typescript = require('@rollup/plugin-typescript');
+const typescript = require('rollup-plugin-typescript2')
 const nodePolyfills = require('rollup-plugin-node-polyfills');
 const localResolve = require('rollup-plugin-local-resolve');
 const jsonPlug = require('@rollup/plugin-json');
@@ -111,7 +112,9 @@ module.exports = (rollup, options) => {
       typescript({
         sourceMap: true,
         tsconfig: 'apps/frontend/tsconfig.app.json',
+        allowNonTsExtensions: true,
         exclude: ['node_modules/**'],
+        verbosity: 2
       }),
       // we'll extract any component CSS out into
       // a separate file - better for performance

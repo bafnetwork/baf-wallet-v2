@@ -1,4 +1,4 @@
-import { Signer } from '../interfaces/base-classes';
+import { Serializer, Signer } from '../interfaces/base-classes';
 import {
   KeyPair,
   keyStores,
@@ -11,6 +11,7 @@ import type { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 import { Buffer } from 'buffer';
 import { formatKey } from '../utils';
+import * as BN from 'bn.js'
 
 export interface NearSendTXOpts {
   actions: transactions.Action[];
@@ -40,6 +41,15 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     );
   }
 
+  public static serializeSendTXOpts<NearSendTXOpts>(opts: NearSendTXOpts): string {
+    // const stringified = JSON.stringify(inspect(opts, { showHidden: true, depth: null }))
+    console.log((opts as any).actions[0].transfer)
+    BN.prototype.toJSON = null
+    // const stringified  = (new Serializer([NearSendTXOpts])).serialize(opts);
+    // console.log(stringified);
+    return encodeURIComponent(JSON.stringify(opts));
+}
+
   public async awaitConstructorInit() {
     return this.initProm;
   }
@@ -62,7 +72,7 @@ export class NearSigner extends Signer<NearSendTXOpts> {
       opts.actions,
       recentBlockHash
     );
-    console.log(transaction.actions)
+    console.log(transaction.actions);
     const serializedTx = utils.serialize.serialize(
       transactions.SCHEMA,
       transaction

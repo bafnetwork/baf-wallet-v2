@@ -1,9 +1,24 @@
 import { Chain, PublicKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
 import * as sha3 from 'js-sha3';
+import { inspect } from 'util';
 const ecSecp = new ec('secp256k1');
 const ecEd = new eddsa('ed25519');
 
+export class Serializer{
+  constructor(private types){}
+  serialize(object) {
+      let idx = this.types.findIndex((e)=> {return e.name == object.constructor.name});
+      if (idx == -1) throw "type  '" + object.constructor.name + "' not initialized";
+      return JSON.stringify([idx, Object.entries(object)]);
+  }
+  deserialize(jstring) {
+      let array = JSON.parse(jstring);
+      let object = new this.types[array[0]]();
+      array[1].map(e=>{object[e[0]] = e[1];});
+      return object;
+  }
+}
 export abstract class Signer<SendOpts> {
   constructor(public chain: Chain) {}
 
@@ -20,9 +35,13 @@ export abstract class Signer<SendOpts> {
     }
   }
 
-  public static serializeSendTXOpts(opts: any) {
-    return encodeURIComponent(JSON.stringify(opts));
-  }
+  // abstract static serializeSendTXOpts<SendOpts>(opts: SendOpts): string {
+  //   // const stringified = JSON.stringify(inspect(opts, { showHidden: true, depth: null }))
+  //   console.log((opts as any).actions[0].transfer)
+  //   const stringified  = new Serializer([NearSendTxOpts]);
+  //   console.log(stringified);
+  //   return encodeURIComponent(stringified);
+  // }
 }
 
 export abstract class ChainUtil {
