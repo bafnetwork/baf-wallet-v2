@@ -71,7 +71,9 @@ describe('Create a dummy near account on the testnet', () => {
     const account = await nearAccount.near.account(accountName);
     try {
       await deleteAccount(account);
-    } catch (e) {}
+    } catch (e) {
+      console.log("Not deleting account, continuing")
+    }
   });
   it('should create the account', async () => {
     await createNearAccount(secp256k1Pubkey, alicePubkey);
