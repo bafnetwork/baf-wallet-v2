@@ -38,19 +38,17 @@
       ),
       networkId
     );
-    // TODO: frontend error handling
+    // TODO: frontend error handling for params
     transferAmount = (opts.actions[0].params as NearTransferParam).amount;
     await signer.awaitConstructorInit();
     return signer;
   }
 
   async function onApprove(signer: NearSigner) {
-    const ret = await signer.sendTX(opts);
-    console.log(ret);
+    const explorerUrl = await signer.sendTX(opts);
+    alert(`See the result at: ${explorerUrl}`)
   }
 </script>
-
-<!-- TODO: you are going to have to figure out a better way to pass data back and forth for the tx -->
 
 {#await init()}
   Loading...
@@ -60,7 +58,7 @@
     later for more supported actions.
   {:else}
     <Card>
-      Transfering {utils.format.formatNearAmount(transferAmount)}
+      Transfering {utils.format.formatNearAmount(transferAmount)} to {opts.receiverAccountId}
       <Button onClick={() => onApprove(signer)}>Approve</Button>
       <Button>Decline</Button>
     </Card>

@@ -272,7 +272,6 @@ if (useBabel && (isProduction || useBabelInDevelopment)) {
     },
   };
 
-  console.log(__dirname);
   config.module?.rules.unshift({
     test: /\.(?:m?js|ts)$/,
     include: [

@@ -5,8 +5,6 @@ import { Client } from './Client';
 // Initialize the Client using the IoC.
 const client = Container.get<Client>(Client);
 
-console.log(process.env.DISCORD_TOKEN);
-
 client
   .login(process.env.DISCORD_TOKEN)
   .then(() => {

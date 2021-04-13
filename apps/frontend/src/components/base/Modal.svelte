@@ -57,7 +57,6 @@
   let container: HTMLElement;
 
   function handleClick(e: any) {
-    console.log(e);
     if (e.target === overlay || e.target === container) {
       if (callbacks.onClose) {
         callbacks.onClose(e);
