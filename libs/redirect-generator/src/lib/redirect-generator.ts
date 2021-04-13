@@ -1,3 +1,1 @@
-export function redirectGenerator(): string {
-  return 'redirect-generator';
-}
+export * from './near'
