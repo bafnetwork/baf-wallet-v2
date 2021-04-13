@@ -24,6 +24,7 @@
     "multi-chain": { "tags": [] },
     "redirect-generator": { "tags": [] },
     "interfaces": { "tags": [] },
-    "trust-wallet-assets": { "tags": [] }
+    "trust-wallet-assets": { "tags": [] },
+    "frontend-2": { "tags": [] }
   }
 }

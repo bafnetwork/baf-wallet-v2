@@ -8,5 +8,6 @@ module.exports = {
     '<rootDir>/libs/multi-chain',
     '<rootDir>/libs/redirect-generator',
     '<rootDir>/libs/trust-wallet-assets',
+    '<rootDir>/apps/frontend-2',
   ],
 };

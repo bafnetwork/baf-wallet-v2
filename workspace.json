@@ -343,6 +343,66 @@
           }
         }
       }
+    },
+    "frontend-2": {
+      "root": "apps/frontend-2",
+      "sourceRoot": "apps/frontend-2/src",
+      "projectType": "application",
+      "prefix": "frontend-2",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "cd apps/frontend-2 && cross-env NODE_ENV=production webpack",
+              "mkdir -p dist/apps",
+              "rm -r dist/apps/frontend-2 || true",
+              "cp apps/frontend-2/public -r dist/apps/frontend-2"
+            ]
+          },
+          "outputs": ["{options.outputPath}"],
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/frontend-2/src/environments/environment.ts",
+                  "with": "apps/frontend-2/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "cd apps/frontend-2 && webpack serve"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/frontend-2/**/*.ts"]
+          }
+        },
+        "check": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "yarn svelte-check",
+            "cwd": "apps/frontend"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/frontend-2"],
+          "options": {
+            "jestConfig": "apps/frontend-2/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
