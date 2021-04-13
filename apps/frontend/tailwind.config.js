@@ -1,4 +1,4 @@
-const colors = require('tailwindcss/colors') // disable purge in dev
+const colors = require('tailwindcss/colors'); // disable purge in dev
 
 module.exports = {
   purge: {
@@ -6,7 +6,7 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    colors
+    colors,
   },
   variants: {
     extend: {},
