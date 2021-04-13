@@ -18,7 +18,7 @@ const useBabelInDevelopment = false;
  * will be added to the bundle after these. In other words, these are global styles for your svelte app. You can also
  * specify paths to SCSS or SASS files, and they will be compiled automatically.
  */
-const stylesheets = []//['./src/styles/index.scss'];
+const stylesheets = ['./src/styles/index.scss'];
 
 /**
  * Change this to `true` to generate source maps alongside your production bundle. This is useful for debugging, but
@@ -30,8 +30,10 @@ const sourceMapsInProduction = false;
 /**********                                             Webpack                                             **********/
 /*********************************************************************************************************************/
 
-import type Webpack from 'webpack';
-import type WebpackDev from 'webpack-dev-server';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
+import Webpack from 'webpack';
+import WebpackDev from 'webpack-dev-server';
 import SveltePreprocess from 'svelte-preprocess';
 import Autoprefixer from 'autoprefixer';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -54,10 +56,14 @@ const config: Configuration = {
   resolve: {
     alias: {
       // Note: Later in this config file, we'll automatically add paths from `tsconfig.compilerOptions.paths`
-      svelte: path.resolve('node_modules', 'svelte'),
+      svelte: path.resolve('../../node_modules', 'svelte'),
     },
     extensions: ['.mjs', '.js', '.ts', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main'],
+    plugins: [new TsconfigPathsPlugin({})],
+		fallback: {
+			fs: false
+		}
   },
   output: {
     path: path.resolve(__dirname, 'public/build'),
@@ -70,7 +76,7 @@ const config: Configuration = {
       // Rule: Svelte
       {
         test: /\.svelte$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         use: {
           loader: 'svelte-loader',
           options: {
@@ -82,15 +88,15 @@ const config: Configuration = {
             hotReload: isDevelopment,
             hotOptions: {
               // List of options and defaults: https://www.npmjs.com/package/svelte-loader-hot#usage
+              acceptAccessors: true,
+              acceptNamedExports: true,
               noPreserveState: false,
               optimistic: true,
             },
             preprocess: SveltePreprocess({
               scss: true,
               sass: true,
-              postcss: {
-                plugins: [Autoprefixer],
-              },
+              postcss: true,
             }),
           },
         },
@@ -136,6 +142,10 @@ const config: Configuration = {
         ],
       },
 
+      // {
+      //   loader: 'postcss-loader'
+      // },
+
       // Rule: TypeScript
       {
         test: /\.ts$/,
@@ -154,6 +164,10 @@ const config: Configuration = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
+    }),
+    new NodePolyfillPlugin({}),
+    new Webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development'),
     }),
   ],
   devtool: isProduction && !sourceMapsInProduction ? false : 'source-map',
@@ -213,7 +227,7 @@ if (isProduction) {
 }
 
 // Load path aliases from the tsconfig.json file
-const tsconfigPath = path.resolve(__dirname, 'tsconfig.json');
+const tsconfigPath = path.resolve('apps/frontend-2', 'tsconfig.json');
 const tsconfig = fs.existsSync(tsconfigPath) ? require(tsconfigPath) : {};
 
 if ('compilerOptions' in tsconfig && 'paths' in tsconfig.compilerOptions) {
@@ -258,6 +272,7 @@ if (useBabel && (isProduction || useBabelInDevelopment)) {
     },
   };
 
+  console.log(__dirname);
   config.module?.rules.unshift({
     test: /\.(?:m?js|ts)$/,
     include: [

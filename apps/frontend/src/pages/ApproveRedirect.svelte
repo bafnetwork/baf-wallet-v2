@@ -58,7 +58,7 @@
   {:else}
     <Card>
       Transfering {utils.format.formatNearAmount(
-        (opts.actions[0].transfer.deposit BN).toString()
+        (opts.actions[0].transfer.deposit).toString()
       )}
       <Button onClick={() => onApprove(signer)}>Approve</Button>
       <Button>Decline</Button>

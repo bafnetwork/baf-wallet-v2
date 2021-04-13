@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'frontend',
+  displayName: 'frontend-2',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -7,14 +7,8 @@ module.exports = {
     },
   },
   transform: {
-    '^(.+\\.svelte$)': [
-      'svelte-jester',
-      {
-        preprocess: 'apps/frontend/jest.config.js/svelte.config.js',
-      },
-    ],
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  moduleFileExtensions: ['svelte', 'ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/frontend',
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/apps/frontend-2',
 };
