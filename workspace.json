@@ -5,86 +5,6 @@
   },
   "defaultProject": "api",
   "projects": {
-    "frontend": {
-      "root": "apps/frontend",
-      "sourceRoot": "apps/frontend/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nxext/svelte:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/frontend",
-            "entryFile": "apps/frontend/src/main.ts",
-            "tsConfig": "apps/frontend/tsconfig.app.json",
-            "svelteConfig": "apps/frontend/svelte.config.js",
-            "rollupConfig": "apps/frontend/rollup.config.js",
-            "assets": [
-              {
-                "glob": "/*",
-                "input": "apps/frontend/public/**",
-                "output": "./"
-              }
-            ]
-          },
-          "configurations": {
-            "production": {
-              "dev": false
-            }
-          }
-        },
-        "serve-w": {
-          "executor": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": [
-              {
-                "command": "cd apps/frontend && webpack serve"
-              }
-            ]
-          }
-        },
-        "serve": {
-          "executor": "@nxext/svelte:build",
-          "options": {
-            "outputPath": "dist/apps/frontend",
-            "entryFile": "apps/frontend/src/main.ts",
-            "tsConfig": "apps/frontend/tsconfig.app.json",
-            "svelteConfig": "apps/frontend/svelte.config.js",
-            "rollupConfig": "apps/frontend/rollup.config.js",
-            "assets": [
-              {
-                "glob": "/*",
-                "input": "apps/frontend/public/**",
-                "output": "./"
-              }
-            ],
-            "watch": true,
-            "serve": true
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/frontend/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "check": {
-          "executor": "@nrwl/workspace:run-commands",
-          "options": {
-            "command": "svelte-check",
-            "cwd": "apps/frontend"
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/frontend"],
-          "options": {
-            "jestConfig": "apps/frontend/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "frontend-e2e": {
       "root": "apps/frontend-e2e",
       "sourceRoot": "apps/frontend-e2e/src",
@@ -344,20 +264,20 @@
         }
       }
     },
-    "frontend-2": {
-      "root": "apps/frontend-2",
-      "sourceRoot": "apps/frontend-2/src",
+    "frontend": {
+      "root": "apps/frontend",
+      "sourceRoot": "apps/frontend/src",
       "projectType": "application",
-      "prefix": "frontend-2",
+      "prefix": "frontend",
       "targets": {
         "build": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              "cd apps/frontend-2 && cross-env NODE_ENV=production webpack",
+              "cd apps/frontend && cross-env NODE_ENV=production webpack",
               "mkdir -p dist/apps",
-              "rm -r dist/apps/frontend-2 || true",
-              "cp apps/frontend-2/public -r dist/apps/frontend-2"
+              "rm -r dist/apps/frontend || true",
+              "cp apps/frontend/public -r dist/apps/frontend"
             ]
           },
           "outputs": ["{options.outputPath}"],
@@ -368,8 +288,8 @@
               "inspect": false,
               "fileReplacements": [
                 {
-                  "replace": "apps/frontend-2/src/environments/environment.ts",
-                  "with": "apps/frontend-2/src/environments/environment.prod.ts"
+                  "replace": "apps/frontend/src/environments/environment.ts",
+                  "with": "apps/frontend/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -378,13 +298,13 @@
         "serve": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "command": "cd apps/frontend-2 && webpack serve"
+            "command": "cd apps/frontend && webpack serve"
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/frontend-2/**/*.ts"]
+            "lintFilePatterns": ["apps/frontend/**/*.ts"]
           }
         },
         "check": {
@@ -396,9 +316,9 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/frontend-2"],
+          "outputs": ["coverage/apps/frontend"],
           "options": {
-            "jestConfig": "apps/frontend-2/jest.config.js",
+            "jestConfig": "apps/frontend/jest.config.js",
             "passWithNoTests": true
           }
         }
