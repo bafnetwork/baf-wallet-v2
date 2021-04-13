@@ -40,7 +40,7 @@ export class ChainInfo {
     public decimals: number;
     @jsonMember
     public status: "active" | "abandoned";
-    @jsonMember
+    @jsonArrayMember(String)
     public tags?: string[];
 }
 
@@ -104,7 +104,7 @@ export const getChainLogoUrl = (chain: ChainName): string => `${getChainFolderPr
 
 export const getDappLogoUrl = (dappUrl: DappUrl): string => `https://raw.githubusercontent.com/trustwallet/assets/master/dapps/${dappUrl}.png`;
 
-export async function getChainInfo(chain: ChainName): Promise<ChainInfo> {
+export async function getChainInfo(chain: ChainName): Promise<ChainInfo | null> {
     const url = getChainInfoUrl(chain);
     try {
         const res = await axios.get(url);
@@ -119,7 +119,8 @@ export async function getChainInfo(chain: ChainName): Promise<ChainInfo> {
         return serializer.parse(data);
     } catch (err) {
         if (err.isAxiosError) {
-            throw new Error("Chain not found: only chains in https://raw.githubusercontent.com/trustwallet/assets/master/blockchains are supported.")
+            console.log("Chain not found: only chains in https://raw.githubusercontent.com/trustwallet/assets/master/blockchains are supported.");
+            return null;
         }
         throw new Error(`Received invalid info.json: ${err}. See \`ChainInfo\` in trust-wallet-assets/src/lib/index.ts for more information`);
     }
