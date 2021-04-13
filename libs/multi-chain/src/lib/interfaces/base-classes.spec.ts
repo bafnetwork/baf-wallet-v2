@@ -64,9 +64,9 @@ describe('Test the base classes core functionality', () => {
 
       let signature = ecEd.sign(msgHash, alicePriv);
 
-      expect(
-        ChainUtil.verifySignedEd25519(alicePubEd, msg, signature)
-      ).toEqual(true);
+      expect(ChainUtil.verifySignedEd25519(alicePubEd, msg, signature)).toEqual(
+        true
+      );
     });
     it('test failed signing verification Ed', () => {
       let msg = 'Message for signing';
@@ -74,9 +74,9 @@ describe('Test the base classes core functionality', () => {
 
       let signature = ecEd.sign(msgHash, bobPrivSec);
 
-      expect(
-        ChainUtil.verifySignedEd25519(alicePubEd, msg, signature)
-      ).toEqual(false);
+      expect(ChainUtil.verifySignedEd25519(alicePubEd, msg, signature)).toEqual(
+        false
+      );
     });
   });
 });

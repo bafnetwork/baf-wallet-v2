@@ -14,9 +14,9 @@ describe('Create different urls for Near Actions', () => {
       actions: [
         {
           type: NearSupportedActionTypes.TRANSFER,
-          params: { 
+          params: {
             discriminator: NearSupportedActionTypes.TRANSFER,
-            amount: '1000'
+            amount: '1000',
           },
         },
       ],

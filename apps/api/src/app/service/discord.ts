@@ -1,2 +1,4 @@
 // TODO: spec out
-export function discordWithdrawStuff() {console.log("TODO")}
+export function discordWithdrawStuff() {
+  console.log('TODO');
+}

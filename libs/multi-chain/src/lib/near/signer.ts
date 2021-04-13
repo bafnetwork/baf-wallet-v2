@@ -57,13 +57,13 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     switch (action.type) {
       case NearSupportedActionTypes.TRANSFER:
         if (action.params.discriminator !== NearSupportedActionTypes.TRANSFER) {
-          throw "the input parameters do not match the call"
+          throw 'the input parameters do not match the call';
         }
         return transactions.transfer(
           new BN((action.params as NearTransferParam).amount)
         );
       default:
-        throw `Action of type ${action.type} is unsupported`
+        throw `Action of type ${action.type} is unsupported`;
     }
   }
 

@@ -13,8 +13,9 @@ export async function createNearAccount(
   }
   const near = await NearAccountSingelton.get();
   const accountName = near.getAccountNameFromPubkey(pubkey, curve);
-  const x = 
-    NearPublicKey.fromString(formatKey(derivedEd25519Pubkey, KeyFormats.bs58))
+  const x = NearPublicKey.fromString(
+    formatKey(derivedEd25519Pubkey, KeyFormats.bs58)
+  );
   await near.accountCreator.createAccount(
     accountName,
     NearPublicKey.fromString(formatKey(derivedEd25519Pubkey, KeyFormats.bs58))

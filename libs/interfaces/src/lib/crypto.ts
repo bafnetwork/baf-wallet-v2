@@ -5,8 +5,8 @@ export enum CryptoCurves {
 
 export enum KeyFormats {
   bs58,
-  hex
+  hex,
 }
 
-export type PublicKey = Buffer
-export type SecretKey = Buffer
+export type PublicKey = Buffer;
+export type SecretKey = Buffer;

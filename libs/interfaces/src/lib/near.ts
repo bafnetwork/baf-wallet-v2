@@ -25,7 +25,7 @@ export enum NearSupportedActionTypes {
 
 interface NearActionParam {
   // used to type check the parameter input
-  discriminator: NearSupportedActionTypes
+  discriminator: NearSupportedActionTypes;
 }
 
 export interface NearTransferParam extends NearActionParam {

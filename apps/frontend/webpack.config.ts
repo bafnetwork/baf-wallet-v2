@@ -61,9 +61,9 @@ const config: Configuration = {
     extensions: ['.mjs', '.js', '.ts', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main'],
     plugins: [new TsconfigPathsPlugin({})],
-		fallback: {
-			fs: false
-		}
+    fallback: {
+      fs: false,
+    },
   },
   output: {
     path: path.resolve(__dirname, 'public/build'),

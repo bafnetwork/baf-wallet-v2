@@ -1,4 +1,9 @@
-import { CryptoCurves, KeyFormats, NearNetworkId, SecretKey } from '@baf-wallet/interfaces';
+import {
+  CryptoCurves,
+  KeyFormats,
+  NearNetworkId,
+  SecretKey,
+} from '@baf-wallet/interfaces';
 import { Account, connect, ConnectConfig, KeyPair, Near } from 'near-api-js';
 import {
   AccountCreator,

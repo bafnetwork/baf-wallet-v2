@@ -20,10 +20,10 @@ const defaultNearConfig = {
     keyPath: '/home/lev/.near-credentials/testnet/levtester.testnet.json',
     explorerUrl: 'https://explorer.testnet.near.org',
     helperUrl: 'https://helper.testnet.near.org',
-    masterAccount: 'levtester.testnet'
+    masterAccount: 'levtester.testnet',
   },
 };
-NearAccountSingelton.setConfig(defaultNearConfig)
+NearAccountSingelton.setConfig(defaultNearConfig);
 app.use(
   bodyParser.urlencoded({
     extended: true,

@@ -2,11 +2,7 @@
   name: 'nodejs',
 };
 window.name = 'nodejs';
-import {
-  CryptoCurves,
-  Envs,
-  getNearNetworkId,
-} from '@baf-wallet/interfaces';
+import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
 import { NearAccountSingelton } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
@@ -63,16 +59,13 @@ describe('Create a dummy near account on the testnet', () => {
       secp256k1Pubkey,
       CryptoCurves.secp256k1
     );
-    nearAccount.updateKeyPair(
-      accountName,
-      aliceSecret
-    );
+    nearAccount.updateKeyPair(accountName, aliceSecret);
 
     const account = await nearAccount.near.account(accountName);
     try {
       await deleteAccount(account);
     } catch (e) {
-      console.log("Not deleting account, continuing")
+      console.log('Not deleting account, continuing');
     }
   });
   it('should create the account', async () => {
