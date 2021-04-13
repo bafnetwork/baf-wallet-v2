@@ -8,7 +8,6 @@
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { KeyStore } from './state/keys.svelte';
-  // TODO: make better
 
   const routesLoggedIn = {
     '/': Account,
