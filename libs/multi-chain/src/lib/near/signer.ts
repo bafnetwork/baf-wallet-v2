@@ -1,4 +1,4 @@
-import { Serializer, Signer } from '../interfaces/base-classes';
+import { Signer } from '../interfaces/base-classes';
 import {
   KeyPair,
   keyStores,
@@ -6,15 +6,23 @@ import {
   transactions,
   utils,
 } from 'near-api-js';
-import { Chain, KeyFormats, SecretKey } from '@baf-wallet/interfaces';
+import {
+  Chain,
+  KeyFormats,
+  NearAction,
+  SecretKey,
+  NearSupportedActionTypes,
+  NearTransferParam,
+} from '@baf-wallet/interfaces';
 import type { NearNetworkId } from '@baf-wallet/interfaces';
 import { sha256 } from 'js-sha256';
 import { Buffer } from 'buffer';
 import { formatKey } from '../utils';
-import * as BN from 'bn.js'
+import { Action as NearNativeAction } from 'near-api-js/lib/transaction';
+import BN from 'bn.js';
 
 export interface NearSendTXOpts {
-  actions: transactions.Action[];
+  actions: NearAction[];
   receiverAccountId: string;
 }
 
@@ -41,17 +49,22 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     );
   }
 
-  public static serializeSendTXOpts<NearSendTXOpts>(opts: NearSendTXOpts): string {
-    // const stringified = JSON.stringify(inspect(opts, { showHidden: true, depth: null }))
-    console.log((opts as any).actions[0].transfer)
-    BN.prototype.toJSON = null
-    // const stringified  = (new Serializer([NearSendTXOpts])).serialize(opts);
-    // console.log(stringified);
-    return encodeURIComponent(JSON.stringify(opts));
-}
-
   public async awaitConstructorInit() {
     return this.initProm;
+  }
+
+  private buildNativeAction(action: NearAction): NearNativeAction {
+    switch (action.type) {
+      case NearSupportedActionTypes.TRANSFER:
+        if (action.params.discriminator !== NearSupportedActionTypes.TRANSFER) {
+          throw "the input parameters do not match the call"
+        }
+        return transactions.transfer(
+          new BN((action.params as NearTransferParam).amount)
+        );
+      default:
+        throw `Action of type ${action.type} is unsupported`
+    }
   }
 
   public async sendTX(opts: NearSendTXOpts) {
@@ -64,12 +77,13 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     );
     const nonce = ++accessKey.nonce;
     const recentBlockHash = utils.serialize.base_decode(accessKey.block_hash);
+
     const transaction = transactions.createTransaction(
       this.accountId,
       pubkey,
       opts.receiverAccountId,
       nonce,
-      opts.actions,
+      opts.actions.map(this.buildNativeAction),
       recentBlockHash
     );
     console.log(transaction.actions);

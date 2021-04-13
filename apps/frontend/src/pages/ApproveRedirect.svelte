@@ -7,17 +7,22 @@
     NearSendTXOpts,
     NearSigner,
   } from '@baf-wallet/multi-chain';
-  import { CryptoCurves, getNearNetworkId } from '@baf-wallet/interfaces';
+  import {
+    CryptoCurves,
+    getNearNetworkId,
+    NearSupportedActionTypes,
+    NearTransferParam,
+  } from '@baf-wallet/interfaces';
   import { KeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
-  import { transactions, utils } from 'near-api-js';
-  import { BN } from 'bn.js';
+  import { utils } from 'near-api-js';
 
   export let params = {} as any;
+  let transferAmount: string;
   const optsStr: string = params.opts;
   const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
-  async function getSigner() {
+  async function init() {
     let privkey = $KeyStore.secret;
     let pubkey = $KeyStore.ed25519Pubkey;
     if (!pubkey || !privkey) {
@@ -33,14 +38,13 @@
       ),
       networkId
     );
+    // TODO: frontend error handling
+    transferAmount = (opts.actions[0].params as NearTransferParam).amount;
     await signer.awaitConstructorInit();
-    console.log(opts);
     return signer;
   }
 
   async function onApprove(signer: NearSigner) {
-    console.log(opts);
-    // opts.actions = [transactions.transfer(new BN(1000))]
     const ret = await signer.sendTX(opts);
     console.log(ret);
   }
@@ -48,18 +52,15 @@
 
 <!-- TODO: you are going to have to figure out a better way to pass data back and forth for the tx -->
 
-
-{#await getSigner()}
+{#await init()}
   Loading...
 {:then signer}
-  {#if opts.actions.length !== 1 && opts.actions[0].enum !== 'transfer'}
+  {#if opts.actions.length !== 1 && opts.actions[0].type !== NearSupportedActionTypes.TRANSFER}
     Right now BAF-Wallet only support transfering NEAR tokens, please check back
     later for more supported actions.
   {:else}
     <Card>
-      Transfering {utils.format.formatNearAmount(
-        (opts.actions[0].transfer.deposit).toString()
-      )}
+      Transfering {utils.format.formatNearAmount(transferAmount)}
       <Button onClick={() => onApprove(signer)}>Approve</Button>
       <Button>Decline</Button>
     </Card>
@@ -68,5 +69,5 @@
   {#if e.toString() === 'not-logged-in'}
     Please login to approve or reject this transaction
   {:else}{/if}
-  The following error occured: {console.error(e) || ''}
+  The following error occured: {e}
 {/await}
