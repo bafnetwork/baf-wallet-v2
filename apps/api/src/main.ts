@@ -4,7 +4,7 @@
  */
 
 import { Envs, getNearNetworkId } from '@baf-wallet/interfaces';
-import { NearAccountSingelton } from '@baf-wallet/multi-chain';
+import { NearAccount } from '@baf-wallet/multi-chain';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { RegisterRoutes } from '../build/routes';
@@ -23,7 +23,7 @@ const defaultNearConfig = {
     masterAccount: 'levtester.testnet',
   },
 };
-NearAccountSingelton.setConfig(defaultNearConfig);
+NearAccount.setConfig(defaultNearConfig);
 app.use(
   bodyParser.urlencoded({
     extended: true,

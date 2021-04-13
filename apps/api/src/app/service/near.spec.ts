@@ -3,7 +3,7 @@
 };
 window.name = 'nodejs';
 import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
-import { NearAccountSingelton } from '@baf-wallet/multi-chain';
+import { NearAccount } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 
@@ -51,10 +51,10 @@ async function deleteAccount(
 
 describe('Create a dummy near account on the testnet', () => {
   let accountName: string;
-  let nearAccount: NearAccountSingelton;
+  let nearAccount: NearAccount;
   beforeAll(async () => {
-    NearAccountSingelton.setConfig(defaultNearConfig);
-    nearAccount = await NearAccountSingelton.get();
+    NearAccount.setConfig(defaultNearConfig);
+    nearAccount = await NearAccount.get();
     accountName = nearAccount.getAccountNameFromPubkey(
       secp256k1Pubkey,
       CryptoCurves.secp256k1

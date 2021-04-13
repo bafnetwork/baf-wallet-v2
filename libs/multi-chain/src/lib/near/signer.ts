@@ -26,7 +26,10 @@ export interface NearSendTXOpts {
   receiverAccountId: string;
 }
 
-export class NearSigner extends Signer<NearSendTXOpts> {
+export class NearSigner extends Signer<
+  NearSendTXOpts,
+  transactions.Transaction
+> {
   private keyStore: keyStores.InMemoryKeyStore;
   private initProm: Promise<void>;
   private provider: providers.JsonRpcProvider;
@@ -67,7 +70,9 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     }
   }
 
-  public async sendTX(opts: NearSendTXOpts) {
+  public async createTX(
+    opts: NearSendTXOpts
+  ): Promise<transactions.Transaction> {
     const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
     const pubkey = keyPair.getPublicKey();
     const accessKey = await this.provider.query(
@@ -77,7 +82,7 @@ export class NearSigner extends Signer<NearSendTXOpts> {
     const nonce = ++accessKey.nonce;
     const recentBlockHash = utils.serialize.base_decode(accessKey.block_hash);
 
-    const transaction = transactions.createTransaction(
+    return transactions.createTransaction(
       this.accountId,
       pubkey,
       opts.receiverAccountId,
@@ -85,24 +90,29 @@ export class NearSigner extends Signer<NearSendTXOpts> {
       opts.actions.map(this.buildNativeAction),
       recentBlockHash
     );
-    const serializedTx = utils.serialize.serialize(
-      transactions.SCHEMA,
-      transaction
-    );
+  }
+
+  public async signTX(tx: transactions.Transaction): Promise<Uint8Array> {
+    const keyPair = await this.keyStore.getKey(this.networkId, this.accountId);
+    const serializedTx = utils.serialize.serialize(transactions.SCHEMA, tx);
     const serializedTxHash = new Uint8Array(sha256.array(serializedTx));
     const signature = keyPair.sign(serializedTxHash);
     const signedTransaction = new transactions.SignedTransaction({
-      transaction,
+      tx,
       signature: new transactions.Signature({
-        keyType: transaction.publicKey.keyType,
+        keyType: tx.publicKey.keyType,
         data: signature.signature,
       }),
     });
     // encodes transaction to serialized Borsh (required for all transactions)
     const signedSerializedTx = signedTransaction.encode();
+    return signedSerializedTx;
+  }
+
+  public async sendTX(signedTX: Uint8Array): Promise<string> {
     // sends transaction to NEAR blockchain via JSON RPC call and records the result
     const result = await this.provider.sendJsonRpc('broadcast_tx_commit', [
-      Buffer.from(signedSerializedTx).toString('base64'),
+      Buffer.from(signedTX).toString('base64'),
     ]);
     const transactionLink = `https://explorer.${this.networkId}.near.org/transactions/${result.transaction.hash}`;
     return transactionLink;

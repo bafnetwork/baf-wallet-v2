@@ -1,5 +1,5 @@
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { formatKey, NearAccountSingelton } from '@baf-wallet/multi-chain';
+import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 
 // Check the found public key verifies the signature produced by (nonce + userId)
@@ -11,7 +11,7 @@ export async function createNearAccount(
   if (curve !== CryptoCurves.secp256k1) {
     throw 'Only secp256k1 curves are currently supported';
   }
-  const near = await NearAccountSingelton.get();
+  const near = await NearAccount.get();
   const accountName = near.getAccountNameFromPubkey(pubkey, curve);
   const x = NearPublicKey.fromString(
     formatKey(derivedEd25519Pubkey, KeyFormats.bs58)

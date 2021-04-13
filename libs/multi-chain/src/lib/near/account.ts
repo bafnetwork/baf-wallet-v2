@@ -19,8 +19,8 @@ interface NearSingletonParams {
   masterAccountId: string;
 }
 
-export class NearAccountSingelton {
-  private static nearSingleton: NearAccountSingelton | null;
+export class NearAccount {
+  private static nearSingleton: NearAccount | null;
   private static initParams: NearSingletonParams | null;
 
   private constructor(
@@ -35,7 +35,7 @@ export class NearAccountSingelton {
     this.initParams = params;
   }
 
-  static async get(): Promise<NearAccountSingelton> {
+  static async get(): Promise<NearAccount> {
     if (!this.initParams) {
       throw 'Near params must be set prior to calling getNea';
     }
@@ -59,7 +59,7 @@ export class NearAccountSingelton {
     );
 
     // masterAccount.connection.signer;
-    this.nearSingleton = new NearAccountSingelton(
+    this.nearSingleton = new NearAccount(
       near,
       masterAccount,
       urlAccountCreator,
@@ -70,7 +70,7 @@ export class NearAccountSingelton {
   }
 
   getAccountNameFromPubkey(pubkey: PublicKey, curve: CryptoCurves) {
-    return NearAccountSingelton.getAccountNameFromPubkey(
+    return NearAccount.getAccountNameFromPubkey(
       pubkey,
       curve,
       this.params.connectConfig.networkId as NearNetworkId

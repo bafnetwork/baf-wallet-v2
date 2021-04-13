@@ -5,13 +5,19 @@ import { inspect } from 'util';
 const ecSecp = new ec('secp256k1');
 const ecEd = new eddsa('ed25519');
 
-export abstract class Signer<SendOpts> {
+export abstract class Signer<SendOpts, TX> {
   constructor(public chain: Chain) {}
 
   abstract awaitConstructorInit(): Promise<void>;
 
   // Return an explorer link
-  abstract sendTX(chainOpts?: SendOpts): Promise<string>;
+  abstract createTX(signedTX: SendOpts): Promise<TX>;
+
+  // Return an explorer link
+  abstract signTX(tx: TX): Promise<Uint8Array>;
+
+  // Return an explorer link
+  abstract sendTX(signedTX: Uint8Array): Promise<string>;
 
   public static deserializeSendTXOpts<SendOpts>(opts: string): SendOpts {
     try {

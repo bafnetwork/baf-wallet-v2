@@ -12,13 +12,14 @@ import {
 import { createNearAccount } from '../service/near';
 import { CryptoCurves, PublicKey } from '@baf-wallet/interfaces';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { ec } from 'elliptic';
+import { ec, eddsa } from 'elliptic';
 
 interface CreateNearAccountParams {
   discordUser: string;
   nonce: string;
-  signature: ec.Signature;
+  secp256k1Signature: ec.Signature;
   derivedEd25519Pubkey: PublicKey;
+  ed25519Signature: eddsa.Signature;
 }
 
 @Route('near')
@@ -36,7 +37,18 @@ export class NearController extends Controller {
       requestBody.discordUser,
       requestBody.nonce
     );
-    if (!ChainUtil.verifySignedSecp256k1(pubkey, msg, requestBody.signature)) {
+    if (
+      !ChainUtil.verifySignedSecp256k1(
+        pubkey,
+        msg,
+        requestBody.secp256k1Signature
+      ) ||
+      !ChainUtil.verifySignedEd25519(
+        requestBody.derivedEd25519Pubkey,
+        requestBody.nonce,
+        requestBody.ed25519Signature
+      )
+    ) {
       this.setStatus(403);
       throw 'Proof that the sender owns this public key must provided';
     }

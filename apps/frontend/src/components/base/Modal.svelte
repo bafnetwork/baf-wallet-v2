@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { setContext, createEventDispatcher } from 'svelte';
+  
   export function bind(Component, props = {}) {
     return function ModalComponent(options) {
       return new Component({
@@ -15,8 +17,6 @@
     onOpen?: (e: any) => void;
     onClose?: (e: any) => void;
   }
-
-  import { setContext, createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
