@@ -1,8 +1,10 @@
 <script lang="ts">
+    import Layout from "../components/Layout.svelte";
     import Auth from "../components/Auth.svelte";
 </script>
-<div class="w-screen h-screen bg-lightBlue-900">
+
+<Layout>
     <div class="container flex flex-col items-center justify-center h-full mx-auto">
         <Auth />
-  </div>
-</div>
+    </div>
+</Layout>

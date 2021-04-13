@@ -15,7 +15,7 @@
     '/*': NotFound404,
   };
   const routesLoggedOut = {
-    '/login': Login,
+    '/': Login,
     '/:attemptedRoute': Login,
   };
 
