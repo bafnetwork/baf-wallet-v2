@@ -227,7 +227,7 @@ if (isProduction) {
 }
 
 // Load path aliases from the tsconfig.json file
-const tsconfigPath = path.resolve('apps/frontend-2', 'tsconfig.json');
+const tsconfigPath = path.resolve('apps/frontend', 'tsconfig.json');
 const tsconfig = fs.existsSync(tsconfigPath) ? require(tsconfigPath) : {};
 
 if ('compilerOptions' in tsconfig && 'paths' in tsconfig.compilerOptions) {
