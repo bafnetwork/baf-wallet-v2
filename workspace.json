@@ -274,7 +274,7 @@
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              "cd apps/frontend && cross-env NODE_ENV=production webpack",
+              "cd apps/frontend && ../../node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production ../../node_modules/webpack/bin/webpack.js",
               "mkdir -p dist/apps",
               "rm -r dist/apps/frontend || true",
               "cp apps/frontend/public -r dist/apps/frontend"
@@ -298,7 +298,7 @@
         "serve": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "command": "cd apps/frontend && webpack serve"
+            "command": "cd apps/frontend && ../../node_modules/webpack/bin/webpack.js serve"
           }
         },
         "lint": {
