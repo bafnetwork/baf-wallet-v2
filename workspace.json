@@ -270,7 +270,7 @@
       "projectType": "application",
       "prefix": "frontend",
       "targets": {
-        "build-test": {
+        "build-test-env": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
@@ -294,8 +294,7 @@
               ]
             }
           }
-        }
-        }
+        },
         "build": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
