@@ -1,14 +1,17 @@
 import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
+import { transactions } from 'near-api-js';
+import { NearGenerator, NearCreateUrlOpts } from '@baf-wallet/redirect-generator';
+import { environment } from "../environments/environment";
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
     super(client, {
-      name: 'send',
-      description: 'sends money on NEAR testnet',
+      name: 'sendMoney',
+      description: 'sends NEAR or NEP-5 tokens on NEAR testnet',
       category: 'Utility',
-      usage: `${client.settings.prefix}send amount asset(optional, defaults to NEAR) recipient`,
+      usage: `${client.settings.prefix}send [amount in yoctoNear] [asset (optional, defaults to 'NEAR')]  [recipient]`,
       cooldown: 1000,
       requiredPermissions: [],
     });
@@ -24,15 +27,22 @@ export default class SendMoney extends Command {
     if (params.length < 3 || params.length > 4) {
       await super.respond(
         message.channel,
-        `expected 2 parameters, got ${params.length - 1}.\n usage: ${
-          super.conf.usage
-        }`
+        `expected 2 parameters, got ${params.length - 1}.\n\`usage: ${
+          this.conf.usage
+        }\``
       );
       return;
     }
 
-    let amount = params[1];
-    let asset = 'NEAR';
+    let amount = parseInt(params[1]);
+    if (Number.isNaN(amount)) {
+      await super.respond(
+        message.channel,
+        '❌ invalid amount ❌: amount must be a number!'
+      );
+      return;
+    }
+    let asset = params[2];
     let recipient: string;
     if (params.length === 4) {
       asset = params[2];
@@ -40,14 +50,25 @@ export default class SendMoney extends Command {
     } else {
       recipient = params[2];
     }
+    
     try {
+      const tx: NearCreateUrlOpts = {
+        actions: [transactions.transfer(amount)],
+        receiverAccountId: recipient,
+      }
+      const linkGenerator = new NearGenerator(environment.BASE_WALLET_URL);
       await super.respond(
         message.channel,
-        'HODL tight, this command is still in the works 🚧'
+        linkGenerator.createURL(tx)
       );
     } catch (err) {
       console.error(err);
-      await super.respond(message.channel, 'invalid amount');
+      await super.respond(
+        message.channel,
+        `🚧 an error has occurred 🚧:
+        \n\`${err}\`
+        \nPlease create an issue at https://github.com/bafnetwork/baf-wallet-v2/issues and HODL tight until we fix it.`
+      );
       return;
     }
   }

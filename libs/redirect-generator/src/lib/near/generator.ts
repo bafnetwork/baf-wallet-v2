@@ -1,6 +1,5 @@
 import { Chain } from '@baf-wallet/interfaces';
 import { RedirectGenerator } from '../interfaces/base-classes';
-import { transactions } from 'near-api-js';
 import { NearSendTXOpts, NearSigner } from '@baf-wallet/multi-chain';
 
 export class NearGenerator extends RedirectGenerator {

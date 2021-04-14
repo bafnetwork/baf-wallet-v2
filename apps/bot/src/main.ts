@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { environment } from "./environments/environment";
 import { Container } from 'typedi';
 import { Client } from './Client';
 
@@ -6,7 +7,7 @@ import { Client } from './Client';
 const client = Container.get<Client>(Client);
 
 client
-  .login(process.env.DISCORD_TOKEN)
+  .login(environment.DISCORD_TOKEN)
   .then(() => {
     console.log('tokenbot happily hodling along');
   })
