@@ -3,7 +3,7 @@
   import Card from '../components/base/Card.svelte';
   import Button from '../components/base/Button.svelte';
   import {
-    NearAccountSingelton,
+    NearAccount,
     NearSendTXOpts,
     NearSigner,
   } from '@baf-wallet/multi-chain';
@@ -31,7 +31,7 @@
     const networkId = getNearNetworkId(constants.env);
     const signer = new NearSigner(
       privkey,
-      NearAccountSingelton.getAccountNameFromPubkey(
+      NearAccount.getAccountNameFromPubkey(
         $KeyStore.secp256k1Pubkey,
         CryptoCurves.secp256k1,
         networkId
@@ -45,8 +45,10 @@
   }
 
   async function onApprove(signer: NearSigner) {
-    const explorerUrl = await signer.sendTX(opts);
-    alert(`See the result at: ${explorerUrl}`)
+    const tx = await signer.createTX(opts);
+    const enc = await signer.signTX(tx);
+    const explorerUrl = await signer.sendTX(enc);
+    alert(`See the result at: ${explorerUrl}`);
   }
 </script>
 

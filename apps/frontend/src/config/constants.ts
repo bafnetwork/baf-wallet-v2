@@ -1,4 +1,5 @@
-import { Envs } from '@baf-wallet/interfaces';
+import { environment } from '../environments/environment';
 export const constants = {
-  env: Envs.DEV,
+  env: environment.env,
+  baseUrl: environment.baseUrl
 };
