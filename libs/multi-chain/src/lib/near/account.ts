@@ -103,7 +103,7 @@ export class NearAccount {
   }
 
   async updateKeyPair(accountId: string, secret: SecretKey) {
-    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.bs58))
+    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.bs58));
     await this.keyStore.setKey(
       this.params.connectConfig.networkId,
       accountId,

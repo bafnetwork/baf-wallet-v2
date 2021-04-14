@@ -6764,9 +6764,7 @@
                                     return (
                                       (r = e.accessToken),
                                       (t.next = 3),
-                                      Object(
-                                        S.get
-                                      )(
+                                      Object(S.get)(
                                         'https://discordapp.com/api/users/@me',
                                         {
                                           headers: {
@@ -6911,9 +6909,7 @@
                                     return (
                                       (r = e.accessToken),
                                       (t.next = 3),
-                                      Object(
-                                        S.get
-                                      )(
+                                      Object(S.get)(
                                         'https://graph.facebook.com/me?fields=name,email,picture.type(large)',
                                         {
                                           headers: {
@@ -7050,9 +7046,7 @@
                                       return (
                                         (r = e.accessToken),
                                         (t.next = 3),
-                                        Object(
-                                          S.get
-                                        )(
+                                        Object(S.get)(
                                           'https://www.googleapis.com/userinfo/v2/me',
                                           {
                                             headers: {
@@ -7668,9 +7662,7 @@
                                       return (
                                         (r = e.accessToken),
                                         (t.next = 3),
-                                        Object(
-                                          S.get
-                                        )(
+                                        Object(S.get)(
                                           'https://oauth.reddit.com/api/v1/me',
                                           {
                                             headers: {
@@ -7808,14 +7800,15 @@
                                     return (
                                       (r = e.accessToken),
                                       (t.next = 3),
-                                      Object(
-                                        S.get
-                                      )('https://api.twitch.tv/helix/users', {
-                                        headers: {
-                                          Authorization: 'Bearer '.concat(r),
-                                          'Client-ID': this.clientId,
-                                        },
-                                      })
+                                      Object(S.get)(
+                                        'https://api.twitch.tv/helix/users',
+                                        {
+                                          headers: {
+                                            Authorization: 'Bearer '.concat(r),
+                                            'Client-ID': this.clientId,
+                                          },
+                                        }
+                                      )
                                     );
                                   case 3:
                                     return (
@@ -10353,15 +10346,16 @@
                                       )
                                         (_ = Object(g.post)(
                                           e[w],
-                                          Object(
-                                            g.generateJsonRPCObject
-                                          )('CommitmentRequest', {
-                                            messageprefix: 'mug00',
-                                            tokencommitment: v.slice(2),
-                                            temppubx: p,
-                                            temppuby: m,
-                                            verifieridentifier: i,
-                                          })
+                                          Object(g.generateJsonRPCObject)(
+                                            'CommitmentRequest',
+                                            {
+                                              messageprefix: 'mug00',
+                                              tokencommitment: v.slice(2),
+                                              temppubx: p,
+                                              temppuby: m,
+                                              verifieridentifier: i,
+                                            }
+                                          )
                                         ).catch(function (t) {
                                           return k.error('commitment', t);
                                         })),
@@ -10399,23 +10393,24 @@
                                           ) {
                                             var m = Object(g.post)(
                                               e[p],
-                                              Object(
-                                                g.generateJsonRPCObject
-                                              )('ShareRequest', {
-                                                encrypted: 'yes',
-                                                item: [
-                                                  U(
-                                                    U({}, s),
-                                                    {},
-                                                    {
-                                                      idtoken: a,
-                                                      nodesignatures: f,
-                                                      verifieridentifier: i,
-                                                    },
-                                                    u
-                                                  ),
-                                                ],
-                                              })
+                                              Object(g.generateJsonRPCObject)(
+                                                'ShareRequest',
+                                                {
+                                                  encrypted: 'yes',
+                                                  item: [
+                                                    U(
+                                                      U({}, s),
+                                                      {},
+                                                      {
+                                                        idtoken: a,
+                                                        nodesignatures: f,
+                                                        verifieridentifier: i,
+                                                      },
+                                                      u
+                                                    ),
+                                                  ],
+                                                }
+                                              )
                                             ).catch(function (t) {
                                               return k.error('share req', t);
                                             });
