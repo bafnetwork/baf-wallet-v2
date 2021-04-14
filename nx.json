@@ -1,6 +1,4 @@
 {
-  "npmScope": "baf-wallet",
-  "affected": { "defaultBase": "master" },
   "implicitDependencies": {
     "workspace.json": "*",
     "package.json": { "dependencies": "*", "devDependencies": "*" },
@@ -9,6 +7,8 @@
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
+  "affected": { "defaultBase": "master" },
+  "npmScope": "baf-wallet",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
@@ -16,7 +16,6 @@
     }
   },
   "projects": {
-    "frontend": { "tags": [] },
     "frontend-e2e": { "tags": [], "implicitDependencies": ["frontend"] },
     "api": { "tags": [] },
     "api-client": { "tags": [] },
@@ -24,6 +23,7 @@
     "multi-chain": { "tags": [] },
     "redirect-generator": { "tags": [] },
     "interfaces": { "tags": [] },
-    "trust-wallet-assets": { "tags": [] }
+    "trust-wallet-assets": { "tags": [] },
+    "frontend": { "tags": [] }
   }
 }

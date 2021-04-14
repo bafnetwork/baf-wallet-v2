@@ -5,12 +5,12 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "target": "es2017",
+    "lib": ["es2017"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -21,7 +21,9 @@
         "libs/redirect-generator/src/index.ts"
       ],
       "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
-      "@baf-wallet/trust-wallet-assets": ["libs/trust-wallet-assets/src/index.ts"]
+      "@baf-wallet/trust-wallet-assets": [
+        "libs/trust-wallet-assets/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

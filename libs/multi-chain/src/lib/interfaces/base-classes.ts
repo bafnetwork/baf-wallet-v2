@@ -1,26 +1,67 @@
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, PublicKey } from '@baf-wallet/interfaces';
+import { ec, eddsa } from 'elliptic';
+import * as sha3 from 'js-sha3';
+import { inspect } from 'util';
+const ecSecp = new ec('secp256k1');
+const ecEd = new eddsa('ed25519');
 
-export abstract class Signer<SendOpts> {
-  chain: Chain;
-
-  constructor(_chain: Chain) {
-    this.chain = _chain;
-  }
+export abstract class Signer<SendOpts, TX> {
+  constructor(public chain: Chain) {}
 
   abstract awaitConstructorInit(): Promise<void>;
 
   // Return an explorer link
-  abstract sendTX(chainOpts?: SendOpts): Promise<string>;
+  abstract createTX(signedTX: SendOpts): Promise<TX>;
+
+  // Return an explorer link
+  abstract signTX(tx: TX): Promise<Uint8Array>;
+
+  // Return an explorer link
+  abstract sendTX(signedTX: Uint8Array): Promise<string>;
 
   public static deserializeSendTXOpts<SendOpts>(opts: string): SendOpts {
     try {
-      return (decodeURIComponent(JSON.stringify(opts)) as any) as SendOpts;
+      return (JSON.parse(decodeURIComponent(opts)) as any) as SendOpts;
     } catch (e) {
       throw `Error deserializing ${opts}: ${e}`;
     }
   }
 
-  public static serializeSendTXOpts(opts: any): string {
+  static serializeSendTXOpts<SendOpts>(opts: SendOpts): string {
     return encodeURIComponent(JSON.stringify(opts));
+  }
+}
+
+export abstract class ChainUtil {
+  constructor(public chain: Chain) {}
+
+  public static verifySignedEd25519(
+    pubkey: PublicKey,
+    msg: string,
+    signedMsg: eddsa.Signature
+  ): boolean {
+    const msgHash = sha3.keccak256(msg);
+
+    let validSig = ecEd.verify(
+      msgHash,
+      signedMsg,
+      Buffer.from(pubkey).toString('hex')
+    );
+    return validSig;
+  }
+
+  public static verifySignedSecp256k1(
+    pubkey: PublicKey,
+    msg: string,
+    signedMsg: ec.Signature
+  ): boolean {
+    const msgHash = sha3.keccak256(msg);
+
+    let validSig = ecSecp.verify(msgHash, signedMsg, Buffer.from(pubkey));
+    return validSig;
+  }
+
+  public static createUserVerifyMessage(userId: string, nonce: string) {
+    return `${userId}:${nonce}`;
   }
 }

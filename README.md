@@ -6,6 +6,7 @@ In order to get up and running with this projects, first install dependencies.
 Make sure you have both yarn and npm
 
 ## Development Notes
+
 When developing, you may need to increase your NODE Heap Size, the following can be done by `export NODE_OPTIONS=--max_old_space_size=4096`
 
 ## Generate a library
