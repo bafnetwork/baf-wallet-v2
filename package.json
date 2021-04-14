@@ -33,6 +33,7 @@
     "@babel/plugin-transform-runtime": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
     "@babel/runtime": "^7.12.18",
+    "@cypress/webpack-preprocessor": "^5.7.0",
     "@nrwl/cli": "11.5.1",
     "@nrwl/cypress": "11.5.1",
     "@nrwl/eslint-plugin-nx": "11.5.1",

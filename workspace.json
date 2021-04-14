@@ -11,16 +11,9 @@
       "projectType": "application",
       "targets": {
         "e2e": {
-          "executor": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "cypressConfig": "apps/frontend-e2e/cypress.json",
-            "tsConfig": "apps/frontend-e2e/tsconfig.e2e.json",
-            "devServerTarget": "frontend:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "frontend:serve:production"
-            }
+            "command": "(cd apps/frontend-e2e && $(npm bin)/cypress run)"
           }
         },
         "lint": {
@@ -274,7 +267,7 @@
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              "cd apps/frontend && ../../node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production ../../node_modules/webpack/bin/webpack.js",
+              "cd apps/frontend && $(npm bin)/cross-env NODE_ENV=production $(npm bin)/webpack",
               "mkdir -p dist/apps",
               "rm -r dist/apps/frontend || true",
               "cp apps/frontend/public -r dist/apps/frontend"
@@ -298,7 +291,7 @@
         "serve": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "command": "cd apps/frontend && ../../node_modules/webpack/bin/webpack.js serve"
+            "command": "cd apps/frontend && $(npm bin)/webpack serve"
           }
         },
         "lint": {
