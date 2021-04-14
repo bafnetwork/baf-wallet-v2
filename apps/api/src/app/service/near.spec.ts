@@ -2,28 +2,62 @@
   name: 'nodejs',
 };
 window.name = 'nodejs';
-import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
-import { NearAccount } from '@baf-wallet/multi-chain';
+import { CryptoCurves, KeyFormats } from '@baf-wallet/interfaces';
+import {
+  ed25519PubkeyFromSecret,
+  formatKey,
+  NearAccount,
+  secp256k1PubkeyFromSecret,
+  secretFromSeed,
+} from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 
-const secp256k1Pubkey = Buffer.from(
-  'BfaBf538323A1D21453b5F6a374A07867D867196',
-  'hex'
-); // TODO: derive from torus
 (global as any).window = {
   name: 'nodejs',
 };
 
-const alicePubkey = Buffer.from(
-  'emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=',
-  'base64'
+const aliceSecret = secretFromSeed(
+  new Uint8Array([
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+  ])
 );
-const aliceSecret = Buffer.from(
-  '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
-  'base64'
-);
+
+const aliceEd25519Pubkey = ed25519PubkeyFromSecret(aliceSecret);
+const aliceSecp256k1Pubkey = secp256k1PubkeyFromSecret(aliceSecret);
+
 
 jest.setTimeout(30000);
 
@@ -32,16 +66,8 @@ async function deleteAccount(
   assert = false,
   beneficiary = constants.nearAccountConfig.masterAccountId
 ) {
-  try {
-    const ret = await account.deleteAccount(beneficiary);
-    if (assert) {
-      expect(Object.keys(ret.status)[0]).toEqual('SuccessValue');
-    }
-  } catch (e) {
-    if (assert) {
-      throw e;
-    }
-  }
+  const ret = await account.deleteAccount(beneficiary);
+  if (assert) expect(Object.keys(ret.status)[0]).toEqual('SuccessValue');
 }
 
 describe('Create a dummy near account on the testnet', () => {
@@ -50,23 +76,25 @@ describe('Create a dummy near account on the testnet', () => {
   beforeAll(async () => {
     NearAccount.setConfig(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
+
     accountName = nearAccount.getAccountNameFromPubkey(
-      secp256k1Pubkey,
+      aliceSecp256k1Pubkey,
       CryptoCurves.secp256k1
     );
-    nearAccount.updateKeyPair(accountName, aliceSecret);
+    await nearAccount.updateKeyPair(accountName, aliceSecret);
 
     const account = await nearAccount.near.account(accountName);
     try {
       await deleteAccount(account);
     } catch (e) {
-      console.log('Not deleting account, continuing');
+      console.log('Not deleting account with error, continuing');
     }
   });
   it('should create the account', async () => {
-    await createNearAccount(secp256k1Pubkey, alicePubkey);
+    await createNearAccount(aliceSecp256k1Pubkey, aliceEd25519Pubkey);
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
+    await nearAccount.updateKeyPair(accountName, aliceSecret);
     await deleteAccount(account, true);
   });
 });

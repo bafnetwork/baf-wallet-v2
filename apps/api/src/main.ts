@@ -6,7 +6,6 @@ import { constants } from './app/config/constants';
 
 const app = express();
 
-// TODO: put into constants once StoreKeys merged
 NearAccount.setConfig(constants.nearAccountConfig);
 app.use(
   bodyParser.urlencoded({

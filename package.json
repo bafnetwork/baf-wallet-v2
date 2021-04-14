@@ -130,6 +130,7 @@
     "reflect-metadata": "^0.1.13",
     "svelte-spa-router": "^3.1.0",
     "tsoa": "^3.5.2",
+    "tweetnacl": "^1.0.3",
     "typedi": "^0.10.0"
   }
 }
