@@ -14,25 +14,40 @@ import { PublicKey } from '@baf-wallet/interfaces';
 import { formatKey } from '../utils';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
-interface NearSingletonParams {
-  connectConfig: ConnectConfig;
+export interface NearAccountParams {
+  networkId: NearNetworkId;
+  keyPath: string;
   masterAccountId: string;
+}
+
+interface NearAccountParamsInternal {
+  masterAccountId: string;
+  connectConfig: ConnectConfig;
 }
 
 export class NearAccount {
   private static nearSingleton: NearAccount | null;
-  private static initParams: NearSingletonParams | null;
+  private static initParams: NearAccountParamsInternal | null;
 
   private constructor(
     public near: Near,
     public masterAccount: Account,
     public accountCreator: AccountCreator,
     private keyStore: KeyStore,
-    private params: NearSingletonParams
+    private params: NearAccountParamsInternal
   ) {}
 
-  static setConfig(params: NearSingletonParams) {
-    this.initParams = params;
+  static setConfig(params: NearAccountParams) {
+    this.initParams = {
+      masterAccountId: params.masterAccountId,
+      connectConfig: {
+        networkId: params.networkId,
+        nodeUrl: `https://rpc.${params.networkId}.near.org`,
+        helperUrl: `https://helper.${params.networkId}.near.org`,
+        masterAccount: params.masterAccountId,
+        keyPath: params.keyPath,
+      },
+    };
   }
 
   static async get(): Promise<NearAccount> {

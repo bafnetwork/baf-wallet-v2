@@ -6,6 +6,7 @@ import { CryptoCurves, Envs, getNearNetworkId } from '@baf-wallet/interfaces';
 import { NearAccount } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
+import { constants } from '../config/constants';
 
 const secp256k1Pubkey = Buffer.from(
   'BfaBf538323A1D21453b5F6a374A07867D867196',
@@ -13,18 +14,6 @@ const secp256k1Pubkey = Buffer.from(
 ); // TODO: derive from torus
 (global as any).window = {
   name: 'nodejs',
-};
-
-const defaultNearConfig = {
-  masterAccountId: 'levtester.testnet',
-  connectConfig: {
-    networkId: getNearNetworkId(Envs.DEV),
-    nodeUrl: 'https://rpc.testnet.near.org',
-    keyPath: '/home/lev/.near-credentials/testnet/levtester.testnet.json',
-    explorerUrl: 'https://explorer.testnet.near.org',
-    helperUrl: 'https://helper.testnet.near.org',
-    masterAccount: 'levtester.testnet',
-  },
 };
 
 const alicePubkey = Buffer.from(
@@ -41,11 +30,17 @@ jest.setTimeout(30000);
 async function deleteAccount(
   account: Account,
   assert = false,
-  beneficiary = defaultNearConfig.masterAccountId
+  beneficiary = constants.nearAccountConfig.masterAccountId
 ) {
-  const ret = await account.deleteAccount(beneficiary);
-  if (assert) {
-    expect(Object.keys(ret.status)[0]).toEqual('SuccessValue');
+  try {
+    const ret = await account.deleteAccount(beneficiary);
+    if (assert) {
+      expect(Object.keys(ret.status)[0]).toEqual('SuccessValue');
+    }
+  } catch (e) {
+    if (assert) {
+      throw e;
+    }
   }
 }
 
@@ -53,7 +48,7 @@ describe('Create a dummy near account on the testnet', () => {
   let accountName: string;
   let nearAccount: NearAccount;
   beforeAll(async () => {
-    NearAccount.setConfig(defaultNearConfig);
+    NearAccount.setConfig(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
     accountName = nearAccount.getAccountNameFromPubkey(
       secp256k1Pubkey,
