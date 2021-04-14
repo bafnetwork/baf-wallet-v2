@@ -5,7 +5,6 @@ window.name = 'nodejs';
 import { CryptoCurves, KeyFormats } from '@baf-wallet/interfaces';
 import {
   ed25519PubkeyFromSecret,
-  formatKey,
   NearAccount,
   secp256k1PubkeyFromSecret,
   secretFromSeed,
@@ -19,45 +18,16 @@ import { constants } from '../config/constants';
 };
 
 const aliceSecret = secretFromSeed(
-  new Uint8Array([
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-  ])
+  new Uint8Array(
+    Buffer.from(
+      'af4391c50ca34de55165ffbfcd9e43a846a37ef97905988b694ba886d23c05d5',
+      'hex'
+    )
+  )
 );
 
 const aliceEd25519Pubkey = ed25519PubkeyFromSecret(aliceSecret);
 const aliceSecp256k1Pubkey = secp256k1PubkeyFromSecret(aliceSecret);
-
 
 jest.setTimeout(30000);
 
