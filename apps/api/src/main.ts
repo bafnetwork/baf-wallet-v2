@@ -1,29 +1,12 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Envs, getNearNetworkId } from '@baf-wallet/interfaces';
 import { NearAccount } from '@baf-wallet/multi-chain';
 import * as bodyParser from 'body-parser';
-import * as express from 'express';
+import express from 'express';
 import { RegisterRoutes } from '../build/routes';
+import { constants } from './app/config/constants';
 
 const app = express();
 
-// TODO: put into constants once StoreKeys merged
-const defaultNearConfig = {
-  masterAccountId: 'levtester.testnet',
-  connectConfig: {
-    networkId: getNearNetworkId(Envs.DEV),
-    nodeUrl: 'https://rpc.testnet.near.org',
-    keyPath: '/home/lev/.near-credentials/testnet/levtester.testnet.json',
-    explorerUrl: 'https://explorer.testnet.near.org',
-    helperUrl: 'https://helper.testnet.near.org',
-    masterAccount: 'levtester.testnet',
-  },
-};
-NearAccount.setConfig(defaultNearConfig);
+NearAccount.setConfig(constants.nearAccountConfig);
 app.use(
   bodyParser.urlencoded({
     extended: true,

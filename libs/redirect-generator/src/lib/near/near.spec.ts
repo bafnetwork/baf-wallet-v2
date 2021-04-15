@@ -6,7 +6,7 @@ import { NearGenerator } from './generator';
 
 describe('Create different urls for Near Actions', () => {
   const generator = new NearGenerator(
-    'http://localhost:8080/#/approve-redirect'
+    'https://60772628b2efa40007c7b2de--test-baf-wallet.netlify.app/#/approve-redirect'
   );
   it('should create a url for transferring some NEAR', () => {
     const sendMoney = transactions.transfer(new BN(1000000));

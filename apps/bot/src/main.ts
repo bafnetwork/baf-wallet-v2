@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { environment } from "./environments/environment";
+import { environment } from './environments/environment';
 import { Container } from 'typedi';
 import { Client } from './Client';
 
