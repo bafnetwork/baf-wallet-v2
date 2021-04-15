@@ -20,9 +20,9 @@
         <tbody>
         <tr>
             {#each history as item}
-            <td class="text-center border">{item.confirmed.toLocaleString()}</td>
-            <td class="text-center border">{item.recipient}</td>
-            <td class="text-center border">{item.data ?? "--"}</td>
+                <td class="text-center border">{item.confirmed.toLocaleString()}</td>
+                <td class="text-center border">{item.recipient}</td>
+                <td class="text-center border">{item.data ?? "--"}</td>
             {/each}
         </tr>
         </tbody>
