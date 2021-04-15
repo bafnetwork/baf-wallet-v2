@@ -16,7 +16,7 @@
     '/*': NotFound404,
   };
   const routesLoggedOut = {
-    '/login': Login,
+    '/': Login,
     '/:attemptedRoute': Login,
   };
 
@@ -37,7 +37,7 @@
         'base64'
       ),
     });
-    return true;
+    return false;
   }
   const initProm = init();
 </script>

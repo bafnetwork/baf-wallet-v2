@@ -16,7 +16,6 @@
   import { KeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
-
   export let params = {} as any;
   let transferAmount: string;
   const optsStr: string = params.opts;
@@ -43,7 +42,7 @@
     await signer.awaitConstructorInit();
     return signer;
   }
-
+  
   async function onApprove(signer: NearSigner) {
     const tx = await signer.createTX(opts);
     const enc = await signer.signTX(tx);
