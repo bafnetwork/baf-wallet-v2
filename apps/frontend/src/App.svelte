@@ -11,8 +11,7 @@
 
   const routesLoggedIn = {
     '/': Account,
-    // '/approve-redirect/:opts': ApproveRedirect,
-    '/approve-redirect/:tx/:nonce': ApproveRedirect,
+    '/approve-redirect/:opts': ApproveRedirect,
     '/login': Login,
     '/*': NotFound404,
   };
@@ -38,7 +37,7 @@
         'base64'
       ),
     });
-    return true;
+    return false;
   }
   const initProm = init();
 </script>
