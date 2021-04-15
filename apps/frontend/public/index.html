@@ -10,6 +10,14 @@
 
     <link rel="stylesheet" href="/build/bundle.css" />
     <script defer src="/build/bundle.js"></script>
+    <script>
+      navigator.serviceWorker
+        .register('/serviceworker/sw.js')
+        .then(function (serviceWorkerRegistration) {
+          console.log('Service worker registered');
+        })
+        .catch(console.error);
+    </script>
   </head>
   <body>
     <noscript>Please enable JavaScript to view this application.</noscript>

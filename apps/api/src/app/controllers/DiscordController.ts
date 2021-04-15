@@ -11,7 +11,7 @@ import {
 import { discordWithdrawStuff } from '../service/discord';
 
 @Route('discord')
-export class UsersController extends Controller {
+export class DiscordController extends Controller {
   @SuccessResponse('204')
   @Post('widthdraw')
   public async getUser(): Promise<void> {

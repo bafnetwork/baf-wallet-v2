@@ -113,7 +113,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@toruslabs/torus-direct-web-sdk": "^4.7.1",
+    "@toruslabs/torus-direct-web-sdk": "^4.11.1",
     "@types/dotenv": "^8.2.0",
     "@types/ws": "^7.4.0",
     "body-parser": "^1.19.0",
@@ -131,8 +131,8 @@
     "reflect-metadata": "^0.1.13",
     "svelte-spa-router": "^3.1.0",
     "tsoa": "^3.5.2",
-    "typedjson": "^1.7.0",
     "tweetnacl": "^1.0.3",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "typedjson": "^1.7.0"
   }
 }
