@@ -1,9 +1,10 @@
 <script lang="ts">
-  // import { crossfade } from "svelte/types/runtime/transition";
-  import jazzicon from "jazzicon";
-  import Dropdown from "../components/base/Dropdown.svelte";
   import type { AccountState } from "../state/accounts.svelte";
   import { AccountStore } from "../state/accounts.svelte";
+  import { KeyStore } from '../state/keys.svelte';
+  import { formatKey } from '@baf-wallet/multi-chain';
+  import jazzicon from "jazzicon";
+  import Dropdown from "../components/base/Dropdown.svelte";
   import Card from '../components/base/Card.svelte';
   import Layout from '../components/Layout.svelte';
   import Listbalances from '../components/Listbalances.svelte';
@@ -12,10 +13,8 @@
   let viewMode: "assets" | "history" = "assets";
 
   let displayName: string;
-  let accounts: AccountState;
-  const unsubAccountStore = AccountStore.subscribe(_accounts => {
-    accounts = _accounts;
-  })
+  let accounts = $AccountStore;
+  let pubkey = formatKey($KeyStore.secp256k1Pubkey);
 
   function hashdisplayName(displayName: string) {
     var hash = 0;
@@ -47,11 +46,14 @@
     <h1 class="pb-6 text-4xl text-center">Account</h1>
     <div bind:this={displayNameContainer} class="flex flex-row items-center justify-center pb-6">
       <div class="ml-3">
-        <Dropdown bind:selected={displayName} items={Object.keys(accounts.byDisplayName).map(name => ({
-          label: name,
+        <Dropdown bind:selected={displayName} items={Object.keys(accounts.byDisplayName).map(name => {
+         ;
+          return {
+          label: `${name} / ${pubkey.slice(0, 4)}...${pubkey.slice(-4)}`,
           value: name,
           meta: accounts.byDisplayName[name]
-        }))}/>
+        }
+        })}/>
       </div>
     </div>
     <div class="flex flex-row justify-around">

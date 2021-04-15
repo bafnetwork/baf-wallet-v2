@@ -20,6 +20,7 @@
   let transferAmount: string;
   const optsStr: string = params.opts;
   const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
+
   async function init() {
     let privkey = $KeyStore.secret;
     let pubkey = $KeyStore.ed25519Pubkey;
@@ -41,6 +42,7 @@
     await signer.awaitConstructorInit();
     return signer;
   }
+  
   async function onApprove(signer: NearSigner) {
     const tx = await signer.createTX(opts);
     const enc = await signer.signTX(tx);
