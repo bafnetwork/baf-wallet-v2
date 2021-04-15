@@ -106,9 +106,7 @@ export const getChainLogoUrl = (chain: ChainName): string =>
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/dapps/${dappUrl}.png`;
 
-export async function getChainInfo(
-  chain: ChainName
-): Promise<ChainInfo | null> {
+export async function getChainInfo(chain: ChainName): Promise<ChainInfo> {
   const url = getChainInfoUrl(chain);
   try {
     const res = await axios.get(url);

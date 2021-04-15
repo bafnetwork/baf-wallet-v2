@@ -1,5 +1,7 @@
 <script lang="ts">
-  import Modal from "./components/base/Modal.svelte";
+  import { Buffer } from 'buffer';
+  (window as any).Buffer = Buffer;
+  import Modal from './components/base/Modal.svelte';
   import Router from 'svelte-spa-router';
   import Login from './pages/Login.svelte';
   import Account from './pages/Account.svelte';
@@ -22,8 +24,19 @@
   // TODO: implement with tor.us
   async function init(): Promise<boolean> {
     KeyStore.set({
-      pubkey: 'Fake news',
-      privkey: 'Is real?',
+      //  ed25519Pubkey:
+      secp256k1Pubkey: Buffer.from(
+        'BfaBf538323A1D21453b5F6a374A07867D867196',
+        'hex'
+      ),
+      ed25519Pubkey: Buffer.from(
+        'emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=',
+        'base64'
+      ),
+      secret: Buffer.from(
+        '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
+        'base64'
+      ),
     });
     return true;
   }

@@ -1,70 +1,70 @@
+<!-- TODO: have it so that the pubkey can be intialized correctly -->
 <script lang="ts">
-  import Button from "../components/base/Button.svelte";
-  import Layout from "../components/Layout.svelte";
-  import Card from "../components/base/Card.svelte";
-  export let params = {} as any
-  // TODO: use EIP-712: https://github.com/Mrtenz/eip-712/tree/master/src if it's JSON, or expect a hash
-  // const txStr = '{ "to": "0x420", "amount": 69, "data": { "msg": "BAF token when" }}';
-  // const tx = JSON.parse(txStr);
-  const nonce = params.nonce
-  const appName = "BAF DAO";
-  // import Card from '../components/base/Card.svelte';
-  // import { KeyStore } from '../state/keys.svelte';
-  import { createSigner } from './ApproveRedirectHlpr';
-  // import { constants } from '../config/constants';
-  // import { utils } from 'near-api-js';
-
-  const optsStr: string = decodeURIComponent(params.opts);
-  const opts = JSON.parse(optsStr);
-  let privkey = ""//$KeyStore.privkey
-  let pubkey = ""//$KeyStore.pubkey
-  let signer = createSigner(privkey, pubkey);
-  let signerProm = signer.awaitConstructorInit()
-  const data = opts.actions;
-  const recipient = opts.receiverAccountId;
-
-  // async function onApprove() {
-  //   signer.sendTX(opts);
-  // }
+  import Card from '../components/base/Card.svelte';
+  import Button from '../components/base/Button.svelte';
+  import {
+    NearAccount,
+    NearSendTXOpts,
+    NearSigner,
+  } from '@baf-wallet/multi-chain';
+  import {
+    CryptoCurves,
+    getNearNetworkId,
+    NearSupportedActionTypes,
+    NearTransferParam,
+  } from '@baf-wallet/interfaces';
+  import { KeyStore } from '../state/keys.svelte';
+  import { constants } from '../config/constants';
+  import { utils } from 'near-api-js';
+  export let params = {} as any;
+  let transferAmount: string;
+  const optsStr: string = params.opts;
+  const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
+  async function init() {
+    let privkey = $KeyStore.secret;
+    let pubkey = $KeyStore.ed25519Pubkey;
+    if (!pubkey || !privkey) {
+      throw 'not-logged-in';
+    }
+    const networkId = getNearNetworkId(constants.env);
+    const signer = new NearSigner(
+      privkey,
+      NearAccount.getAccountNameFromPubkey(
+        $KeyStore.secp256k1Pubkey,
+        CryptoCurves.secp256k1,
+        networkId
+      ),
+      networkId
+    );
+    // TODO: frontend error handling for params
+    transferAmount = (opts.actions[0].params as NearTransferParam).amount;
+    await signer.awaitConstructorInit();
+    return signer;
+  }
+  async function onApprove(signer: NearSigner) {
+    const tx = await signer.createTX(opts);
+    const enc = await signer.signTX(tx);
+    const explorerUrl = await signer.sendTX(enc);
+    alert(`See the result at: ${explorerUrl}`);
+  }
 </script>
 
-{#await signerProm}
+{#await init()}
   Loading...
-{:then x}
-  {x}
-  <Layout>
-    <Card classExtra="flex flex-col divide">
-      <h1 class="pb-2 text-xl text-center">{appName} would like to execute a transaction</h1>
-      <div class="flex flex-row justify-center">
-        <span class="mx-2">To: {recipient}</span>
-      </div>
-      {#if data}
-        <span class="mx-2 text-center">Data</span>
-        <div class="flex flex-row justify-center">
-          <code>
-            {JSON.stringify(data, null, 2)}
-          </code>
-        </div>
-      {/if}
-      <div class="flex flex-row justify-center">
-        <Button classExtra="mx-2">Approve</Button>
-        <Button classExtra="mx-2">Cancel</Button>
-      </div>
-    </Card>
-  </Layout>
-  <!-- {#if opts.actions.length !== 1 && opts.actions[0].enum !== 'transfer'}
+{:then signer}
+  {#if opts.actions.length !== 1 && opts.actions[0].type !== NearSupportedActionTypes.TRANSFER}
     Right now BAF-Wallet only support transfering NEAR tokens, please check back
     later for more supported actions.
   {:else}
     <Card>
-      Transfering {utils.format.formatNearAmount(
-        opts.actions[0].transfer.deposit.toString()
-      )}
+      Transfering {utils.format.formatNearAmount(transferAmount)} to {opts.receiverAccountId}
+      <Button onClick={() => onApprove(signer)}>Approve</Button>
+      <Button>Decline</Button>
     </Card>
-  {/if} -->
-  <!-- Result!! -->
+  {/if}
 {:catch e}
+  {#if e.toString() === 'not-logged-in'}
+    Please login to approve or reject this transaction
+  {:else}{/if}
   The following error occured: {e}
 {/await}
-
-

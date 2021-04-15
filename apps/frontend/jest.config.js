@@ -7,14 +7,8 @@ module.exports = {
     },
   },
   transform: {
-    '^(.+\\.svelte$)': [
-      'svelte-jester',
-      {
-        preprocess: 'apps/frontend/jest.config.js/svelte.config.js',
-      },
-    ],
     '^.+\\.[tj]s$': 'ts-jest',
   },
-  moduleFileExtensions: ['svelte', 'ts', 'js', 'html'],
+  moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/frontend',
 };
