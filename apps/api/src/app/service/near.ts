@@ -1,23 +1,60 @@
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
+import { ChainUtil } from '@baf-wallet/multi-chain';
+import { ec, eddsa } from 'elliptic';
 
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
-  pubkey: PublicKey,
-  derivedEd25519Pubkey: PublicKey,
+  secpPubkey: PublicKey,
+  edPubkey: PublicKey,
+  discordUserId: string,
+  nonce: string,
+  secpSig: ec.Signature,
+  edSig: eddsa.Signature,
   curve = CryptoCurves.secp256k1
 ) {
+
+  const sigsValid = 
+    verifyBothSigs(discordUserId, nonce, secpSig, edSig, secpPubkey, edPubkey);
+
+  if (!sigsValid) {
+    this.setStatus(403);
+    throw 'Proof that the sender owns this public key must provided';
+  }
+
   if (curve !== CryptoCurves.secp256k1) {
     throw 'Only secp256k1 curves are currently supported';
   }
+  
   const near = await NearAccount.get();
-  const accountName = near.getAccountNameFromPubkey(pubkey, curve);
-  const x = NearPublicKey.fromString(
-    formatKey(derivedEd25519Pubkey, KeyFormats.bs58)
-  );
+  const accountName = near.getAccountNameFromPubkey(secpPubkey, curve);
+
   await near.accountCreator.createAccount(
     accountName,
-    NearPublicKey.fromString(formatKey(derivedEd25519Pubkey, KeyFormats.bs58))
+    NearPublicKey.fromString(formatKey(edPubkey, KeyFormats.bs58))
   );
+}
+
+function verifyBothSigs(
+  discordUserId: string,
+  nonce: string,
+  secpSig: ec.Signature,
+  edSig: eddsa.Signature,
+  secpPubkey: PublicKey,
+  edPubkey: PublicKey
+): boolean {
+  const msg = ChainUtil.createUserVerifyMessage(
+    discordUserId,
+    nonce
+  );
+  return !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) 
+      || !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig);
+}
+
+function toNearKey(edPubkey: PublicKey): NearPublicKey {
+  const x = NearPublicKey.fromString(
+    formatKey(edPubkey, KeyFormats.bs58)
+  );
+  return x;
 }
