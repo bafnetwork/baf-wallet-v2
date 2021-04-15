@@ -1,5 +1,5 @@
 import { environment } from '../environments/environment';
 export const constants = {
   env: environment.env,
-  baseUrl: environment.baseUrl
+  baseUrl: environment.baseUrl,
 };
