@@ -12,10 +12,10 @@
   async function initBalances(): Promise<
     { chainInfo: ChainInfo; bal: Balance }[]
   > {
-    const balances: Balance[] = $AccountStore.chainAccounts.map((account) => {
+    const balances: Balance[] = $AccountStore.chainAccounts.map(async (account) => {
       return {
         tok: account.chain,
-        balance: getAccountBalance(account.chain, account.account),
+        balance: await getAccountBalance(account.chain, account.account),
       };
     });
     return Promise.all(
@@ -41,21 +41,21 @@
       </tr>
     </thead>
     <tbody>
-      {#await initBalances() then chainInfos}
-        {#each chainInfos as chainInfo, i}
+      {#await initBalances() then chains}
+        {#each chains as chain, i}
           <tr>
             <td class="mr-2">
               <img
                 class="object-scale-down mx-2"
-                src={getChainLogoUrl(chainInfo.bal.tok)}
-                alt={`${chainInfo.bal.tok}.png`}
+                src={getChainLogoUrl(chain.bal.tok)}
+                alt={`${chain.bal.tok}.png`}
               />
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              {`$${chainInfos[i].chainInfo.symbol}`}
+              {`$${chain.chainInfo.symbol}`}
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              <AmountFormatter bal={chainInfo.bal} />
+              <AmountFormatter bal={chain.bal} />
             </td>
           </tr>
         {/each}

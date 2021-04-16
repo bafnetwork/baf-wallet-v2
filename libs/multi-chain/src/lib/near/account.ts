@@ -107,7 +107,7 @@ export class NearAccount {
       near,
       masterAccount,
       urlAccountCreator,
-      this.initParams.connectConfig.deps.keyStore,
+      this.initParams.connectConfig.deps?.keyStore || this.initParams.connectConfig.keyStore,
       this.initParams
     );
     return this.nearSingleton;
