@@ -1,4 +1,4 @@
-import { Chain, PublicKey, SecretKey } from '@baf-wallet/interfaces';
+import { ChainName, PublicKey, SecretKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
 import * as sha3 from 'js-sha3';
 import { inspect } from 'util';
@@ -6,7 +6,7 @@ const ecSecp = new ec('secp256k1');
 const ecEd = new eddsa('ed25519');
 
 export abstract class Signer<SendOpts, TX> {
-  constructor(public chain: Chain) {}
+  constructor(public chain: ChainName) {}
 
   abstract awaitConstructorInit(): Promise<void>;
 
@@ -33,7 +33,7 @@ export abstract class Signer<SendOpts, TX> {
 }
 
 export abstract class ChainUtil {
-  constructor(public chain: Chain) {}
+  constructor(public chain: ChainName) {}
 
   public static verifySignedEd25519(
     pubkey: PublicKey,

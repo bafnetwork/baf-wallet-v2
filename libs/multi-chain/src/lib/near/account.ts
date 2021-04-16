@@ -1,4 +1,5 @@
 import {
+  ChainAccount,
   CryptoCurves,
   KeyFormats,
   NearNetworkId,
@@ -13,11 +14,17 @@ import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
 import { PublicKey } from '@baf-wallet/interfaces';
 import { formatKey } from '../utils';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
+import { getNearNodeUrl } from './utils';
 
-export interface NearAccountParams {
+interface NearAccountParamsBase {
   networkId: NearNetworkId;
-  keyPath: string;
   masterAccountId: string;
+}
+export interface NearAccountParamsFrontend extends NearAccountParamsBase {
+  edSK: SecretKey;
+}
+export interface NearAccountParamsNode extends NearAccountParamsBase {
+  keyPath: string;
 }
 
 interface NearAccountParamsInternal {
@@ -37,16 +44,44 @@ export class NearAccount {
     private params: NearAccountParamsInternal
   ) {}
 
-  static setConfig(params: NearAccountParams) {
+  static async setConfigFrontend(params: NearAccountParamsFrontend) {
     this.initParams = {
       masterAccountId: params.masterAccountId,
       connectConfig: {
         networkId: params.networkId,
-        nodeUrl: `https://rpc.${params.networkId}.near.org`,
+        nodeUrl: getNearNodeUrl(params.networkId),
+        helperUrl: `https://helper.${params.networkId}.near.org`,
+        masterAccount: params.masterAccountId,
+      },
+    };
+    const keyStore = new InMemoryKeyStore();
+    const newKeyPair = new KeyPairEd25519(
+      formatKey(params.edSK, KeyFormats.bs58)
+    );
+    await keyStore.setKey(
+      params.networkId,
+      params.masterAccountId,
+      newKeyPair
+    );
+    this.initParams.connectConfig.keyStore = keyStore;
+  }
+
+  static setConfigNode(params: NearAccountParamsNode) {
+    this.initParams = {
+      masterAccountId: params.masterAccountId,
+      connectConfig: {
+        networkId: params.networkId,
+        nodeUrl: getNearNodeUrl(params.networkId),
         helperUrl: `https://helper.${params.networkId}.near.org`,
         masterAccount: params.masterAccountId,
         keyPath: params.keyPath,
       },
+    };
+    const keyStore =
+      this.initParams.connectConfig.deps?.keyStore || new InMemoryKeyStore();
+    this.initParams.connectConfig.deps = {
+      ...(this.initParams.connectConfig.deps?.keyStore || {}),
+      keyStore: keyStore,
     };
   }
 
@@ -57,12 +92,6 @@ export class NearAccount {
     if (this.nearSingleton) {
       return this.nearSingleton;
     }
-    const keyStore =
-      this.initParams.connectConfig.deps?.keyStore || new InMemoryKeyStore();
-    this.initParams.connectConfig.deps = {
-      ...(this.initParams.connectConfig.deps?.keyStore || {}),
-      keyStore: keyStore,
-    };
     const near = await connect(this.initParams.connectConfig);
 
     // const masterAccount = (near.accountCreator as LocalAccountCreator).masterAccount;
@@ -78,7 +107,7 @@ export class NearAccount {
       near,
       masterAccount,
       urlAccountCreator,
-      keyStore,
+      this.initParams.connectConfig.deps.keyStore,
       this.initParams
     );
     return this.nearSingleton;

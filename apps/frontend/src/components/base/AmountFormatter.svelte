@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { Balance } from '../../interfaces';
-  import { TOKEN } from '../../interfaces';
+  import { ChainName } from '@baf-wallet/trust-wallet-assets'
+  
   import { formatNearAmount as nearFormat } from 'near-api-js/lib/utils/format';
 
   export let bal: Balance;
   function getStrFormatted(): string {
     switch (bal.tok) {
-      case TOKEN.Eth:
+      case ChainName.ETH:
         return '0';
-      case TOKEN.Near:
+      case ChainName.NEAR:
         return nearFormat(bal.balance.toString());
       // TODO: for we can use whatever standard there may be for the following
       // We could end up using a library like the folliwing https://www.npmjs.com/package/ethereum-libraries-token

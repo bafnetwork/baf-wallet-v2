@@ -54,14 +54,11 @@
       window.localStorage.setItem(keyStoreName, stringified);
   });
 
-  /**
-   * @returns true if the user is logged in
-   */
-  export function loadKeys(): boolean {
+  export function loadKeys(): KeyState | null {
     const keysStored = window.localStorage.getItem(keyStoreName);
-    if (!keysStored) return false;
+    if (!keysStored) return null;
     const keysParse = unpackKey(keysStored);
     SiteKeyStore.set(keysParse);
-    return true;
+    return keysParse;
   }
 </script>

@@ -54,7 +54,7 @@ describe('createAccount', () => {
   let nearAccount: NearAccount;
 
   beforeAll(async () => {
-    NearAccount.setConfig(constants.nearAccountConfig);
+    NearAccount.setConfigNode(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
 
     accountName = nearAccount.getAccountNameFromPubkey(

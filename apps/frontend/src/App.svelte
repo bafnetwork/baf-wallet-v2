@@ -7,8 +7,7 @@
   import Account from './pages/Account.svelte';
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
-  import { SiteKeyStore } from './state/keys.svelte';
-  import Accounts, { AccountStore, initAccount } from './state/accounts.svelte';
+  import { AccountStore, initAccount } from './state/accounts.svelte';
 
   const routesLoggedIn = {
     '/': Account,
@@ -38,7 +37,7 @@
     {/if}
   </Modal>
 {:catch error}
-  <p>An error occured loading the page: {error.toString()}</p>
+  <p>An error occured loading the page: {console.error(error)}</p>
 {/await}
 
 <style global lang="postcss">

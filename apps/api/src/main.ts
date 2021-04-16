@@ -7,7 +7,7 @@ import * as cors from 'cors';
 
 const app = express();
 
-NearAccount.setConfig(constants.nearAccountConfig);
+NearAccount.setConfigNode(constants.nearAccountConfig);
 app.use(
   bodyParser.urlencoded({
     extended: true,

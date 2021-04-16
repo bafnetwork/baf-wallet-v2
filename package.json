@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "dev": "nx serve+api frontend",
     "client-gen": "npm run tsoa-gen && nx run api-client:autogen",
     "tsoa-gen": "nx run api:tsoa",
     "nx": "nx",

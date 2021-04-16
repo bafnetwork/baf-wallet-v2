@@ -1,7 +1,14 @@
 <script lang="ts" context="module">
-  import { LOGIN_TYPE as TORUS_LOGIN_TYPE } from '@toruslabs/torus-direct-web-sdk';
+  import {
+    ChainAccount,
+    ChainName,
+    CryptoCurves,
+    getNearNetworkId,
+  } from '@baf-wallet/interfaces';
+  import { NearAccount } from '@baf-wallet/multi-chain';
 
   import { writable } from 'svelte/store';
+  import { constants } from '../config/constants';
   import { clearKeysFromStorage, loadKeys, SiteKeyStore } from './keys.svelte';
   export interface Account {
     displayName: string;
@@ -10,12 +17,10 @@
 
   export interface AccountState {
     loggedIn: boolean;
-    byPubkey: {
-      [pubkey: string]: Account;
-    };
-    byDisplayName: {
-      [displayName: string]: Account;
-    };
+    chainAccounts?: {
+      chain: ChainName;
+      account: ChainAccount;
+    }[];
   }
 
   export const AccountStore = writable<AccountState | null>(null);
@@ -33,21 +38,28 @@
 
   // TODO: what do we want to do here??
   export async function initAccount() {
-    const loggedIn = loadKeys();
+    const keys = loadKeys();
+    const loggedIn = loadKeys() !== null;
+    const networkId = getNearNetworkId(constants.env);
+    await NearAccount.setConfigFrontend({
+      networkId: networkId,
+      masterAccountId: NearAccount.getAccountNameFromPubkey(
+        keys.secpPK,
+        CryptoCurves.secp256k1,
+        networkId
+      ),
+      edSK: keys.edSK,
+    });
     AccountStore.set({
       loggedIn,
-      byPubkey: {
-        '0xDEADEEF': {
-          displayName: 'lev.near',
-          pubkey: 'OxDEADBEEF',
-        },
-      },
-      byDisplayName: {
-        'lev.near': {
-          displayName: 'lev.near',
-          pubkey: 'OxDEADBEEF',
-        },
-      },
+      chainAccounts: !loggedIn
+        ? []
+        : [
+            {
+              chain: ChainName.NEAR,
+              account: await (await NearAccount.get()).masterAccount,
+            },
+          ],
     });
   }
 </script>

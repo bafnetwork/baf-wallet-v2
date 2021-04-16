@@ -1,4 +1,5 @@
 import type { PublicKey, SecretKey } from '@baf-wallet/interfaces';
+import { ChainName } from '@baf-wallet/trust-wallet-assets';
 
 export interface KeyState {
   edPK: PublicKey;
@@ -8,11 +9,6 @@ export interface KeyState {
 }
 
 export interface Balance {
-  tok: TOKEN;
+  tok: ChainName;
   balance: string | number;
-}
-
-export enum TOKEN {
-  Near = 'near',
-  Eth = 'eth',
 }

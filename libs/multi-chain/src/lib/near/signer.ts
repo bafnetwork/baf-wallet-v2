@@ -7,7 +7,7 @@ import {
   utils,
 } from 'near-api-js';
 import {
-  Chain,
+  ChainName,
   KeyFormats,
   NearAction,
   SecretKey,
@@ -39,7 +39,7 @@ export class NearSigner extends Signer<
     private accountId: string,
     private networkId: NearNetworkId
   ) {
-    super(Chain.NEAR);
+    super(ChainName.NEAR);
     this.keyStore = new keyStores.InMemoryKeyStore();
     const keyPair = KeyPair.fromString(formatKey(privKey, KeyFormats.bs58));
     this.initProm = this.keyStore.setKey(

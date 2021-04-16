@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
+import { ChainName } from '@baf-wallet/interfaces';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -41,23 +42,6 @@ export class ChainInfo {
   @jsonArrayMember(String)
   public tags?: string[];
 }
-
-// TODO: have some intelligent way to get the rest
-export type ChainName =
-  | 'ethereum'
-  | 'bitcoin'
-  | 'near'
-  | 'solana'
-  | 'cosmos'
-  | 'celo'
-  | 'polkadot'
-  | 'filecoin'
-  | 'harmony'
-  | 'algorand'
-  | 'avalanche'
-  | 'matic'
-  | 'doge'
-  | 'terra';
 
 // TODO: have some intelligent way to get the rest
 export type DappUrl =

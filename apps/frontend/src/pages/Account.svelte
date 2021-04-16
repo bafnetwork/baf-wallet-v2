@@ -58,7 +58,7 @@
       class="flex flex-row items-center justify-center pb-6"
     >
       <div class="ml-3">
-        <Dropdown
+        <!-- <Dropdown
           bind:selected={displayName}
           items={Object.keys(accounts.byDisplayName).map((name) => {
             return {
@@ -67,7 +67,7 @@
               meta: accounts.byDisplayName[name],
             };
           })}
-        />
+        /> -->
       </div>
     </div>
     <div class="flex flex-row justify-around">
