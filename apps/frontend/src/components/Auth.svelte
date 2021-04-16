@@ -14,13 +14,9 @@
 
   async function initTorus(): Promise<DirectWebSdk> {
     const torus = new DirectWebSdk({
-      baseUrl: 'http://localhost:8080/serviceworker',
-      // proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183', // details for test net
+      baseUrl: `${constants.baseUrl}/serviceworker`,
       network: 'testnet', // details for test net
-      // redirectToOpener: true,
-      // uxMode: 'redirect',
     });
-    await torus.init({ skipSw: true });
     return torus;
   }
 

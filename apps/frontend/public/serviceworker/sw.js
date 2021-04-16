@@ -1,3 +1,7 @@
+/**
+ * This file was taken directly from torus, the file can be found on
+ * https://github.com/torusresearch/torus-direct-web-sdk/blob/master/serviceworker/sw.js
+ */
 /* eslint-disable */
 function getScope() {
   return self.registration.scope;
