@@ -8,14 +8,14 @@ import { ec, eddsa } from 'elliptic';
 export async function createNearAccount(
   secpPubkey: PublicKey,
   edPubkey: PublicKey,
-  discordUserId: string,
+  userId: string,
   nonce: string,
   secpSig: ec.Signature,
   edSig: eddsa.Signature,
   curve = CryptoCurves.secp256k1
 ) {
   const sigsValid = verifyBothSigs(
-    discordUserId,
+    userId,
     nonce,
     secpSig,
     edSig,
@@ -42,14 +42,14 @@ export async function createNearAccount(
 }
 
 function verifyBothSigs(
-  discordUserId: string,
+  userId: string,
   nonce: string,
   secpSig: ec.Signature,
   edSig: eddsa.Signature,
   secpPubkey: PublicKey,
   edPubkey: PublicKey
 ): boolean {
-  const msg = ChainUtil.createUserVerifyMessage(discordUserId, nonce);
+  const msg = ChainUtil.createUserVerifyMessage(userId, nonce);
   return (
     !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) ||
     !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)

@@ -28,6 +28,9 @@
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
+    console.log(userInfo.userInfo.accessToken)
+    localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
+    
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
         keyFromString(userInfo.privateKey, KeyFormats.hex)
