@@ -4,7 +4,7 @@ export interface KeyState {
   edPK: PublicKey;
   secpPK: PublicKey;
   secpSK: SecretKey;
-  edSK: SecretKey
+  edSK: SecretKey;
 }
 
 export interface Balance {

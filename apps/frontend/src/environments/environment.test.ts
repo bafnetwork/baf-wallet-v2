@@ -5,5 +5,5 @@ export const environment = {
   env: Envs.TEST,
   baseUrl: 'https://baf-wallet.netlify.app',
   // TODO: update
-  basePathApi: 'httpL//localhost:3333'
+  basePathApi: 'httpL//localhost:3333',
 };

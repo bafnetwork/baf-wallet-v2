@@ -14,7 +14,6 @@ import { CryptoCurves, PublicKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
 import { PublicKeyWrapper } from './common';
 
-
 interface CreateNearAccountParams {
   discordUserId: string;
   nonce: string;

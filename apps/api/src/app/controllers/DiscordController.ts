@@ -14,7 +14,9 @@ interface GetPubkeyForUserParams {
 export class DiscordController extends Controller {
   @SuccessResponse('204')
   @Post('revoke-token')
-  public async revokeToken(@Body() accessToken: RevokeTokenParams): Promise<void> {
+  public async revokeToken(
+    @Body() accessToken: RevokeTokenParams
+  ): Promise<void> {
     await discordRevokeAccessToken(accessToken.token);
   }
 

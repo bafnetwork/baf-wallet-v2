@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser';
 import express from 'express';
 import { RegisterRoutes } from '../build/routes';
 import { constants } from './app/config/constants';
-import * as cors from 'cors'
+import * as cors from 'cors';
 
 const app = express();
 
@@ -24,7 +24,7 @@ const corsOptions = {
     }
   },
 };
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 RegisterRoutes(app);
 
