@@ -10,18 +10,17 @@ import {
 } from 'tsoa';
 
 import { createNearAccount } from '../service/near';
-import { CryptoCurves, PublicKey, } from '@baf-wallet/interfaces';
-import { ChainUtil } from '@baf-wallet/multi-chain';
+import { CryptoCurves, PublicKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
-import { PublicKeyWrapper } from './comon';
+import { PublicKeyWrapper } from './common';
 
 
 interface CreateNearAccountParams {
-  discordUser: string;
+  discordUserId: string;
   nonce: string;
-  secp256k1Signature: ec.Signature;
-  derivedEd25519Pubkey: PublicKeyWrapper;
-  ed25519Signature: eddsa.Signature;
+  secpSig: ec.Signature;
+  edPubkey: PublicKeyWrapper;
+  edSig: eddsa.Signature;
 }
 
 @Route('near')
@@ -31,32 +30,17 @@ export class NearController extends Controller {
   public async createNearAccount(
     @Body() requestBody: CreateNearAccountParams
   ): Promise<void> {
-    const pubkey = Buffer.from(
+    const secpPubkey = Buffer.from(
       '60cf347dbc59d31c1358c8e5cf5e45b822ab85b79cb32a9f3d98184779a9efc2',
       'hex'
     ); // TODO: derive from torus
-    const msg = ChainUtil.createUserVerifyMessage(
-      requestBody.discordUser,
-      requestBody.nonce
-    );
-    if (
-      !ChainUtil.verifySignedSecp256k1(
-        pubkey,
-        msg,
-        requestBody.secp256k1Signature
-      ) ||
-      !ChainUtil.verifySignedEd25519(
-        requestBody.derivedEd25519Pubkey.pk,
-        requestBody.nonce,
-        requestBody.ed25519Signature
-      )
-    ) {
-      this.setStatus(403);
-      throw 'Proof that the sender owns this public key must provided';
-    }
     await createNearAccount(
-      pubkey,
-      requestBody.derivedEd25519Pubkey,
+      secpPubkey,
+      requestBody.edPubkey.pk,
+      requestBody.discordUserId,
+      requestBody.nonce,
+      requestBody.secpSig,
+      requestBody.edSig,
       CryptoCurves.secp256k1
     );
   }
