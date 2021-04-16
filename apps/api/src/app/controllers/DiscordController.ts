@@ -1,20 +1,23 @@
 import {
   Body,
   Controller,
-  Get,
-  Path,
   Post,
-  Query,
   Route,
   SuccessResponse,
 } from 'tsoa';
-import { discordWithdrawStuff } from '../service/discord';
+import {
+  discordRevokeAccessToken,
+} from '../service/discord';
+
+interface IRevokeToken {
+  token: string;
+}
 
 @Route('discord')
 export class DiscordController extends Controller {
   @SuccessResponse('204')
-  @Post('widthdraw')
-  public async getUser(): Promise<void> {
-    discordWithdrawStuff();
+  @Post('revoke-token')
+  public async revokeToken(@Body() accessToken: IRevokeToken): Promise<void> {
+    await discordRevokeAccessToken(accessToken.token);
   }
 }
