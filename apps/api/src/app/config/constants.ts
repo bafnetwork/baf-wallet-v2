@@ -10,4 +10,8 @@ export const constants = {
     networkId: getNearNetworkId(environment.env),
     masterAccountId: process.env.NEAR_MASTER_ACCOUNT_ID,
   },
+  discord: {
+    clientId: process.env.DISCORD_CLIENT_ID,
+    clientSecret: process.env.DISCORD_CLIENT_SECRET,
+  },
 };

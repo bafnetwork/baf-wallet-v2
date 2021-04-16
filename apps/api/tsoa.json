@@ -8,5 +8,9 @@
   },
   "routes": {
     "routesDir": "apps/api/build"
-  }
+  },
+  "ignore": [
+    "**/node_modules/borsh/node_modules/@types/bn.js/**",
+    "**/node_modules/@types/node/crypto.d.ts"
+  ]
 }

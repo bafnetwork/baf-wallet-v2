@@ -3,7 +3,7 @@
   import { getContext } from 'svelte';
   import Button from './base/Button.svelte';
   import SendModal from './SendModal.svelte';
-  import { AccountStore } from '../state/accounts.svelte';
+  import { AccountStore, logout } from '../state/accounts.svelte';
 
   const { open } = getContext('modal');
 
@@ -31,7 +31,17 @@
       color="white"
       classExtra="col-start-12 col-span-1">Send</Button
     >
+    <!-- TODO: different color -->
+    <Button
+      onClick={logout}
+      classExtra="col-start-12 col-span-1 logout" color="white">Logout</Button
+    >
     {:else}
     <a href="/login" use:link>Login</a>
   {/if}
 </div>
+<style>
+  .logout {
+    background-color: var(--danger-color);
+  }
+</style>

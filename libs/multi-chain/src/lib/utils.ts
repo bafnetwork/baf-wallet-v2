@@ -12,3 +12,15 @@ export function formatKey(
       return bs58.encode(Buffer.from(key));
   }
 }
+
+export function keyFromString(
+  key: string,
+  keyFormat = KeyFormats.hex
+): PublicKey | SecretKey {
+  switch (keyFormat) {
+    case KeyFormats.hex:
+      return Buffer.from(key, 'hex');
+    case KeyFormats.bs58:
+      return Buffer.from(bs58.decode(key));
+  }
+}

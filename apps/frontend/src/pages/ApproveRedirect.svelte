@@ -13,7 +13,7 @@
     NearSupportedActionTypes,
     NearTransferParam,
   } from '@baf-wallet/interfaces';
-  import { KeyStore } from '../state/keys.svelte';
+  import { SiteKeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
   export let params = {} as any;
@@ -22,16 +22,16 @@
   const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
   async function init() {
-    let privkey = $KeyStore.secret;
-    let pubkey = $KeyStore.ed25519Pubkey;
-    if (!pubkey || !privkey) {
+    let edSK = $SiteKeyStore.edSK;
+    let edPK = $SiteKeyStore.edPK;
+    if (!edPK || !edSK) {
       throw 'not-logged-in';
     }
     const networkId = getNearNetworkId(constants.env);
     const signer = new NearSigner(
-      privkey,
+      edSK,
       NearAccount.getAccountNameFromPubkey(
-        $KeyStore.secp256k1Pubkey,
+        $SiteKeyStore.secpPK,
         CryptoCurves.secp256k1,
         networkId
       ),
@@ -42,7 +42,7 @@
     await signer.awaitConstructorInit();
     return signer;
   }
-  
+
   async function onApprove(signer: NearSigner) {
     const tx = await signer.createTX(opts);
     const enc = await signer.signTX(tx);
@@ -67,6 +67,7 @@
 {:catch e}
   {#if e.toString() === 'not-logged-in'}
     Please login to approve or reject this transaction
-  {:else}{/if}
-  The following error occured: {e}
+  {:else}
+    The following error occured: {e}
+  {/if}
 {/await}
