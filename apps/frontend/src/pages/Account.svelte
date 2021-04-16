@@ -1,7 +1,6 @@
 <script lang="ts">
   import { AccountStore } from '../state/accounts.svelte';
-  import { KeyStore } from '../state/keys.svelte';
-  import { formatKey } fSiteKeyStoref-wallet/multi-chain';
+  import { packKey, SiteKeyStore } from '../state/keys.svelte';
   import jazzicon from 'jazzicon';
   import Dropdown from '../components/base/Dropdown.svelte';
   import Card from '../components/base/Card.svelte';
@@ -11,12 +10,13 @@
   import Button from '../components/base/Button.svelte';
   import { saveAs } from 'file-saver';
   import { KeyFormats } from '@baf-wallet/interfaces';
+  import { formatKey } from '@baf-wallet/multi-chain';
 
   let viewMode: 'assets' | 'history' = 'assets';
 
   let displayName: string;
-  let accounts = SiteKeyStoreAccountStore;
-  let pubkey = formatKey($KeyStore.secp256k1Pubkey);
+  let accounts = $AccountStore;
+  let pubkey = formatKey($SiteKeyStore.secpPK);
 
   function hashdisplayName(displayName: string) {
     var hash = 0;
@@ -42,9 +42,7 @@
   })();
 
   function downloadKeys() {
-    const key = {
-      secretKey: formatKey($KeyStore.secret, KeyFormats.hex),
-    };
+    const key = packKey($SiteKeyStore);
     const fileToSave = new Blob([JSON.stringify(key)], {
       type: 'application/json',
     });

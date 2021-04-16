@@ -3,10 +3,14 @@
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
-  import { AccountStore } from '../state/accounts.svelte';
+  import { AccountStore, storeAccessToken } from '../state/accounts.svelte';
   import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
-import { KeyStore } from 'near-api-js/lib/key_stores';
-import { SiteKeyStore } from '../state/keys.svelte';
+  import { KeyStore } from 'near-api-js/lib/key_stores';
+  import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
+  import { keyFromString } from '@baf-wallet/multi-chain';
+  import { KeyFormats } from '@baf-wallet/interfaces';
+  import { apiClient } from '../config/api';
+  import { constants } from '../config/constants';
 
   async function initTorus(): Promise<DirectWebSdk> {
     const torus = new DirectWebSdk({
@@ -21,26 +25,36 @@ import { SiteKeyStore } from '../state/keys.svelte';
   }
 
   async function discordLogin() {
+    if (
+      $AccountStore.accessToken?.type === TORUS_LOGIN.DISCORD &&
+      $AccountStore.accessToken
+    ) {
+      await apiClient.revokeToken({
+        revokeTokenParams: { token: $AccountStore.accessToken.token },
+      });
+    }
     const torus = await initTorus();
     const userInfo = await torus.triggerLogin({
       typeOfLogin: 'discord',
-      verifier: 'baf wallet-discord-testnet',
-      clientId: '821890148198776874',
+      verifier: constants.torus.discord.verifier,
+      clientId: constants.torus.discord.clientId,
     });
-    console.log(userInfo);
-    SiteKeyStore.set({
-      secp256k1Pubkey: userInfo.publicAddress,
-      ed25519Pubkey: 
-    })
-    // TODO: put elsewhere
+    const accessToken = {
+      type: TORUS_LOGIN.DISCORD,
+      token: userInfo.userInfo.accessToken,
+      dateIssued: new Date(),
+    };
+    storeAccessToken(accessToken);
+    SiteKeyStore.set(
+      buildKeyStateFromSecpSK(
+        keyFromString(userInfo.privateKey, KeyFormats.hex)
+      )
+    );
     AccountStore.update((state) => {
       return {
         ...state,
         loggedIn: true,
-        accessToken: {
-          type: TORUS_LOGIN.DISCORD,
-          token: userInfo.userInfo.accessToken,
-        },
+        accessToken,
       };
     });
   }

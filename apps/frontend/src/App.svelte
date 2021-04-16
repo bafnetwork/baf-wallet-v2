@@ -8,7 +8,7 @@
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { SiteKeyStore } from './state/keys.svelte';
-  import { AccountStore } from './state/accounts.svelte';
+  import Accounts, { AccountStore, initAccount } from './state/accounts.svelte';
 
   const routesLoggedIn = {
     '/': Account,
@@ -16,30 +16,13 @@
     '/login': Login,
     '/*': NotFound404,
   };
-  const routeSiteKeyStoreut = {
+  const routesLoggedOut = {
     '/': Login,
     '/:attemptedRoute': Login,
   };
 
-  // TODO: implement with tor.us
-  async function init(): Promise<boolean> {
-    // TODO: deal with account state with tor.us
-    KeyStore.set({
-      //  ed25519Pubkey:
-      secp256k1Pubkey: Buffer.from(
-        'BfaBf538323A1D21453b5F6a374A07867D867196',
-        'hex'
-      ),
-      ed25519Pubkey: Buffer.from(
-        'emnAJc96ms/Da6K/Wu2AVm8NXPhdbUBohwMOYKTQ1Eo=',
-        'base64'
-      ),
-      secret: Buffer.from(
-        '7zlbvQqMGvGpe0cBTpXGJH9HZmxPT3acA+/l/7xN69d6acAlz3qaz8Nror9a7YBWbw1c+F1tQGiHAw5gpNDUSg==',
-        'base64'
-      ),
-    });
-    return false;
+  async function init(): Promise<void> {
+    await initAccount();
   }
   const initProm = init();
 </script>
@@ -48,7 +31,11 @@
   <p>Loading...</p>
 {:then ret}
   <Modal>
-    <Router routes={$AccountStore.loggedIn ? routesLoggedIn : routesLoggedOut} />
+    {#if $AccountStore.loggedIn}
+      <Router routes={routesLoggedIn} />
+    {:else}
+      <Router routes={routesLoggedOut} />
+    {/if}
   </Modal>
 {:catch error}
   <p>An error occured loading the page: {error.toString()}</p>

@@ -1,38 +1,67 @@
 <script lang="ts" context="module">
-  import { formatKey, keyFromString } from '@baf-wallet/multi-chain';
+  import { KeyFormats, SecretKey } from '@baf-wallet/interfaces';
+
+  import {
+    edPubkeyFromSK,
+    edSKFromSeed,
+    secpPubkeyFromSK,
+    keyFromString,
+    formatKey,
+  } from '@baf-wallet/multi-chain';
 
   import { writable } from 'svelte/store';
   import { KeyState } from '../interfaces';
 
+  const keyStoreName = 'key-store';
+
   export const SiteKeyStore = writable<KeyState | null>(null);
 
-  function packKey(keyState: KeyState) {
-    return `${formatKey(keyState.secp256k1Pubkey)}:${formatKey(
-      keyState.ed25519Pubkey
-    )}:${formatKey(keyState.secret)}`;
+  export function packKey(keyState: KeyState) {
+    return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.hex)}`;
+  }
+
+  export function buildKeyStateFromSecpSK(secpSK: SecretKey): KeyState {
+    const edSK = edSKFromSeed(new Uint8Array(secpSK));
+    return {
+      edSK,
+      secpSK,
+      edPK: edPubkeyFromSK(edSK),
+      secpPK: secpPubkeyFromSK(secpSK),
+    };
   }
 
   function unpackKey(keyState: string): KeyState {
     const split = keyState.split(':');
-    if (split.length !== 3) {
+    if (split.length !== 2) {
       throw 'Incorrect packed key in storage';
+    } else if (split[0] !== 'secp256k1') {
+      throw 'Only secp256k1 keys are supported as base keys right not';
     }
-    return {
-      secp256k1Pubkey: keyFromString(split[0]),
-      ed25519Pubkey: keyFromString(split[1]),
-      secret: keyFromString(split[2]),
-    };
+    return buildKeyStateFromSecpSK(keyFromString(split[1], KeyFormats.hex));
+  }
+
+  export function clearKeysFromStorage() {
+    window.localStorage.setItem(keyStoreName, '');
   }
 
   SiteKeyStore.subscribe((keyStore) => {
-    const keysStored = window.localStorage.getItem('key-store');
+    if (!keyStore) {
+      return;
+    }
+    const keysStored = window.localStorage.getItem(keyStoreName);
     const stringified = packKey(keyStore);
     if (keysStored !== stringified)
-      window.localStorage.setItem('key-store', stringified);
+      window.localStorage.setItem(keyStoreName, stringified);
   });
 
-  export function loadKeys() {
-    const keysStored = window.localStorage.getItem('key-store');
-    SiteKeyStore.set(unpackKey(keysStored));
+  /**
+   * @returns true if the user is logged in
+   */
+  export function loadKeys(): boolean {
+    const keysStored = window.localStorage.getItem(keyStoreName);
+    if (!keysStored) return false;
+    const keysParse = unpackKey(keysStored);
+    SiteKeyStore.set(keysParse);
+    return true;
   }
 </script>

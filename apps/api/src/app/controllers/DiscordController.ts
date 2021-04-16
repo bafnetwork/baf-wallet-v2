@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Route, SuccessResponse } from 'tsoa';
 import { getPubkeyForUser, discordRevokeAccessToken } from '../service/discord';
 
-interface IRevokeToken {
+interface RevokeTokenParams {
   token: string;
 }
 
@@ -14,7 +14,7 @@ interface GetPubkeyForUserParams {
 export class DiscordController extends Controller {
   @SuccessResponse('204')
   @Post('revoke-token')
-  public async revokeToken(@Body() accessToken: IRevokeToken): Promise<void> {
+  public async revokeToken(@Body() accessToken: RevokeTokenParams): Promise<void> {
     await discordRevokeAccessToken(accessToken.token);
   }
 

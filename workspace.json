@@ -67,7 +67,7 @@
                 "command": "rm -r apps/api/build; mkdir apps/api/build"
               },
               {
-                "command": "$(npm bin)/tsoa --configuration apps/api/tsoa.json spec-and-routes && tsc"
+                "command": "$(npm bin)/tsoa --configuration apps/api/tsoa.json spec-and-routes"
               }
             ]
           }
