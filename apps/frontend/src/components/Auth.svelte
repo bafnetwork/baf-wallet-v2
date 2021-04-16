@@ -15,13 +15,6 @@
     return torus;
   }
 
-  // (window as any).tryTorus = async () => {
-  //   const torus = await initTorus();
-  //   const ret = await torus.getRedirectResult();
-  //   console.log(ret);
-  // };
-  // https://discord.com/oauth2/authorize?state=eyJpbnN0YW5jZUlkIjoiQmFSa0VlaWhtZnpWbGlyZ1BRUDJsenhTZVcwRng1IiwidmVyaWZpZXIiOiJiYWYgd2FsbGV0LWRpc2NvcmQtdGVzdG5ldCIsInR5cGVPZkxvZ2luIjoiZGlzY29yZCIsInJlZGlyZWN0VG9PcGVuZXIiOmZhbHNlfQ%253D%253D&response_type=token&client_id=821890148198776874&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fserviceworker%2Fredirect&scope=identify+email
-
   async function discordLogin() {
     const torus = await initTorus();
     const userInfo = await torus.triggerLogin({
