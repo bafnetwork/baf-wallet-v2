@@ -319,6 +319,16 @@
             "command": "cd apps/frontend && $(npm bin)/webpack serve"
           }
         },
+        "serve+api": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "cd apps/frontend && $(npm bin)/webpack serve",
+              "nx serve api"
+            ],
+            "parallel": true
+          }
+        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
