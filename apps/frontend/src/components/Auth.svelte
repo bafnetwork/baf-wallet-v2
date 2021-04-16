@@ -3,7 +3,7 @@
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
-  import { AccountStore, storeAccessToken } from '../state/accounts.svelte';
+  import { AccountStore  } from '../state/accounts.svelte';
   import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
   import { KeyStore } from 'near-api-js/lib/key_stores';
   import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
@@ -17,30 +17,20 @@
       baseUrl: `${constants.baseUrl}/serviceworker`,
       network: 'testnet', // details for test net
     });
+    await torus.init();
     return torus;
   }
 
   async function discordLogin() {
-    if (
-      $AccountStore.accessToken?.type === TORUS_LOGIN.DISCORD &&
-      $AccountStore.accessToken
-    ) {
-      await apiClient.revokeToken({
-        revokeTokenParams: { token: $AccountStore.accessToken.token },
-      });
-    }
     const torus = await initTorus();
     const userInfo = await torus.triggerLogin({
       typeOfLogin: 'discord',
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
-    const accessToken = {
-      type: TORUS_LOGIN.DISCORD,
-      token: userInfo.userInfo.accessToken,
-      dateIssued: new Date(),
-    };
-    storeAccessToken(accessToken);
+    await apiClient.revokeToken({
+      revokeTokenParams: { token: userInfo.userInfo.accessToken },
+    });
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
         keyFromString(userInfo.privateKey, KeyFormats.hex)
@@ -50,7 +40,6 @@
       return {
         ...state,
         loggedIn: true,
-        accessToken,
       };
     });
   }

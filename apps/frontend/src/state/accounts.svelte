@@ -8,14 +8,7 @@
     pubkey: string;
   }
 
-  interface AccessToken {
-    type: TORUS_LOGIN_TYPE;
-    token: string;
-    dateIssued: Date;
-  }
-
   export interface AccountState {
-    accessToken: AccessToken | null;
     loggedIn: boolean;
     byPubkey: {
       [pubkey: string]: Account;
@@ -23,15 +16,6 @@
     byDisplayName: {
       [displayName: string]: Account;
     };
-  }
-
-  export function storeAccessToken(accessToken: AccessToken) {
-    window.localStorage.setItem(`access-token`, JSON.stringify(accessToken));
-  }
-
-  function getAccessToken(): AccessToken | null {
-    const stored = window.localStorage.getItem('access-token');
-    return stored ? (JSON.parse(stored) as AccessToken) : null;
   }
 
   export const AccountStore = writable<AccountState | null>(null);
@@ -51,7 +35,6 @@
   export async function initAccount() {
     const loggedIn = loadKeys();
     AccountStore.set({
-      accessToken: getAccessToken(),
       loggedIn,
       byPubkey: {
         '0xDEADEEF': {
