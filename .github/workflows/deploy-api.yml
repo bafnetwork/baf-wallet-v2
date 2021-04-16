@@ -33,6 +33,7 @@ jobs:
           git remote add origin git@github.com:bafnetwork/baf-wallet-deploy-api.git
           git config --global user.email "satoshin@gmx.com"
           git config --global user.name "Satoshi Nakamoto"
+          git add .
           git commit -m "deploy"
           git push -u origin main
           rm -rf .git
