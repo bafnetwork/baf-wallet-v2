@@ -122,6 +122,7 @@
     "discord.js": "^12.5.1",
     "elliptic": "^6.5.4",
     "express": "^4.17.1",
+    "file-saver": "^2.0.5",
     "jazzicon": "^1.5.0",
     "js-sha256": "^0.9.0",
     "js-sha3": "^0.8.0",
@@ -131,8 +132,8 @@
     "reflect-metadata": "^0.1.13",
     "svelte-spa-router": "^3.1.0",
     "tsoa": "^3.5.2",
-    "typedjson": "^1.7.0",
     "tweetnacl": "^1.0.3",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "typedjson": "^1.7.0"
   }
 }

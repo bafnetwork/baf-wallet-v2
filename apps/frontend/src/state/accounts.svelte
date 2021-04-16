@@ -6,6 +6,7 @@
     }
 
     export interface AccountState {
+        loggedIn: boolean,
         byPubkey: {
             [pubkey: string]: Account 
         },
@@ -15,6 +16,7 @@
     }
   
     export const AccountStore = writable<AccountState>({
+        loggedIn: true,
         byPubkey: {
             "0xDEADEEF": {
                 displayName: "lev.near",
