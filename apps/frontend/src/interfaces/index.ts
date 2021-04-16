@@ -3,7 +3,7 @@ import type { PublicKey, SecretKey } from '@baf-wallet/interfaces';
 export interface KeyState {
   ed25519Pubkey: PublicKey;
   secp256k1Pubkey: PublicKey;
-  secret: any;
+  secret: SecretKey;
 }
 
 export interface Balance {

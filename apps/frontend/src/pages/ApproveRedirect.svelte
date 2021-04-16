@@ -13,7 +13,7 @@
     NearSupportedActionTypes,
     NearTransferParam,
   } from '@baf-wallet/interfaces';
-  import { KeyStore } from '../state/keys.svelte';
+  import { SiteKeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
   export let params = {} as any;
@@ -22,8 +22,8 @@
   const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
   async function init() {
-    let privkey = $KeyStore.secret;
-    let pubkey = $KeyStore.ed25519Pubkey;
+    let privkey = $SiteKeyStore.secret;
+    let pubkey = $SiteKeyStore.ed25519Pubkey;
     if (!pubkey || !privkey) {
       throw 'not-logged-in';
     }
@@ -31,7 +31,7 @@
     const signer = new NearSigner(
       privkey,
       NearAccount.getAccountNameFromPubkey(
-        $KeyStore.secp256k1Pubkey,
+        $SiteKeyStore.secp256k1Pubkey,
         CryptoCurves.secp256k1,
         networkId
       ),

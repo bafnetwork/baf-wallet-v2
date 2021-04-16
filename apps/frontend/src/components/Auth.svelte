@@ -3,6 +3,11 @@
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
+  import { AccountStore } from '../state/accounts.svelte';
+  import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
+import { KeyStore } from 'near-api-js/lib/key_stores';
+import { SiteKeyStore } from '../state/keys.svelte';
+
   async function initTorus(): Promise<DirectWebSdk> {
     const torus = new DirectWebSdk({
       baseUrl: 'http://localhost:8080/serviceworker',
@@ -22,7 +27,22 @@
       verifier: 'baf wallet-discord-testnet',
       clientId: '821890148198776874',
     });
-    console.log(userInfo)
+    console.log(userInfo);
+    SiteKeyStore.set({
+      secp256k1Pubkey: userInfo.publicAddress,
+      ed25519Pubkey: 
+    })
+    // TODO: put elsewhere
+    AccountStore.update((state) => {
+      return {
+        ...state,
+        loggedIn: true,
+        accessToken: {
+          type: TORUS_LOGIN.DISCORD,
+          token: userInfo.userInfo.accessToken,
+        },
+      };
+    });
   }
 </script>
 

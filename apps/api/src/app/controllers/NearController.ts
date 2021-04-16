@@ -10,15 +10,17 @@ import {
 } from 'tsoa';
 
 import { createNearAccount } from '../service/near';
-import { CryptoCurves, PublicKey } from '@baf-wallet/interfaces';
+import { CryptoCurves, PublicKey, } from '@baf-wallet/interfaces';
 import { ChainUtil } from '@baf-wallet/multi-chain';
 import { ec, eddsa } from 'elliptic';
+import { PublicKeyWrapper } from './comon';
+
 
 interface CreateNearAccountParams {
   discordUser: string;
   nonce: string;
   secp256k1Signature: ec.Signature;
-  derivedEd25519Pubkey: PublicKey;
+  derivedEd25519Pubkey: PublicKeyWrapper;
   ed25519Signature: eddsa.Signature;
 }
 
@@ -44,7 +46,7 @@ export class NearController extends Controller {
         requestBody.secp256k1Signature
       ) ||
       !ChainUtil.verifySignedEd25519(
-        requestBody.derivedEd25519Pubkey,
+        requestBody.derivedEd25519Pubkey.pk,
         requestBody.nonce,
         requestBody.ed25519Signature
       )

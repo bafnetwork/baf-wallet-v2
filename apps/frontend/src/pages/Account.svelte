@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AccountStore } from '../state/accounts.svelte';
   import { KeyStore } from '../state/keys.svelte';
-  import { formatKey } from '@baf-wallet/multi-chain';
+  import { formatKey } fSiteKeyStoref-wallet/multi-chain';
   import jazzicon from 'jazzicon';
   import Dropdown from '../components/base/Dropdown.svelte';
   import Card from '../components/base/Card.svelte';
@@ -15,7 +15,7 @@
   let viewMode: 'assets' | 'history' = 'assets';
 
   let displayName: string;
-  let accounts = $AccountStore;
+  let accounts = SiteKeyStoreAccountStore;
   let pubkey = formatKey($KeyStore.secp256k1Pubkey);
 
   function hashdisplayName(displayName: string) {

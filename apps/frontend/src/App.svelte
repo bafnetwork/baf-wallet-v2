@@ -7,7 +7,7 @@
   import Account from './pages/Account.svelte';
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
-  import { KeyStore } from './state/keys.svelte';
+  import { SiteKeyStore } from './state/keys.svelte';
   import { AccountStore } from './state/accounts.svelte';
 
   const routesLoggedIn = {
@@ -16,7 +16,7 @@
     '/login': Login,
     '/*': NotFound404,
   };
-  const routesLoggedOut = {
+  const routeSiteKeyStoreut = {
     '/': Login,
     '/:attemptedRoute': Login,
   };
