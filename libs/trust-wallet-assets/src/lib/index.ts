@@ -38,7 +38,7 @@ export class ChainInfo {
   public decimals: number;
   @jsonMember
   public status: 'active' | 'abandoned';
-  @jsonMember
+  @jsonArrayMember(String)
   public tags?: string[];
 }
 
@@ -121,9 +121,10 @@ export async function getChainInfo(chain: ChainName): Promise<ChainInfo> {
     return serializer.parse(data);
   } catch (err) {
     if (err.isAxiosError) {
-      throw new Error(
+      console.log(
         'Chain not found: only chains in https://raw.githubusercontent.com/trustwallet/assets/master/blockchains are supported.'
       );
+      return null;
     }
     throw new Error(
       `Received invalid info.json: ${err}. See \`ChainInfo\` in trust-wallet-assets/src/lib/index.ts for more information`

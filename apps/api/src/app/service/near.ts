@@ -14,9 +14,14 @@ export async function createNearAccount(
   edSig: eddsa.Signature,
   curve = CryptoCurves.secp256k1
 ) {
-
-  const sigsValid = 
-    verifyBothSigs(discordUserId, nonce, secpSig, edSig, secpPubkey, edPubkey);
+  const sigsValid = verifyBothSigs(
+    discordUserId,
+    nonce,
+    secpSig,
+    edSig,
+    secpPubkey,
+    edPubkey
+  );
 
   if (!sigsValid) {
     this.setStatus(403);
@@ -26,7 +31,7 @@ export async function createNearAccount(
   if (curve !== CryptoCurves.secp256k1) {
     throw 'Only secp256k1 curves are currently supported';
   }
-  
+
   const near = await NearAccount.get();
   const accountName = near.getAccountNameFromPubkey(secpPubkey, curve);
 
@@ -44,17 +49,14 @@ function verifyBothSigs(
   secpPubkey: PublicKey,
   edPubkey: PublicKey
 ): boolean {
-  const msg = ChainUtil.createUserVerifyMessage(
-    discordUserId,
-    nonce
+  const msg = ChainUtil.createUserVerifyMessage(discordUserId, nonce);
+  return (
+    !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) ||
+    !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
   );
-  return !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) 
-      || !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig);
 }
 
 function toNearKey(edPubkey: PublicKey): NearPublicKey {
-  const x = NearPublicKey.fromString(
-    formatKey(edPubkey, KeyFormats.bs58)
-  );
+  const x = NearPublicKey.fromString(formatKey(edPubkey, KeyFormats.bs58));
   return x;
 }

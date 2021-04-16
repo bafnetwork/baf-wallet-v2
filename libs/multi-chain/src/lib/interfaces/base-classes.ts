@@ -69,7 +69,7 @@ export abstract class ChainUtil {
   public static signSecp256k1(sk: SecretKey, msg: string): ec.Signature {
     const msgHash = sha3.keccak256(msg);
     const sig = ecSecp.sign(msgHash, sk, 'hex', {
-      canonical: true
+      canonical: true,
     });
     return sig;
   }

@@ -27,12 +27,9 @@ export function secpSKFromSeed(seed: Uint8Array): SecretKey {
   const entropy = nacl.hash(seed);
   const sk = secp256k1.genKeyPair({ entropy }).getPrivate('hex');
 
-  console.log(sk)
-    
-  return Buffer.from(
-    sk,
-    'hex'
-  );
+  console.log(sk);
+
+  return Buffer.from(sk, 'hex');
 }
 
 export function edSKFromRng(): SecretKey {
@@ -40,8 +37,5 @@ export function edSKFromRng(): SecretKey {
 }
 
 export function secpSKFromRng(): SecretKey {
-  return Buffer.from(
-    secp256k1.genKeyPair().getPrivate('hex'),
-    'hex'
-  )
+  return Buffer.from(secp256k1.genKeyPair().getPrivate('hex'), 'hex');
 }

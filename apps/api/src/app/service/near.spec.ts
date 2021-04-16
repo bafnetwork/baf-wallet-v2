@@ -11,7 +11,7 @@ import {
   secpSKFromSeed,
   edSKFromSeed,
   edSKFromRng,
-  secpSKFromRng
+  secpSKFromRng,
 } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
@@ -35,8 +35,7 @@ const aliceSecpSecretKey = secpSKFromSeed(seed);
 const aliceEdPublicKey = edPubkeyFromSK(aliceEdSecretKey);
 const aliceSecpPublicKey = secpPubkeyFromSK(aliceSecpSecretKey);
 
-
-const aliceUserId = "alice"
+const aliceUserId = 'alice';
 const aliceNonce = 69;
 
 jest.setTimeout(30000);
@@ -73,14 +72,13 @@ describe('createAccount', () => {
   });
 
   it('should create the account given good sigs', async () => {
-
     const msg = ChainUtil.createUserVerifyMessage(
       aliceUserId,
       aliceNonce.toString()
     );
     const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
     const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
-    
+
     await createNearAccount(
       aliceSecpPublicKey,
       aliceEdPublicKey,
@@ -98,7 +96,6 @@ describe('createAccount', () => {
   });
 
   it('should fail if the secp sig is invalid', async () => {
-
     expect(async () => {
       const msg = ChainUtil.createUserVerifyMessage(
         aliceUserId,
@@ -108,7 +105,7 @@ describe('createAccount', () => {
       //* use random SK instead of alice's SK
       const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
       const secpSig = ChainUtil.signSecp256k1(secpSKFromRng(), msg);
-      
+
       await createNearAccount(
         aliceSecpPublicKey,
         aliceEdPublicKey,
@@ -118,20 +115,20 @@ describe('createAccount', () => {
         edSig,
         CryptoCurves.secp256k1
       );
-    }).rejects.toThrow('Proof that the sender owns this public key must provided');
-  
+    }).rejects.toThrow(
+      'Proof that the sender owns this public key must provided'
+    );
+
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
 
-    expect(deleteAccount(account, true))
-      .rejects
-      .toThrow(
-        `Can not sign transactions for account ${accountName} on network ${account.connection.networkId}, no matching key pair found`);
+    expect(deleteAccount(account, true)).rejects.toThrow(
+      `Can not sign transactions for account ${accountName} on network ${account.connection.networkId}, no matching key pair found`
+    );
   });
 
   it('should fail if the ed sig is invalid', async () => {
-    
     expect(async () => {
       const msg = ChainUtil.createUserVerifyMessage(
         aliceUserId,
@@ -141,7 +138,7 @@ describe('createAccount', () => {
       //* use random SK instead of alice's SK
       const edSig = ChainUtil.signEd25519(edSKFromRng(), msg);
       const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
-      
+
       await createNearAccount(
         aliceSecpPublicKey,
         aliceEdPublicKey,
@@ -151,14 +148,16 @@ describe('createAccount', () => {
         edSig,
         CryptoCurves.secp256k1
       );
-    }).rejects.toThrow('Proof that the sender owns this public key must provided');
-  
+    }).rejects.toThrow(
+      'Proof that the sender owns this public key must provided'
+    );
+
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
-    
-    expect(deleteAccount(account, true))
-      .rejects
-      .toThrow(`Can not sign transactions for account ${accountName} on network ${account.connection.networkId}, no matching key pair found`);
-  })
+
+    expect(deleteAccount(account, true)).rejects.toThrow(
+      `Can not sign transactions for account ${accountName} on network ${account.connection.networkId}, no matching key pair found`
+    );
+  });
 });

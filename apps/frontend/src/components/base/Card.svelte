@@ -3,7 +3,7 @@
     export let classExtra: string | string[] = ""
 
     const extraClasses = Array.isArray(classExtra) ? classExtra.join(" ") : classExtra;
-    const classes = classOverride !== undefined ? classOverride : `p-4 bg-gray-50 rounded-md shadow-md ${extraClasses}`
+    const classes = classOverride !== undefined ? classOverride : `p-4 bg-blueGray-100 rounded-md shadow-md ${extraClasses}`
 </script>
 
 <div class={classes}>

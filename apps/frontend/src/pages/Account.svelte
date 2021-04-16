@@ -1,43 +1,73 @@
 <script lang="ts">
-  // import { crossfade } from "svelte/types/runtime/transition";
-  import Button from '../components/base/Button.svelte';
+  import type { AccountState } from "../state/accounts.svelte";
+  import { AccountStore } from "../state/accounts.svelte";
+  import { KeyStore } from '../state/keys.svelte';
+  import { formatKey } from '@baf-wallet/multi-chain';
+  import jazzicon from "jazzicon";
+  import Dropdown from "../components/base/Dropdown.svelte";
   import Card from '../components/base/Card.svelte';
-  import Dropdown from '../components/base/Dropdown.svelte';
   import Layout from '../components/Layout.svelte';
   import Listbalances from '../components/Listbalances.svelte';
-  import SendForm from '../components/SendForm.svelte';
-  import SendModal from '../components/SendModal.svelte';
-  import TxModal from '../components/TxModal.svelte';
+  import History from '../components/History.svelte';
 
-  import { getContext } from 'svelte';
-  const { open } = getContext('modal');
+  let viewMode: "assets" | "history" = "assets";
 
-  const openSendModal = () => {
-    open(SendModal);
-  };
+  let displayName: string;
+  let accounts = $AccountStore;
+  let pubkey = formatKey($KeyStore.secp256k1Pubkey);
 
-  const openTxModal = () => {
-    open(TxModal, { txLink: "https://explorer.near.org/"});
+  function hashdisplayName(displayName: string) {
+    var hash = 0;
+    if (displayName.length == 0) {
+        return hash;
+    }
+    for (var i = 0; i < displayName.length; i++) {
+        var char = displayName.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
   }
+
+  let displayNameContainer;
+  $: _ = (() => {
+    if (!displayName) {
+      console.log("bruh")
+      return;
+    }
+    const icon = jazzicon(40, hashdisplayName(displayName));
+    displayNameContainer.prepend(icon);
+  })()
+
 </script>
 
 <Layout>
-  <Card>
-    <h1 class="text-4xl">AccountPage</h1>
-    <Button onClick={openSendModal}>Open SendModal</Button>
-    <Button onClick={openTxModal}>Open TxModal</Button>
-    <Dropdown
-      items={['NEAR', 'ETH', 'SOL', 'BTC'].map((name) => ({
-        label: name,
-        value: name,
-      }))}
-    />
-    <div class="mt-8">
-      <h3 class="text-2xl text-center">Balances</h3>
-      <Listbalances />
+  <Card classExtra="flex flex-col container mx-auto">
+    <h1 class="pb-6 text-4xl text-center">Account</h1>
+    <div bind:this={displayNameContainer} class="flex flex-row items-center justify-center pb-6">
+      <div class="ml-3">
+        <Dropdown bind:selected={displayName} items={Object.keys(accounts.byDisplayName).map(name => {
+         ;
+          return {
+          label: `${name} / ${pubkey.slice(0, 4)}...${pubkey.slice(-4)}`,
+          value: name,
+          meta: accounts.byDisplayName[name]
+        }
+        })}/>
+      </div>
     </div>
-    <div class="mt-8">
-      <SendForm />
+    <div class="flex flex-row justify-around">
+      <button on:click={() => viewMode = "assets"} class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "z-10 bg-white" : "hover:bg-blueGray-200"}`}>Assets</button>
+      <button on:click={() => viewMode = "history"} class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${viewMode === "assets" ? "hover:bg-blueGray-200" : "z-10 bg-white"}`}>History</button>
     </div>
+    {#if viewMode === "assets"}
+      <div class="container z-10 pb-4 mx-auto transition duration-150 ease-in-out bg-white rounded-md">
+        <Listbalances />
+      </div>
+    {:else}
+      <div class="z-10 pb-4 transition duration-150 ease-in-out bg-white rounded-md">
+        <History />
+      </div>
+    {/if}
   </Card>
 </Layout>
