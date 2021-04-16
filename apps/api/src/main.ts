@@ -14,7 +14,7 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-const whitelist = ['http://localhost:8080'];
+const whitelist = ['http://localhost:8080',];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
