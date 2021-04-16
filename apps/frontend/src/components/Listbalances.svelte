@@ -12,12 +12,15 @@
   async function initBalances(): Promise<
     { chainInfo: ChainInfo; bal: Balance }[]
   > {
-    const balances: Balance[] = $AccountStore.chainAccounts.map(async (account) => {
-      return {
-        tok: account.chain,
-        balance: await getAccountBalance(account.chain, account.account),
-      };
-    });
+    const balanceProms: Promise<Balance>[] = $AccountStore.chainAccounts.map(
+      async (account) => {
+        return {
+          tok: account.chain,
+          balance: await getAccountBalance(account.chain, account.account),
+        };
+      }
+    );
+    const balances: Balance[] = await Promise.all(balanceProms);
     return Promise.all(
       balances.map((bal: Balance) => {
         return getChainInfo(bal.tok).then((chainInfo) => {
