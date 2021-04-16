@@ -16,7 +16,7 @@
 
   export const SiteKeyStore = writable<KeyState | null>(null);
 
-  export function packKey(keyState: KeyState) {
+  export function packKey(keyState: KeyState): string {
     return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.hex)}`;
   }
 

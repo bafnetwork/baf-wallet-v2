@@ -3,7 +3,7 @@
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
-  import { AccountStore  } from '../state/accounts.svelte';
+  import { AccountStore } from '../state/accounts.svelte';
   import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
   import { KeyStore } from 'near-api-js/lib/key_stores';
   import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
@@ -28,9 +28,6 @@
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
-    await apiClient.revokeToken({
-      revokeTokenParams: { token: userInfo.userInfo.accessToken },
-    });
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
         keyFromString(userInfo.privateKey, KeyFormats.hex)
@@ -41,6 +38,9 @@
         ...state,
         loggedIn: true,
       };
+    });
+    await apiClient.revokeToken({
+      revokeTokenParams: { token: userInfo.userInfo.accessToken },
     });
   }
 </script>
