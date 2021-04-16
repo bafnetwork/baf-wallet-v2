@@ -28,9 +28,9 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: push to api deploy repo
         run: |
-          git init,
-          git branch -M main,
-          git remote add origin git@github.com:bafnetwork/baf-wallet-deploy-api.git,
-          git push -u origin main,
+          git init
+          git branch -M main
+          git remote add origin git@github.com:bafnetwork/baf-wallet-deploy-api.git
+          git push -u origin main
           rm -rf .git
         working-directory: ${{env.workdir}}
