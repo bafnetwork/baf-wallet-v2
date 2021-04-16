@@ -1,18 +1,37 @@
 <script lang="ts">
-  import { KeyStore } from '../state/keys.svelte';
-
   import { link } from 'svelte-spa-router';
+  import { getContext } from 'svelte';
   import Button from './base/Button.svelte';
-  import { formatKey } from '@baf-wallet/multi-chain';
-  const openSendTxModal = () => {};
+  import SendModal from './SendModal.svelte';
+  import { AccountStore } from '../state/accounts.svelte';
+
+  const { open } = getContext('modal');
+
+  function openSendModal() {
+    open(SendModal);
+  }
 </script>
 
 <div
-  class="sticky top-0 z-30 flex flex-row justify-between p-4 bg-blue-500 shadow-md h-min"
+  class="sticky top-0 z-30 grid grid-cols-12 gap-2 p-4 shadow-md bg-cyan-600 h-min"
 >
-  <a class="text-lg text-white justify-self-start" href="/" use:link>Account</a>
-  <a class="text-lg text-white" href="/history" use:link>History</a>
-  <a class="text-lg text-white" href="/apps" use:link>Apps</a>
-  <Button onClick={openSendTxModal} color="white">Send</Button>
-  {formatKey($KeyStore.secp256k1Pubkey)}
+  {#if $AccountStore.loggedIn}
+    <a
+      class="col-span-1 col-start-10 text-lg text-center text-white"
+      href="/"
+      use:link>Account</a
+    >
+    <a
+      class="col-span-1 col-start-11 text-lg text-center text-white"
+      href="/apps"
+      use:link>Apps</a
+    >
+    <Button
+      onClick={openSendModal}
+      color="white"
+      classExtra="col-start-12 col-span-1">Send</Button
+    >
+    {:else}
+    <a href="/login" use:link>Login</a>
+  {/if}
 </div>

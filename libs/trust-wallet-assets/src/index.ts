@@ -1,1 +1,1 @@
-export * from './lib/trust-wallet-assets';
+export * from './lib/index';

@@ -12,6 +12,6 @@ export interface Balance {
 }
 
 export enum TOKEN {
-  Near = 'Near',
-  Eth = 'Eth',
+  Near = 'near',
+  Eth = 'eth',
 }

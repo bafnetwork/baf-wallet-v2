@@ -14,7 +14,7 @@
     <XButton onClick={close}/>
     <div class="flex flex-row justify-center py-4">
         {#if !isComplete}
-            <svg width="105" height="105" viewBox="0 0 105 105" xmlns="http://www.w3.org/2000/svg" class="text-blue-500 fill-current">
+            <svg width="105" height="105" viewBox="0 0 105 105" xmlns="http://www.w3.org/2000/svg" class="fill-current text-lightBlue-900">
                 <circle cx="12.5" cy="12.5" r="12.5">
                     <animate attributeName="fill-opacity"
                     begin="0s" dur="1s"

@@ -8,6 +8,7 @@
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { KeyStore } from './state/keys.svelte';
+  import { AccountStore } from './state/accounts.svelte';
 
   const routesLoggedIn = {
     '/': Account,
@@ -16,12 +17,13 @@
     '/*': NotFound404,
   };
   const routesLoggedOut = {
-    '/login': Login,
+    '/': Login,
     '/:attemptedRoute': Login,
   };
 
   // TODO: implement with tor.us
   async function init(): Promise<boolean> {
+    // TODO: deal with account state with tor.us
     KeyStore.set({
       //  ed25519Pubkey:
       secp256k1Pubkey: Buffer.from(
@@ -37,16 +39,16 @@
         'base64'
       ),
     });
-    return true;
+    return false;
   }
   const initProm = init();
 </script>
 
 {#await initProm}
   <p>Loading...</p>
-{:then loggedIn}
+{:then ret}
   <Modal>
-    <Router routes={loggedIn ? routesLoggedIn : routesLoggedOut} />
+    <Router routes={$AccountStore.loggedIn ? routesLoggedIn : routesLoggedOut} />
   </Modal>
 {:catch error}
   <p>An error occured loading the page: {error.toString()}</p>

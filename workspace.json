@@ -263,6 +263,31 @@
       "projectType": "application",
       "prefix": "frontend",
       "targets": {
+        "build-test-env": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "cd apps/frontend && ../../node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production ../../node_modules/webpack/bin/webpack.js",
+              "mkdir -p dist/apps",
+              "rm -r dist/apps/frontend || true",
+              "cp apps/frontend/public -r dist/apps/frontend"
+            ]
+          },
+          "outputs": ["{options.outputPath}"],
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/frontend/src/environments/environment.ts",
+                  "with": "apps/frontend/src/environments/environment.test.ts"
+                }
+              ]
+            }
+          }
+        },
         "build": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {

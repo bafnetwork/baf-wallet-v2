@@ -1,5 +1,7 @@
 <script lang="ts">
   import Button from './base/Button.svelte';
+  import Card from './base/Card.svelte';
+  import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
   async function initTorus() : Promise<DirectWebSdk> {
     const torus = new DirectWebSdk({
@@ -21,11 +23,12 @@
   }
 </script>
 
-<form action="">
-  <p>Sign in with a social provider</p>
-  <div class="social-provider">
-    <Button>
-      <img src="/assets/Discord-Logo-White.svg" alt="Discord Sign In" />
+<Card classExtra="w-1/2 object-center flex flex-col items-center">
+  <h1 class="pb-4 text-xl">Sign in with a social provider</h1>
+  <div class="social-is">
+    <Button classExtra="w-12">
+      <Icon iconName="Discord"/>
     </Button>
   </div>
-</form>
+</Card>
+
