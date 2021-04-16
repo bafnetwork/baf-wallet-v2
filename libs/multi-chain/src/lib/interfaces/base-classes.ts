@@ -1,7 +1,8 @@
 import { Chain, PublicKey, SecretKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
 import * as sha3 from 'js-sha3';
-import { inspect } from 'util';
+import { formatKey } from '../utils';
+
 const ecSecp = new ec('secp256k1');
 const ecEd = new eddsa('ed25519');
 
@@ -38,7 +39,7 @@ export abstract class ChainUtil {
   public static verifySignedEd25519(
     pubkey: PublicKey,
     msg: string,
-    signedMsg: eddsa.Signature
+    signedMsg: string
   ): boolean {
     const msgHash = sha3.keccak256(msg);
 
@@ -59,10 +60,11 @@ export abstract class ChainUtil {
   public static verifySignedSecp256k1(
     pubkey: PublicKey,
     msg: string,
-    signedMsg: ec.Signature
+    signedMsg: string
   ): boolean {
     const msgHash = sha3.keccak256(msg);
-    let validSig = ecSecp.verify(msgHash, signedMsg, Buffer.from(pubkey));
+    console.log(formatKey(pubkey))
+    let validSig = ecSecp.verify(msgHash, Buffer.from(signedMsg, 'hex'), pubkey);
     return validSig;
   }
 

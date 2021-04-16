@@ -10,16 +10,17 @@ import {
 } from 'tsoa';
 
 import { createNearAccount } from '../service/near';
-import { CryptoCurves, PublicKey } from '@baf-wallet/interfaces';
+import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { ec, eddsa } from 'elliptic';
-import { PublicKeyWrapper } from './common';
+import { hexString } from './common';
+import { keyFromString } from '@baf-wallet/multi-chain';
 
 interface CreateNearAccountParams {
   discordUserId: string;
-  nonce: string;
-  secpSig: ec.Signature;
-  edPubkey: PublicKeyWrapper;
-  edSig: eddsa.Signature;
+  nonce: hexString;
+  secpSig: hexString;
+  edPubkey: hexString;
+  edSig: hexString;
 }
 
 @Route('near')
@@ -35,7 +36,7 @@ export class NearController extends Controller {
     ); // TODO: derive from torus
     await createNearAccount(
       secpPubkey,
-      requestBody.edPubkey.pk,
+      keyFromString(requestBody.edPubkey, KeyFormats.hex),
       requestBody.discordUserId,
       requestBody.nonce,
       requestBody.secpSig,

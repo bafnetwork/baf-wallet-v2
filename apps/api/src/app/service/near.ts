@@ -10,8 +10,8 @@ export async function createNearAccount(
   edPubkey: PublicKey,
   discordUserId: string,
   nonce: string,
-  secpSig: ec.Signature,
-  edSig: eddsa.Signature,
+  secpSig: string,
+  edSig: string,
   curve = CryptoCurves.secp256k1
 ) {
   const sigsValid = verifyBothSigs(
@@ -44,8 +44,8 @@ export async function createNearAccount(
 function verifyBothSigs(
   discordUserId: string,
   nonce: string,
-  secpSig: ec.Signature,
-  edSig: eddsa.Signature,
+  secpSig: string,
+  edSig: string,
   secpPubkey: PublicKey,
   edPubkey: PublicKey
 ): boolean {

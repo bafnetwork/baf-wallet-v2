@@ -28,9 +28,11 @@
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
+    console.log(userInfo)
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.hex)
+        keyFromString(userInfo.privateKey, KeyFormats.hex),
+        // TODO::: ???????
       )
     );
     AccountStore.update((state) => {
