@@ -4,5 +4,5 @@ export const environment = {
   production: true,
   env: Envs.PROD,
   // TODO: update
-  basePathApi: 'httpL//localhost:3333',
+  basePathApi: 'http://localhost:3333',
 };
