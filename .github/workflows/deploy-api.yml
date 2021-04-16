@@ -31,6 +31,7 @@ jobs:
           git init
           git branch -M main
           git remote add origin git@github.com:bafnetwork/baf-wallet-deploy-api.git
+          git commit -m "deploy"
           git push -u origin main
           rm -rf .git
         working-directory: ${{env.workdir}}
