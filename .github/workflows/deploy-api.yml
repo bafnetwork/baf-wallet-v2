@@ -23,7 +23,13 @@ jobs:
     steps:
 
       - uses: actions/checkout@main
-      - run: sudo apt-get -y install nodejs npm && npm i && npm run client-gen && npx nx build api
+      - run: |
+          sudo apt-get -y install nodejs npm
+          npm i
+          npm run client-gen
+          npx nx build --prod api
+          echo '{ "main": "main.js", "scripts": { "start": "node main.js" } }' > 'disc/apps/api/package.json'
+        
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
           repository: bafnetwork/baf-wallet-deploy-api
