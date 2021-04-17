@@ -19,3 +19,5 @@ export const constants = {
     network: process.env.TORUS_NETWORK,
   }
 };
+
+console.log(constants);

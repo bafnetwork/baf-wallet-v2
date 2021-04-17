@@ -23,12 +23,21 @@
 
   async function discordLogin() {
     const torus = await initTorus();
+
+    const token = localStorage.getItem('access-token:discord');
+    // const token = "QAUF0W5pVyxyFRAkEeMvl9GWErRBsk"
+    if (token) {
+      console.log('revoking token from client')
+      await apiClient.revokeToken({
+        revokeTokenParams: { token },
+      });
+    }
+    
     const userInfo = await torus.triggerLogin({
       typeOfLogin: 'discord',
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
-    console.log(userInfo.userInfo.accessToken)
     localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
     
     SiteKeyStore.set(
@@ -41,9 +50,6 @@
         ...state,
         loggedIn: true,
       };
-    });
-    await apiClient.revokeToken({
-      revokeTokenParams: { token: userInfo.userInfo.accessToken },
     });
   }
 </script>
