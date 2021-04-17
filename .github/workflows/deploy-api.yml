@@ -31,4 +31,3 @@ jobs:
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
           source_folder: dist/apps/api
-        if: success() && github.event == 'push'
