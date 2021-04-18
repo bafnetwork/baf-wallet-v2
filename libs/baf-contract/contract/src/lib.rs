@@ -1,3 +1,4 @@
+use near_sdk::env::keccak256;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::AccountId;
 use near_sdk::{collections::UnorderedMap, env, near_bindgen};
@@ -30,14 +31,20 @@ impl BafContract {
     }
 
     pub fn set_account_info(&mut self, message: String) {
-
+        // keccak256(value)
+        // secp256k1::verify(
+        //     message: &Message, 
+        //     signature: &Signature, 
+        //     pubkey: &PublicKey
+        // ) -> bool
+        // https://docs.rs/ed25519-dalek/1.0.1/ed25519_dalek/struct.PublicKey.html
     }
-    edPK: PublicKey,
-    edSig: string,
-    secpPK: PublicKey,
-    secpSig: string,
-    newAccountID: string,
-    msg: string
+    // edPK: PublicKey,
+    // edSig: string,
+    // secpPK: PublicKey,
+    // secpSig: string,
+    // newAccountID: string,
+    // msg: string
 
 }
 
