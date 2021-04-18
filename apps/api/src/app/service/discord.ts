@@ -6,7 +6,8 @@ import { CryptoCurves } from '@baf-wallet/interfaces';
 export async function discordRevokeAccessToken(token: string) {
   const formData = new FormData();
   formData.append('token', token);
-  await axios.post('https://discordapp.com/api/oauth2/token/revoke', formData, {
+  console.log(formData);
+  const res = await axios.post('https://discordapp.com/api/oauth2/token/revoke', formData, {
     headers: {
       ...formData.getHeaders(),
       Authorization: `Basic ${Buffer.from(

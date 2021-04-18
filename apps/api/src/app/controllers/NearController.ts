@@ -11,12 +11,14 @@ import {
 
 import { createNearAccount } from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
+import { getPublicAddress } from './common';
+import { constants } from '../config/constants'
 import { ec, eddsa } from 'elliptic';
 import { hexString } from './common';
 import { keyFromString } from '@baf-wallet/multi-chain';
 
 interface CreateNearAccountParams {
-  discordUserId: string;
+  userID: string;
   nonce: hexString;
   secpSig: hexString;
   edPubkey: hexString;
@@ -30,14 +32,14 @@ export class NearController extends Controller {
   public async createNearAccount(
     @Body() requestBody: CreateNearAccountParams
   ): Promise<void> {
-    const secpPubkey = Buffer.from(
-      '60cf347dbc59d31c1358c8e5cf5e45b822ab85b79cb32a9f3d98184779a9efc2',
-      'hex'
-    ); // TODO: derive from torus
+    const secpPubkey = await getPublicAddress(requestBody.userID, constants.torus.verifierName)
+
+    console.log(secpPubkey);
+
     await createNearAccount(
       secpPubkey,
       keyFromString(requestBody.edPubkey, KeyFormats.hex),
-      requestBody.discordUserId,
+      requestBody.userID,
       requestBody.nonce,
       requestBody.secpSig,
       requestBody.edSig,

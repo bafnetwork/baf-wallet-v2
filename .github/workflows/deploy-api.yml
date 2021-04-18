@@ -21,10 +21,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
 
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
       - run: sudo apt-get -y install nodejs npm && npm i && npx nx build api && npm run client-gen
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
