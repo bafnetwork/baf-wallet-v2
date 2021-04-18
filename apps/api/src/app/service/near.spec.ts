@@ -57,7 +57,7 @@ describe('createAccount', () => {
     NearAccount.setConfig(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
 
-    accountName = nearAccount.getAccountNameFromPubkey(
+    accountName = await nearAccount.getAccountNameFromPubkey(
       aliceSecpPublicKey,
       CryptoCurves.secp256k1
     );

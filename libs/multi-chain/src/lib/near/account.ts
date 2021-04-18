@@ -84,20 +84,32 @@ export class NearAccount {
     return this.nearSingleton;
   }
 
-  getAccountNameFromPubkey(pubkey: PublicKey, curve: CryptoCurves) {
+  // TODO: get info from smart contract
+  async getAccountNameFromPubkey(secpPK: PublicKey, curve: CryptoCurves) {
     return NearAccount.getAccountNameFromPubkey(
-      pubkey,
+      secpPK,
       curve,
       this.params.connectConfig.networkId as NearNetworkId
     );
   }
 
-  static getAccountNameFromPubkey(
+  async setAccountName(
+    edPK: PublicKey,
+    edSig: string,
+    secpPK: PublicKey,
+    secpSig: string,
+    newAccountID: string,
+    msg: string
+  ) {
+    // TODO: stubbed
+  }
+
+  static async getAccountNameFromPubkey(
     pubkey: PublicKey,
     curve: CryptoCurves,
     networkId: NearNetworkId
-  ): string {
-    return `${curve}_${formatKey(pubkey, KeyFormats.bs58)}.${
+  ): Promise<string> {
+    return `${curve}_${formatKey(pubkey, KeyFormats.bs58).substr(0, 10)}.${
       networkId === NearNetworkId.MAINNET ? 'near' : networkId
     }`.toLowerCase();
   }

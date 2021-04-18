@@ -23,6 +23,7 @@ interface CreateNearAccountParams {
   secpSig: hexString;
   edPubkey: hexString;
   edSig: hexString;
+  accountID: string;
 }
 
 @Route('near')
@@ -34,8 +35,6 @@ export class NearController extends Controller {
   ): Promise<void> {
     const secpPubkey = await getPublicAddress(requestBody.userID, constants.torus.verifierName)
 
-    console.log(secpPubkey);
-
     await createNearAccount(
       secpPubkey,
       keyFromString(requestBody.edPubkey, KeyFormats.hex),
@@ -43,6 +42,7 @@ export class NearController extends Controller {
       requestBody.nonce,
       requestBody.secpSig,
       requestBody.edSig,
+      requestBody.accountID,
       CryptoCurves.secp256k1
     );
   }

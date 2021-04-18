@@ -57,7 +57,7 @@
 
     apiClient.createNearAccount({
       createNearAccountParams: {
-        discordUserId: userId,
+        userID: userId,
         nonce,
         edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.hex),
         edSig: ChainUtil.signEd25519(
