@@ -1,6 +1,7 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::env::keccak256;
 use near_sdk::AccountId;
+use near_sdk::PanicOnDefault;
 use near_sdk::{collections::UnorderedMap, env, near_bindgen};
 use std::convert::TryInto;
 
@@ -11,61 +12,42 @@ type SecpPK = Vec<u8>;
 
 type SecpPKInternal = [u8; 65];
 
-#[derive(BorshDeserialize, BorshSerialize, Default)]
+#[derive(BorshSerialize, BorshDeserialize)]
 pub struct AccountInfo {
     account_id: AccountId,
     nonce: i32,
 }
 
 #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize)]
+#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
 pub struct BafContract {
     owner_id: AccountId,
     account_infos: UnorderedMap<SecpPKInternal, AccountInfo>,
 }
 
-#[near_bindgen]
-impl BafContract {
-    pub fn new() -> Self {
-        let owner_id = env::predecessor_account_id();
-        Self {
-            owner_id,
-            account_infos: UnorderedMap::new("account-infos-map".as_bytes()),
-        }
-    }
+// TODO: clean up in the following manners
+// Seperate traits and impls for pk
+// Error enum in a different file
 
-    fn parse_secp_pk(secp_pk: SecpPK) -> Result<SecpPKInternal, String> {
-        secp_pk
-            .try_into()
-            .map_err(|e| "Incorrect public key format".to_string())
-    }
+pub trait AccountInfos {
+    fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId>;
+    fn get_account_nonce(&self, secp_pk: SecpPK) -> i32;
+    fn set_account_info(&mut self, secp_pk: SecpPK, secp_sig: Vec<u8>, new_account_id: AccountId);
+}
 
-    fn get_account_info_internal(&self, secp_pk: &SecpPKInternal) -> Option<AccountInfo> {
-        self.account_infos.get(secp_pk)
-    }
-
-    pub fn get_account_info(&self, secp_pk: SecpPK) -> Option<AccountInfo> {
-        let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
-        self.account_infos.get(&secp_pk_internal)
-    }
-
-    pub fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId> {
+impl AccountInfos for BafContract {
+    fn get_account_nonce(&self, secp_pk: SecpPK) -> i32 {
         self.get_account_info(secp_pk)
-            .map(|account_info| account_info.account_id)
-    }
-
-    fn get_account_nonce_internal(&self, secp_pk: &SecpPKInternal) -> i32 {
-        self.get_account_info_internal(secp_pk)
             .map(|account_info| account_info.nonce)
             .unwrap_or(0)
     }
 
-    pub fn set_account_info(
-        &mut self,
-        secp_pk: SecpPK,
-        secp_sig: Vec<u8>,
-        new_account_id: AccountId,
-    ) {
+    fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId> {
+        self.get_account_info(secp_pk)
+            .map(|account_info| account_info.account_id)
+    }
+
+    fn set_account_info(&mut self, secp_pk: SecpPK, secp_sig: Vec<u8>, new_account_id: AccountId) {
         let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
         let nonce_str = format!("{}", nonce);
@@ -81,7 +63,6 @@ impl BafContract {
         let pubkey = secp256k1::PublicKey::parse(&secp_pk_internal)
             .map_err(|e| "Error parsing pk")
             .unwrap();
-        // TODO: clean up
         if !secp256k1::verify(
             &secp256k1::Message::parse(&hash),
             &secp256k1::Signature::parse(&secp_sig_array),
@@ -98,6 +79,41 @@ impl BafContract {
             },
         );
     }
+
+    /******** Private helper functions ************/
+}
+
+impl BafContract {
+    fn get_account_nonce_internal(&self, secp_pk: &SecpPKInternal) -> i32 {
+        self.get_account_info_internal(secp_pk)
+            .map(|account_info| account_info.nonce)
+            .unwrap_or(0)
+    }
+    fn get_account_info_internal(&self, secp_pk: &SecpPKInternal) -> Option<AccountInfo> {
+        self.account_infos.get(secp_pk)
+    }
+
+    fn get_account_info(&self, secp_pk: SecpPK) -> Option<AccountInfo> {
+        let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
+        self.account_infos.get(&secp_pk_internal)
+    }
+}
+
+#[near_bindgen]
+impl BafContract {
+    #[init]
+    pub fn new() -> Self {
+        let owner_id = env::predecessor_account_id();
+        Self {
+            owner_id,
+            account_infos: UnorderedMap::new("account-infos-map".as_bytes()),
+        }
+    }
+    fn parse_secp_pk(secp_pk: SecpPK) -> Result<SecpPKInternal, String> {
+        secp_pk
+            .try_into()
+            .map_err(|e| "Incorrect public key format".to_string())
+    }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -107,7 +123,6 @@ mod tests {
 
     use near_sdk::MockedBlockchain;
     use near_sdk::{testing_env, VMContext};
-    use rand::{thread_rng, Rng, RngCore};
     use secp256k1::{PublicKey, SecretKey};
     use std::convert::TryInto;
 
@@ -155,11 +170,7 @@ mod tests {
         let msg = secp256k1::Message::parse(&msg_hash_array);
 
         let (sig, _) = secp256k1::sign(&msg, &sk);
-        contract.set_account_info(
-            pk.serialize().to_vec(),
-            sig.serialize().to_vec(),
-            alice(),
-        );
+        contract.set_account_info(pk.serialize().to_vec(), sig.serialize().to_vec(), alice());
     }
 
     #[test]
