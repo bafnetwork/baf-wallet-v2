@@ -12,7 +12,7 @@ export function edPubkeyFromSK(secret: SecretKey): PublicKey {
 
 export function secpPubkeyFromSK(secret: SecretKey): PublicKey {
   return Buffer.from(
-    secp256k1.keyFromPrivate(secret).getPublic(true, 'hex'),
+    secp256k1.keyFromPrivate(secret).getPublic(false, 'hex'),
     'hex'
   );
 }

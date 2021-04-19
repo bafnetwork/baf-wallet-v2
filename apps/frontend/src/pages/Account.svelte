@@ -59,7 +59,7 @@
       createNearAccountParams: {
         userID: userId,
         nonce,
-        edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.hex),
+        edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
         edSig: ChainUtil.signEd25519(
           $SiteKeyStore.edSK,
           ChainUtil.createUserVerifyMessage(userId, nonce)

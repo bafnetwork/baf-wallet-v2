@@ -39,7 +39,7 @@
     
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.hex),
+        keyFromString(userInfo.privateKey, KeyFormats.HEX),
       )
     );
     AccountStore.update((state) => {

@@ -14,7 +14,7 @@ function main() {
     path: `../env/.env.${envType}`,
   });
   child = exec(
-    `near deploy ${process.env.ACCOUNT_ID} target/wasm32-unknown-unknown/release/baf_contract.wasm --contractName ${configs.contractName}`,
+    `near deploy --wasmFile=o --contractName=${configs.contractName} --networkId=${process.env.NETWORK_ID}`,
     function (error, stdout, stderr) {
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);

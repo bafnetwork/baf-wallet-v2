@@ -17,7 +17,7 @@
   export const SiteKeyStore = writable<KeyState | null>(null);
 
   export function packKey(keyState: KeyState): string {
-    return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.hex)}`;
+    return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.HEX)}`;
   }
 
   export function buildKeyStateFromSecpSK(secpSK: SecretKey, secpPK?: PublicKey): KeyState {
@@ -37,7 +37,7 @@
     } else if (split[0] !== 'secp256k1') {
       throw 'Only secp256k1 keys are supported as base keys right not';
     }
-    return buildKeyStateFromSecpSK(keyFromString(split[1], KeyFormats.hex));
+    return buildKeyStateFromSecpSK(keyFromString(split[1], KeyFormats.HEX));
   }
 
   export function clearKeysFromStorage() {

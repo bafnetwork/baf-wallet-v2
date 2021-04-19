@@ -84,8 +84,8 @@ describe('createAccount', () => {
       aliceEdPublicKey,
       aliceUserId,
       aliceNonce.toString(),
-      secpSig,
-      edSig,
+      secpSig.toDER('hex'),
+      edSig.toHex(),
       CryptoCurves.secp256k1
     );
 
@@ -111,8 +111,8 @@ describe('createAccount', () => {
         aliceEdPublicKey,
         aliceUserId,
         aliceNonce.toString(),
-        secpSig,
-        edSig,
+        secpSig.toDER('hex'),
+        edSig.toHex(),
         CryptoCurves.secp256k1
       );
     }).rejects.toThrow(
@@ -144,8 +144,8 @@ describe('createAccount', () => {
         aliceEdPublicKey,
         aliceUserId,
         aliceNonce.toString(),
-        secpSig,
-        edSig,
+        secpSig.toDER('hex'),
+        edSig.toHex(),
         CryptoCurves.secp256k1
       );
     }).rejects.toThrow(

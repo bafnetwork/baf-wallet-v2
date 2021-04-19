@@ -109,13 +109,13 @@ export class NearAccount {
     curve: CryptoCurves,
     networkId: NearNetworkId
   ): Promise<string> {
-    return `${curve}_${formatKey(pubkey, KeyFormats.bs58).substr(0, 10)}.${
+    return `${curve}_${formatKey(pubkey, KeyFormats.BS58).substr(0, 10)}.${
       networkId === NearNetworkId.MAINNET ? 'near' : networkId
     }`.toLowerCase();
   }
 
   async updateKeyPair(accountId: string, secret: SecretKey) {
-    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.bs58));
+    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.BS58));
     await this.keyStore.setKey(
       this.params.connectConfig.networkId,
       accountId,

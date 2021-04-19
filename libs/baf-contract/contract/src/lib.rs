@@ -56,18 +56,17 @@ impl AccountInfos for BafContract {
             .try_into()
             .map_err(|e| "An error occured hashing the message")
             .unwrap();
-        let secp_sig_array: [u8; 64] = secp_sig
-            .try_into()
+        // let secp_sig_array: [u8; 64] = secp_sig
+        //     .try_into()
+        //     .map_err(|e| "Incorrect signature format")
+        //     .unwrap();
+        let sig = &secp256k1::Signature::parse_slice(&secp_sig.as_slice())
             .map_err(|e| "Incorrect signature format")
             .unwrap();
         let pubkey = secp256k1::PublicKey::parse(&secp_pk_internal)
             .map_err(|e| "Error parsing pk")
             .unwrap();
-        if !secp256k1::verify(
-            &secp256k1::Message::parse(&hash),
-            &secp256k1::Signature::parse(&secp_sig_array),
-            &pubkey,
-        ) {
+        if !secp256k1::verify(&secp256k1::Message::parse(&hash), sig, &pubkey) {
             panic!("The signature is incorrect");
         }
 

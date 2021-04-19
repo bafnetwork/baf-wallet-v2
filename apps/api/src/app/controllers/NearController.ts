@@ -40,7 +40,7 @@ export class NearController extends Controller {
 
     await createNearAccount(
       secpPubkey,
-      keyFromString(requestBody.edPubkey, KeyFormats.hex),
+      keyFromString(requestBody.edPubkey, KeyFormats.HEX),
       requestBody.userID,
       requestBody.nonce,
       requestBody.secpSig,
