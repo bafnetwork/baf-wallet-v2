@@ -8,7 +8,8 @@ interface BafContract {
   getAccountNonce: (secp_pk: PublicKey) => Promise<string>;
   setAccountInfo: (
     secp_pk: PublicKey,
-    secp_sig: number[],
+    user_id: string,
+    secp_sig_s: number[],
     new_account_id: AccountId
   ) => Promise<void>;
 }
@@ -27,10 +28,11 @@ export async function buildBafContract(account: Account): Promise<BafContract> {
       (contract as any).get_account_nonce({
         secp_pk: formatKeyArray(secp_pk),
       }) as Promise<string>,
-    setAccountInfo: (secp_pk, secp_sig, new_account_id) =>
+    setAccountInfo: (secp_pk, user_id, secp_sig_s, new_account_id) =>
       (contract as any).set_account_info({
+        user_id,
         secp_pk: formatKeyArray(secp_pk),
-        secp_sig,
+        secp_sig_s,
         new_account_id,
       }),
   };

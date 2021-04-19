@@ -1,5 +1,5 @@
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
+import { formatKey, NearAccount,  } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 import { ChainUtil } from '@baf-wallet/multi-chain';
 import { buildBafContract } from '@baf-wallet/baf-contract';
@@ -11,6 +11,7 @@ export async function createNearAccount(
   userId: string,
   nonce: string,
   secpSig: string,
+  secpSig_s: string,
   edSig: string,
   accountID: string,
   curve = CryptoCurves.secp256k1
@@ -38,10 +39,10 @@ export async function createNearAccount(
 
   // TODO: make singleton
   const bafContract = await buildBafContract(near.masterAccount);
-  console.log(secpPK.length, secpSig.length, secpSig)
   await bafContract.setAccountInfo(
     secpPK,
-    [...Buffer.from(secpSig, 'hex')],
+    userId,
+    [...Buffer.from(secpSig_s, 'hex')],
     accountID
   );
 

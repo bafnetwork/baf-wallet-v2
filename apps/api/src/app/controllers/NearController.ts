@@ -13,7 +13,6 @@ import { createNearAccount } from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { getPublicAddress } from './common';
 import { constants } from '../config/constants';
-import { ec, eddsa } from 'elliptic';
 import { hexString } from './common';
 import { keyFromString } from '@baf-wallet/multi-chain';
 
@@ -21,6 +20,7 @@ interface CreateNearAccountParams {
   userID: string;
   nonce: hexString;
   secpSig: hexString;
+  secpSig_s: hexString;
   edPubkey: hexString;
   edSig: hexString;
   accountID: string;
@@ -44,6 +44,7 @@ export class NearController extends Controller {
       requestBody.userID,
       requestBody.nonce,
       requestBody.secpSig,
+      requestBody.secpSig_s,
       requestBody.edSig,
       requestBody.accountID,
       CryptoCurves.secp256k1

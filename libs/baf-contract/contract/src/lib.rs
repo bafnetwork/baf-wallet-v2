@@ -32,9 +32,10 @@ pub struct BafContract {
 pub trait AccountInfos {
     fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId>;
     fn get_account_nonce(&self, secp_pk: SecpPK) -> i32;
-    fn set_account_info(&mut self, secp_pk: SecpPK, secp_sig: Vec<u8>, new_account_id: AccountId);
+    fn set_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>, new_account_id: AccountId);
 }
 
+#[near_bindgen]
 impl AccountInfos for BafContract {
     fn get_account_nonce(&self, secp_pk: SecpPK) -> i32 {
         self.get_account_info(secp_pk)
@@ -47,20 +48,20 @@ impl AccountInfos for BafContract {
             .map(|account_info| account_info.account_id)
     }
 
-    fn set_account_info(&mut self, secp_pk: SecpPK, secp_sig: Vec<u8>, new_account_id: AccountId) {
+    fn set_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>, new_account_id: AccountId) {
         let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
-        let nonce_str = format!("{}", nonce);
+        let nonce_str = format!("{}:{}", user_id, nonce);
         let msg_prehash = nonce_str.as_bytes();
         let hash: [u8; 32] = keccak256(msg_prehash)
             .try_into()
             .map_err(|e| "An error occured hashing the message")
             .unwrap();
-        // let secp_sig_array: [u8; 64] = secp_sig
+        // let secp_sig_array: [u8; 64] = secp_sig_s
         //     .try_into()
         //     .map_err(|e| "Incorrect signature format")
         //     .unwrap();
-        let sig = &secp256k1::Signature::parse_slice(&secp_sig.as_slice())
+        let sig = &secp256k1::Signature::parse_slice(&secp_sig_s.as_slice())
             .map_err(|e| "Incorrect signature format")
             .unwrap();
         let pubkey = secp256k1::PublicKey::parse(&secp_pk_internal)
