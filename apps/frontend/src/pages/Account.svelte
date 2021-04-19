@@ -51,7 +51,7 @@
   }
 
   async function initNearAccount() {
-    // TODO: ??
+    // TODO: implement nonce with the smart contract
     const nonce = Math.random().toString();
     const userId = "lev_s#7844"
 

@@ -63,8 +63,11 @@ export abstract class ChainUtil {
     signedMsg: string
   ): boolean {
     const msgHash = sha3.keccak256(msg);
-    console.log(formatKey(pubkey))
-    let validSig = ecSecp.verify(msgHash, Buffer.from(signedMsg, 'hex'), pubkey);
+    let validSig = ecSecp.verify(
+      msgHash,
+      Buffer.from(signedMsg, 'hex'),
+      pubkey
+    );
     return validSig;
   }
 

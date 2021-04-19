@@ -12,7 +12,7 @@ import {
 import { createNearAccount } from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { getPublicAddress } from './common';
-import { constants } from '../config/constants'
+import { constants } from '../config/constants';
 import { ec, eddsa } from 'elliptic';
 import { hexString } from './common';
 import { keyFromString } from '@baf-wallet/multi-chain';
@@ -33,7 +33,10 @@ export class NearController extends Controller {
   public async createNearAccount(
     @Body() requestBody: CreateNearAccountParams
   ): Promise<void> {
-    const secpPubkey = await getPublicAddress(requestBody.userID, constants.torus.verifierName)
+    const secpPubkey = await getPublicAddress(
+      requestBody.userID,
+      constants.torus.verifierName
+    );
 
     await createNearAccount(
       secpPubkey,

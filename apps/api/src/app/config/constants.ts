@@ -15,6 +15,6 @@ export const constants = {
   },
   torus: {
     verifierName: 'discord',
-    network: environment.env === Envs.PROD ? "mainnet" : "testnet",
-  }
+    network: environment.env === Envs.PROD ? 'mainnet' : 'testnet',
+  },
 };

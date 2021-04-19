@@ -23,7 +23,6 @@
     const torus = await initTorus();
 
     const token = localStorage.getItem('access-token:discord');
-    // const token = "QAUF0W5pVyxyFRAkEeMvl9GWErRBsk"
     if (token) {
       console.log('revoking token from client')
       await apiClient.revokeToken({
@@ -41,7 +40,6 @@
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
         keyFromString(userInfo.privateKey, KeyFormats.hex),
-        // TODO::: ???????
       )
     );
     AccountStore.update((state) => {
