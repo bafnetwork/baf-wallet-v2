@@ -8,6 +8,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-ed25519-dalek = "1.0.1"
 libsecp256k1 = "0.3.5"
 near-sdk = "3.1.0"
+rand = "0.8.3"
+rand_core = "0.6.2"
