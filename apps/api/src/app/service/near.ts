@@ -44,6 +44,18 @@ export async function createNearAccount(
   );
 }
 
+export async function getAccountNonceFromSecpPK(
+  secpPK: PublicKey
+): Promise<string> {
+  return await getBafContract().getAccountNonce(secpPK);
+}
+
+export async function getAccountIdFromSecpPK(
+  secpPK: PublicKey
+): Promise<string> {
+  return await getBafContract().getAccountId(secpPK);
+}
+
 function verifyBothSigs(
   msg: string,
   secpSig: string,

@@ -4,10 +4,12 @@
     ChainName,
     CryptoCurves,
     getNearNetworkId,
+    KeyFormats,
   } from '@baf-wallet/interfaces';
-  import { NearAccount } from '@baf-wallet/multi-chain';
+  import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
 
   import { writable } from 'svelte/store';
+  import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
   import { clearKeysFromStorage, loadKeys, SiteKeyStore } from './keys.svelte';
   export interface Account {
@@ -20,6 +22,7 @@
     chainAccounts?: {
       chain: ChainName;
       account: ChainAccount;
+      init: boolean;
     }[];
   }
 
@@ -36,18 +39,17 @@
     });
   }
 
-  // TODO: what do we want to do here??
   export async function initAccount() {
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
     const networkId = getNearNetworkId(constants.env);
+    const accountId = await apiClient.getAccountId({
+      secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
+    });
+    console.log(accountId)
     await NearAccount.setConfigFrontend({
       networkId: networkId,
-      masterAccountId: NearAccount.getAccountNameFromPubkey(
-        keys.secpPK,
-        CryptoCurves.secp256k1,
-        networkId
-      ),
+      masterAccountId: accountId,
       edSK: keys.edSK,
     });
     AccountStore.set({
@@ -58,6 +60,9 @@
             {
               chain: ChainName.NEAR,
               account: await (await NearAccount.get()).masterAccount,
+              // TODO: idk if this is the best way of doing things
+              // its initialized if the account is truthy
+              init: !!accountId
             },
           ],
     });

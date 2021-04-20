@@ -12,7 +12,9 @@
   let newAccountId: string;
 
   async function initNearAccount() {
-    const nonce = await getBafContract().getAccountNonce($SiteKeyStore.secpPK);
+    const nonce = await apiClient.getAccountNonce({
+      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58)
+    })
     const userId = 'lev_s#7844';
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,

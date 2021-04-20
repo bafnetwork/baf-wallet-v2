@@ -9,7 +9,7 @@ import {
   SuccessResponse,
 } from 'tsoa';
 
-import { createNearAccount } from '../service/near';
+import { createNearAccount, getAccountIdFromSecpPK } from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { getPublicAddress } from './common';
 import { constants } from '../config/constants';
@@ -49,5 +49,19 @@ export class NearController extends Controller {
       requestBody.accountID,
       CryptoCurves.secp256k1
     );
+  }
+
+  @SuccessResponse('200')
+  @Get('account/{secpPubkeyB58}/nonce')
+  public async getAccountNonce(@Path() secpPubkeyB58: string): Promise<string> {
+    const pk = keyFromString(secpPubkeyB58, KeyFormats.BS58);
+    return await getAccountIdFromSecpPK(pk);
+  }
+
+  @SuccessResponse('200')
+  @Get('account/{secpPubkeyB58}/id')
+  public async getAccountId(@Path() secpPubkeyB58: string): Promise<string> {
+    const pk = keyFromString(secpPubkeyB58, KeyFormats.BS58);
+    return await getAccountIdFromSecpPK(pk);
   }
 }
