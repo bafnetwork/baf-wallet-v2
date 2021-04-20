@@ -29,14 +29,7 @@ export async function createNearAccount(
   }
 
   const near = await NearAccount.get();
-  try {
-    await near.setAccountName(edPK, edSig, secpPK, secpSig, accountID, msg);
-  } catch (e) {
-    this.setStatus(500);
-    throw e;
-  }
 
-  // TODO: make singleton
   const bafContract = await getBafContract();
   await bafContract.setAccountInfo(
     secpPK,

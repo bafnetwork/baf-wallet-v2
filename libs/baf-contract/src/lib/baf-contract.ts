@@ -49,6 +49,6 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_sig_s,
         new_account_id,
       }),
-    encodeSecpSig: (sig) => sig.r.toString('hex') + sig.s.toString('hex'),
+    encodeSecpSig: (sig) => sig.r.toString('hex', 64) + sig.s.toString('hex', 64),
   };
 }

@@ -80,11 +80,12 @@ describe('createAccount', () => {
     const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
     const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
 
+    console.log(getBafContract().encodeSecpSig(secpSig).length);
     await createNearAccount(
       aliceSecpPublicKey,
       aliceEdPublicKey,
       aliceUserId,
-      aliceNonce.toString(),
+      aliceNonce,
       secpSig.toDER('hex'),
       getBafContract().encodeSecpSig(secpSig),
       edSig.toHex(),

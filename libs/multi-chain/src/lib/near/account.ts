@@ -55,7 +55,7 @@ export class NearAccount {
     };
     const keyStore = new InMemoryKeyStore();
     const newKeyPair = new KeyPairEd25519(
-      formatKey(params.edSK, KeyFormats.bs58)
+      formatKey(params.edSK, KeyFormats.BS58)
     );
     await keyStore.setKey(
       params.networkId,
