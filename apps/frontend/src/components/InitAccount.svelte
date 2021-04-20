@@ -6,7 +6,7 @@
   import { SiteKeyStore } from '../state/keys.svelte';
   import { KeyFormats } from '@baf-wallet/interfaces';
   import {
-    getBafContract,
+    encodeSecpSigBafContract,
   } from '@baf-wallet/baf-contract';
 
   let newAccountId: string;
@@ -15,6 +15,7 @@
     const nonce = await apiClient.getAccountNonce({
       secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58)
     })
+    console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX))
     const userId = 'lev_s#7844';
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,
@@ -27,7 +28,7 @@
         nonce,
         edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
         accountID: newAccountId,
-        secpSigS: getBafContract().encodeSecpSig(secpSig),
+        secpSigS:  encodeSecpSigBafContract(secpSig),
         edSig: ChainUtil.signEd25519(
           $SiteKeyStore.edSK,
           ChainUtil.createUserVerifyMessage(userId, nonce)
@@ -46,7 +47,7 @@
       initNearAccount();
     }}
   >
-    <Input bind:value={newAccountId} />
+    <Input label="Account ID" placeholder="john.doe.testnet" bind:value={newAccountId} />
     <Button type="submit">Initialize Account with Near</Button>
   </form>
 </div>

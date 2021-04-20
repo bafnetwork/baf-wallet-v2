@@ -13,7 +13,6 @@ interface BafContract {
     secp_sig_s: number[],
     new_account_id: AccountId
   ) => Promise<void>;
-  encodeSecpSig: (sig: ec.Signature) => string;
 }
 
 let bafContract: BafContract;
@@ -49,6 +48,9 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_sig_s,
         new_account_id,
       }),
-    encodeSecpSig: (sig) => sig.r.toString('hex', 64) + sig.s.toString('hex', 64),
   };
+}
+
+export function encodeSecpSigBafContract(sig) {
+  return sig.r.toString('hex', 64) + sig.s.toString('hex', 64);
 }

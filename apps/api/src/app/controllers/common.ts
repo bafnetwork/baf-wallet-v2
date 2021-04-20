@@ -32,5 +32,6 @@ export async function getPublicAddress(
 
   const pub = { x: (torusPublicKey as any).X, y: (torusPublicKey as any).Y };
   const key = secp256k1.keyFromPublic(pub);
+  console.log(key.getPublic('hex'))
   return Buffer.from(key.getPublic('hex'), 'hex');
 }
