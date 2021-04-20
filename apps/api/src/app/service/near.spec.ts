@@ -17,10 +17,7 @@ import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import {
-  getBafContract,
-  setBafContract,
-} from '@baf-wallet/baf-contract';
+import { getBafContract, setBafContract } from '@baf-wallet/baf-contract';
 
 (global as any).window = {
   name: 'nodejs',

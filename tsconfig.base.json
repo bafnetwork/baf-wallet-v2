@@ -28,5 +28,5 @@
       "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "libs/baf-contract/contract"]
 }

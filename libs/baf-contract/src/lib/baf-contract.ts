@@ -28,7 +28,6 @@ export function getBafContract(): BafContract {
   throw 'BAF Contract is not initialized yet, plese call setBafContract';
 }
 
-
 async function buildBafContract(account: Account): Promise<BafContract> {
   const contract = new Contract(account, ContractConfig.contractName, {
     viewMethods: ['get_account_id', 'get_account_nonce'],

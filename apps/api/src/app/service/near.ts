@@ -1,5 +1,5 @@
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { formatKey, NearAccount,  } from '@baf-wallet/multi-chain';
+import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 import { ChainUtil } from '@baf-wallet/multi-chain';
 import { getBafContract } from '@baf-wallet/baf-contract';

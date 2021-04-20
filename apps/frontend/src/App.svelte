@@ -7,9 +7,7 @@
   import Account from './pages/Account.svelte';
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
-  import { SiteKeyStore } from './state/keys.svelte';
-  import Accounts, { AccountStore, initAccount } from './state/accounts.svelte';
-  import { setBafContract } from '@baf-wallet/baf-contract';
+  import { AccountStore, initAccount } from './state/accounts.svelte';
 
   const routesLoggedIn = {
     '/': Account,

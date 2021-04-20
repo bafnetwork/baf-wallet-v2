@@ -38,4 +38,4 @@ export interface NearAction {
   params: NearTransferParam | NearActionParam;
 }
 
-export type AccountId = string
+export type AccountId = string;
