@@ -14,7 +14,19 @@ interface BafContract {
   ) => Promise<void>;
 }
 
-export async function buildBafContract(account: Account): Promise<BafContract> {
+let bafContract: BafContract;
+
+export async function setBafContract(account): Promise<BafContract> {
+  bafContract = await buildBafContract(account);
+  return bafContract;
+}
+
+export function getBafContract(): BafContract {
+  if (bafContract) return bafContract;
+  throw 'BAF Contract is not initialized yet, plese call setBafContract';
+}
+
+async function buildBafContract(account: Account): Promise<BafContract> {
   const contract = new Contract(account, ContractConfig.contractName, {
     viewMethods: ['get_account_id', 'get_account_nonce'],
     changeMethods: ['set_account_info'],

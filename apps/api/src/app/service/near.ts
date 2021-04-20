@@ -2,7 +2,7 @@ import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { formatKey, NearAccount,  } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { buildBafContract } from '@baf-wallet/baf-contract';
+import { getBafContract } from '@baf-wallet/baf-contract';
 
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
@@ -38,7 +38,7 @@ export async function createNearAccount(
   }
 
   // TODO: make singleton
-  const bafContract = await buildBafContract(near.masterAccount);
+  const bafContract = await getBafContract();
   await bafContract.setAccountInfo(
     secpPK,
     userId,
