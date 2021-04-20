@@ -10,7 +10,6 @@ import {
   UrlAccountCreator,
 } from 'near-api-js/lib/account_creator';
 import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
-import { PublicKey } from '@baf-wallet/interfaces';
 import { formatKey } from '../utils';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
@@ -82,36 +81,6 @@ export class NearAccount {
       this.initParams
     );
     return this.nearSingleton;
-  }
-
-  // TODO: get info from smart contract
-  async getAccountNameFromPubkey(secpPK: PublicKey, curve: CryptoCurves) {
-    return NearAccount.getAccountNameFromPubkey(
-      secpPK,
-      curve,
-      this.params.connectConfig.networkId as NearNetworkId
-    );
-  }
-
-  async setAccountName(
-    edPK: PublicKey,
-    edSig: string,
-    secpPK: PublicKey,
-    secpSig: string,
-    newAccountID: string,
-    msg: string
-  ) {
-    // TODO: stubbed
-  }
-
-  static async getAccountNameFromPubkey(
-    pubkey: PublicKey,
-    curve: CryptoCurves,
-    networkId: NearNetworkId
-  ): Promise<string> {
-    return `${curve}_${formatKey(pubkey, KeyFormats.BS58).substr(0, 10)}.${
-      networkId === NearNetworkId.MAINNET ? 'near' : networkId
-    }`.toLowerCase();
   }
 
   async updateKeyPair(accountId: string, secret: SecretKey) {

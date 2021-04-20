@@ -29,7 +29,6 @@ export async function createNearAccount(
   }
 
   const near = await NearAccount.get();
-  // const accountName = near.getAccountNameFromPubkey(secpPubkey, curve);
   try {
     await near.setAccountName(edPK, edSig, secpPK, secpSig, accountID, msg);
   } catch (e) {
