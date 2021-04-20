@@ -24,6 +24,7 @@
     "redirect-generator": { "tags": [] },
     "interfaces": { "tags": [] },
     "trust-wallet-assets": { "tags": [] },
-    "frontend": { "tags": [] }
+    "frontend": { "tags": [] },
+    "baf-contract": { "tags": [] }
   }
 }

@@ -11,7 +11,6 @@ import {
   UrlAccountCreator,
 } from 'near-api-js/lib/account_creator';
 import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
-import { PublicKey } from '@baf-wallet/interfaces';
 import { formatKey } from '../utils';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { getNearNodeUrl } from './utils';
@@ -113,26 +112,8 @@ export class NearAccount {
     return this.nearSingleton;
   }
 
-  getAccountNameFromPubkey(pubkey: PublicKey, curve: CryptoCurves) {
-    return NearAccount.getAccountNameFromPubkey(
-      pubkey,
-      curve,
-      this.params.connectConfig.networkId as NearNetworkId
-    );
-  }
-
-  static getAccountNameFromPubkey(
-    pubkey: PublicKey,
-    curve: CryptoCurves,
-    networkId: NearNetworkId
-  ): string {
-    return `${curve}_${formatKey(pubkey, KeyFormats.bs58)}.${
-      networkId === NearNetworkId.MAINNET ? 'near' : networkId
-    }`.toLowerCase();
-  }
-
   async updateKeyPair(accountId: string, secret: SecretKey) {
-    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.bs58));
+    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.BS58));
     await this.keyStore.setKey(
       this.params.connectConfig.networkId,
       accountId,

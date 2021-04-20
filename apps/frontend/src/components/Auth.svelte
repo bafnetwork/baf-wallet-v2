@@ -4,8 +4,6 @@
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
   import { AccountStore } from '../state/accounts.svelte';
-  import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
-  import { KeyStore } from 'near-api-js/lib/key_stores';
   import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
   import { keyFromString } from '@baf-wallet/multi-chain';
   import { KeyFormats } from '@baf-wallet/interfaces';
@@ -23,14 +21,25 @@
 
   async function discordLogin() {
     const torus = await initTorus();
+
+    const token = localStorage.getItem('access-token:discord');
+    if (token) {
+      console.log('revoking token from client')
+      await apiClient.revokeToken({
+        revokeTokenParams: { token },
+      });
+    }
+    
     const userInfo = await torus.triggerLogin({
       typeOfLogin: 'discord',
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
+    localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
+    
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.hex)
+        keyFromString(userInfo.privateKey, KeyFormats.HEX),
       )
     );
     AccountStore.update((state) => {
@@ -38,9 +47,6 @@
         ...state,
         loggedIn: true,
       };
-    });
-    await apiClient.revokeToken({
-      revokeTokenParams: { token: userInfo.userInfo.accessToken },
     });
   }
 </script>

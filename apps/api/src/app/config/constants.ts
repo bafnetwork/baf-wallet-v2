@@ -1,7 +1,6 @@
-import { getNearNetworkId } from '@baf-wallet/interfaces';
-import { environment } from '../../environments/environment';
+import { Envs, getNearNetworkId } from '@baf-wallet/interfaces';
+import { environment, initDotEnv } from '../../environments/environment';
 
-import { initDotEnv } from '../../environments/environment';
 initDotEnv();
 
 export const constants = {
@@ -13,5 +12,9 @@ export const constants = {
   discord: {
     clientId: process.env.DISCORD_CLIENT_ID,
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
+  },
+  torus: {
+    verifierName: 'discord',
+    network: environment.env === Envs.PROD ? 'mainnet' : 'testnet',
   },
 };

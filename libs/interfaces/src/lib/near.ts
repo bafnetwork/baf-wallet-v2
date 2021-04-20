@@ -37,3 +37,5 @@ export interface NearAction {
   type: NearSupportedActionTypes;
   params: NearTransferParam | NearActionParam;
 }
+
+export type AccountId = string;
