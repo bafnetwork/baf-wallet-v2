@@ -25,10 +25,6 @@ pub struct BafContract {
     account_infos: UnorderedMap<SecpPKInternal, AccountInfo>,
 }
 
-// TODO: clean up in the following manners
-// Seperate traits and impls for pk
-// Error enum in a different file
-
 pub trait AccountInfos {
     fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId>;
     fn get_account_nonce(&self, secp_pk: SecpPK) -> i32;
@@ -57,10 +53,6 @@ impl AccountInfos for BafContract {
             .try_into()
             .map_err(|e| "An error occured hashing the message")
             .unwrap();
-        // let secp_sig_array: [u8; 64] = secp_sig_s
-        //     .try_into()
-        //     .map_err(|e| "Incorrect signature format")
-        //     .unwrap();
         let sig = &secp256k1::Signature::parse_slice(&secp_sig_s.as_slice())
             .map_err(|e| "Incorrect signature format")
             .unwrap();
