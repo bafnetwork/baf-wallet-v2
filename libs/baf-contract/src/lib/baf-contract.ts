@@ -2,6 +2,7 @@ import { Account, Contract } from 'near-api-js';
 import ContractConfig from '../../config.json';
 import { AccountId, PublicKey } from '@baf-wallet/interfaces';
 import { formatKeyArray } from '@baf-wallet/multi-chain';
+import { ec } from 'elliptic';
 
 interface BafContract {
   getAccountId: (secp_pk: PublicKey) => Promise<AccountId>;
@@ -12,6 +13,7 @@ interface BafContract {
     secp_sig_s: number[],
     new_account_id: AccountId
   ) => Promise<void>;
+  encodeSecpSig: (sig: ec.Signature) => string;
 }
 
 let bafContract: BafContract;
@@ -25,6 +27,7 @@ export function getBafContract(): BafContract {
   if (bafContract) return bafContract;
   throw 'BAF Contract is not initialized yet, plese call setBafContract';
 }
+
 
 async function buildBafContract(account: Account): Promise<BafContract> {
   const contract = new Contract(account, ContractConfig.contractName, {
@@ -47,5 +50,6 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_sig_s,
         new_account_id,
       }),
+    encodeSecpSig: (sig) => sig.r.toString('hex') + sig.s.toString('hex'),
   };
 }

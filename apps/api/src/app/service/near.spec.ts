@@ -17,7 +17,10 @@ import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { getBafContract, setBafContract } from '@baf-wallet/baf-contract';
+import {
+  getBafContract,
+  setBafContract,
+} from '@baf-wallet/baf-contract';
 
 (global as any).window = {
   name: 'nodejs',
@@ -86,7 +89,7 @@ describe('createAccount', () => {
       aliceUserId,
       aliceNonce.toString(),
       secpSig.toDER('hex'),
-      secpSig.r.toString('hex') + secpSig.s.toString('hex'),
+      getBafContract().encodeSecpSig(secpSig),
       edSig.toHex(),
       accountName,
       CryptoCurves.secp256k1

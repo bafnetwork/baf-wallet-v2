@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AccountStore  } from '../state/accounts.svelte';
+  import { AccountStore } from '../state/accounts.svelte';
   import { packKey, SiteKeyStore } from '../state/keys.svelte';
   import jazzicon from 'jazzicon';
   import Dropdown from '../components/base/Dropdown.svelte';
@@ -8,10 +8,9 @@
   import Listbalances from '../components/Listbalances.svelte';
   import History from '../components/History.svelte';
   import Button from '../components/base/Button.svelte';
+  import InitAccount from '../components/InitAccount.svelte';
   import { saveAs } from 'file-saver';
-  import { KeyFormats } from '@baf-wallet/interfaces';
-  import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
-  import { apiClient } from '../config/api';
+  import { formatKey } from '@baf-wallet/multi-chain';
 
   let viewMode: 'assets' | 'history' = 'assets';
 
@@ -48,28 +47,6 @@
       type: 'application/json',
     });
     saveAs(fileToSave, 'baf-wallet.json');
-  }
-
-  async function initNearAccount() {
-    // TODO: implement nonce with the smart contract
-    const nonce = Math.random().toString();
-    const userId = "lev_s#7844"
-
-    apiClient.createNearAccount({
-      createNearAccountParams: {
-        userID: userId,
-        nonce,
-        edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
-        edSig: ChainUtil.signEd25519(
-          $SiteKeyStore.edSK,
-          ChainUtil.createUserVerifyMessage(userId, nonce)
-        ).toHex(),
-        secpSig: ChainUtil.signSecp256k1(
-          $SiteKeyStore.secpSK,
-          ChainUtil.createUserVerifyMessage(userId, nonce)
-        ).toDER('hex'),
-      },
-    });
   }
 </script>
 
@@ -120,9 +97,9 @@
         <History />
       </div>
     {/if}
-    <div class="container z-6 p-4 m-4">
-      <Button onClick={initNearAccount}>Initialize Account with Near</Button>
-    </div>
+
+    <InitAccount />
+
     <div class="container z-6 p-4 m-4 danger-zone">
       <h3 class="pb-4 text-2xl text-left">Danger Zone</h3>
       <div class="ml-6">

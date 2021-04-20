@@ -9,6 +9,7 @@
   import NotFound404 from './pages/NotFound404.svelte';
   import { SiteKeyStore } from './state/keys.svelte';
   import Accounts, { AccountStore, initAccount } from './state/accounts.svelte';
+  import { setBafContract } from '@baf-wallet/baf-contract';
 
   const routesLoggedIn = {
     '/': Account,
