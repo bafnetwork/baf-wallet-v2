@@ -44,14 +44,14 @@
     const loggedIn = loadKeys() !== null;
     const networkId = getNearNetworkId(constants.env);
     const accountId = loggedIn
-      ? await apiClient.getAccountId({
+      ? (await apiClient.getAccountInfo({
           secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
-        })
+        })).nearId
       : '';
     if (loggedIn)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
-        masterAccountId: accountId.substring(1, accountId.length - 1),
+        masterAccountId: accountId,
         edSK: keys.edSK,
       });
     AccountStore.set({

@@ -49,10 +49,12 @@ export async function getAccountNonceFromSecpPK(
   return await getBafContract().getAccountNonce(secpPK);
 }
 
-export async function getAccountIdFromSecpPK(
+export async function getAccountInfoFromSecpPK(
   secpPK: PublicKey
-): Promise<string> {
-  return await getBafContract().getAccountId(secpPK);
+) {
+  return {
+    near_id: await getBafContract().getAccountId(secpPK)
+  }
 }
 
 function verifyBothSigs(
