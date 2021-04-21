@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "./typings"
   import { Buffer } from 'buffer';
   (window as any).Buffer = Buffer;
   import Modal from './components/base/Modal.svelte';

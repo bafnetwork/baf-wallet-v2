@@ -36,7 +36,6 @@
   let displayNameContainer;
   $: _ = (() => {
     if (!displayName) {
-      console.log('bruh');
       return;
     }
     const icon = jazzicon(40, hashdisplayName(displayName));

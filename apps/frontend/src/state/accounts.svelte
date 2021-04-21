@@ -43,15 +43,18 @@
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
     const networkId = getNearNetworkId(constants.env);
-    const accountId = await apiClient.getAccountId({
-      secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
-    });
-    console.log(accountId)
-    await NearAccount.setConfigFrontend({
-      networkId: networkId,
-      masterAccountId: accountId,
-      edSK: keys.edSK,
-    });
+    const accountId = loggedIn
+      ? await apiClient.getAccountId({
+          secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
+        })
+      : '';
+    console.log(accountId);
+    if (loggedIn)
+      await NearAccount.setConfigFrontend({
+        networkId: networkId,
+        masterAccountId: accountId,
+        edSK: keys.edSK,
+      });
     AccountStore.set({
       loggedIn,
       chainAccounts: !loggedIn
@@ -62,7 +65,7 @@
               account: await (await NearAccount.get()).masterAccount,
               // TODO: idk if this is the best way of doing things
               // its initialized if the account is truthy
-              init: !!accountId
+              init: !!accountId,
             },
           ],
     });

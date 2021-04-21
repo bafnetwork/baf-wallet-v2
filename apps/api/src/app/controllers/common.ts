@@ -11,7 +11,8 @@ export async function getPublicAddress(
   userId: string,
   verifierName: string
 ): Promise<PublicKey> {
-  const torus = new Torus({ enableLogging: true });
+  const torus = new Torus();
+  console.log(constants.torus.network,)
   const nodeManager = new NodeDetailsManager({
     network: constants.torus.network,
   });
@@ -29,9 +30,10 @@ export async function getPublicAddress(
     { verifier: verifierName, verifierId: userId },
     true
   );
+  console.log(torusPublicKey)
 
   const pub = { x: (torusPublicKey as any).X, y: (torusPublicKey as any).Y };
-  const key = secp256k1.keyFromPublic(pub);
-  console.log(key.getPublic('hex'))
+  const key = secp256k1.keyFromPublic(pub, 'hex');
+  console.log(key.getPublic().encode('hex', true))
   return Buffer.from(key.getPublic('hex'), 'hex');
 }

@@ -27,8 +27,6 @@ export function secpSKFromSeed(seed: Uint8Array): SecretKey {
   const entropy = nacl.hash(seed);
   const sk = secp256k1.genKeyPair({ entropy }).getPrivate('hex');
 
-  console.log(sk);
-
   return Buffer.from(sk, 'hex');
 }
 

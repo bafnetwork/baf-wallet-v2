@@ -5,7 +5,7 @@
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
   import { AccountStore } from '../state/accounts.svelte';
   import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
-  import { keyFromString } from '@baf-wallet/multi-chain';
+  import { keyFromString, secp256k1 } from '@baf-wallet/multi-chain';
   import { KeyFormats } from '@baf-wallet/interfaces';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
@@ -36,6 +36,9 @@
       clientId: constants.torus.discord.clientId,
     });
     localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
+    const tmp = secp256k1.keyFromPublic({x: userInfo.pubKey.pub_key_X, y: userInfo.pubKey.pub_key_Y})
+    console.log(tmp.getPublic().encode('hex', true))
+    console.log(userInfo.pubKey)
     
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(

@@ -20,7 +20,6 @@ export async function createNearAccount(
   const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
 
   if (!sigsValid) {
-    this.setStatus(403);
     throw 'Proof that the sender owns this public key must provided';
   }
 
@@ -64,7 +63,7 @@ function verifyBothSigs(
   edPubkey: PublicKey
 ): boolean {
   return (
-    !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) ||
-    !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
+    ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) &&
+    ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
   );
 }

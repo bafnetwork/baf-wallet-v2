@@ -1,5 +1,5 @@
-import type { PublicKey, SecretKey } from '@baf-wallet/interfaces';
-import { ChainName } from '@baf-wallet/trust-wallet-assets';
+import type { PublicKey, SecretKey, ChainName } from '@baf-wallet/interfaces';
+// import { ChainName } from '@baf-wallet/trust-wallet-assets';
 
 export interface KeyState {
   edPK: PublicKey;
