@@ -1,4 +1,3 @@
-use ed25519_dalek::Verifier;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::env::{current_account_id, is_valid_account_id, keccak256, signer_account_id};
 use near_sdk::AccountId;
@@ -57,12 +56,12 @@ impl AccountInfos for BafWalletPK {
         secp_sig_s: Vec<u8>,
         new_account_id: AccountId,
     ) {
-        if !is_valid_account_id(newAccoundID.as_bytes()) {
-            panic!("newAccountID is invalid!");
+        if !is_valid_account_id(new_account_id.as_bytes()) {
+            panic!("new account id is invalid!");
         }
         let signer = signer_account_id();
-        if signer != newAccountID && signer != current_account_id() {
-            panic!("signer must own either newAccountID or the contract itself!");
+        if signer != new_account_id && signer != current_account_id() {
+            panic!("signer must own either new account id or the contract itself!");
         }
         let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
