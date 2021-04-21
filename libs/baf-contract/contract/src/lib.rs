@@ -1,5 +1,6 @@
+use ed25519_dalek::Verifier;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::env::keccak256;
+use near_sdk::env::{current_account_id, is_valid_account_id, keccak256, signer_account_id};
 use near_sdk::AccountId;
 use near_sdk::PanicOnDefault;
 use near_sdk::{collections::UnorderedMap, env, near_bindgen};
@@ -20,19 +21,24 @@ pub struct AccountInfo {
 
 #[near_bindgen]
 #[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
-pub struct BafContract {
-    owner_id: AccountId,
+pub struct BafWalletPK {
     account_infos: UnorderedMap<SecpPKInternal, AccountInfo>,
 }
 
 pub trait AccountInfos {
     fn get_account_id(&self, secp_pk: SecpPK) -> Option<AccountId>;
     fn get_account_nonce(&self, secp_pk: SecpPK) -> i32;
-    fn set_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>, new_account_id: AccountId);
+    fn set_account_info(
+        &mut self,
+        user_id: String,
+        secp_pk: SecpPK,
+        secp_sig_s: Vec<u8>,
+        new_account_id: AccountId,
+    );
 }
 
 #[near_bindgen]
-impl AccountInfos for BafContract {
+impl AccountInfos for BafWalletPK {
     fn get_account_nonce(&self, secp_pk: SecpPK) -> i32 {
         self.get_account_info(secp_pk)
             .map(|account_info| account_info.nonce)
@@ -44,8 +50,21 @@ impl AccountInfos for BafContract {
             .map(|account_info| account_info.account_id)
     }
 
-    fn set_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>, new_account_id: AccountId) {
-        let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
+    fn set_account_info(
+        &mut self,
+        user_id: String,
+        secp_pk: SecpPK,
+        secp_sig_s: Vec<u8>,
+        new_account_id: AccountId,
+    ) {
+        if !is_valid_account_id(newAccoundID.as_bytes()) {
+            panic!("newAccountID is invalid!");
+        }
+        let signer = signer_account_id();
+        if signer != newAccountID && signer != current_account_id() {
+            panic!("signer must own either newAccountID or the contract itself!");
+        }
+        let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
         let nonce_str = format!("{}:{}", user_id, nonce);
         let msg_prehash = nonce_str.as_bytes();
@@ -75,7 +94,7 @@ impl AccountInfos for BafContract {
     /******** Private helper functions ************/
 }
 
-impl BafContract {
+impl BafWalletPK {
     fn get_account_nonce_internal(&self, secp_pk: &SecpPKInternal) -> i32 {
         self.get_account_info_internal(secp_pk)
             .map(|account_info| account_info.nonce)
@@ -86,18 +105,16 @@ impl BafContract {
     }
 
     fn get_account_info(&self, secp_pk: SecpPK) -> Option<AccountInfo> {
-        let secp_pk_internal = BafContract::parse_secp_pk(secp_pk).unwrap();
+        let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
         self.account_infos.get(&secp_pk_internal)
     }
 }
 
 #[near_bindgen]
-impl BafContract {
+impl BafWalletPK {
     #[init]
     pub fn new() -> Self {
-        let owner_id = env::predecessor_account_id();
         Self {
-            owner_id,
             account_infos: UnorderedMap::new("account-infos-map".as_bytes()),
         }
     }
@@ -152,7 +169,7 @@ mod tests {
 
     fn sign_and_set_account(
         msg_str: String,
-        contract: &mut BafContract,
+        contract: &mut BafWalletPK,
         nonce: i32,
         sk: &SecretKey,
         pk: &PublicKey,
@@ -169,7 +186,7 @@ mod tests {
     fn test_update_account_id() {
         let context = get_context(alice());
         testing_env!(context);
-        let mut contract = BafContract::new();
+        let mut contract = BafWalletPK::new();
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 0;
@@ -184,7 +201,7 @@ mod tests {
     fn test_invalid_signature() {
         let context = get_context(alice());
         testing_env!(context);
-        let mut contract = BafContract::new();
+        let mut contract = BafWalletPK::new();
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let bad_nonce = 1;
@@ -197,7 +214,7 @@ mod tests {
     fn test_invalid_signature_format() {
         let context = get_context(alice());
         testing_env!(context);
-        let mut contract = BafContract::new();
+        let mut contract = BafWalletPK::new();
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 0;
@@ -217,7 +234,7 @@ mod tests {
     fn test_invalid_public_key_format() {
         let context = get_context(alice());
         testing_env!(context);
-        let mut contract = BafContract::new();
+        let mut contract = BafWalletPK::new();
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 1;
