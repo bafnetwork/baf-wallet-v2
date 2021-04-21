@@ -48,11 +48,10 @@
           secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
         })
       : '';
-    console.log(accountId);
     if (loggedIn)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
-        masterAccountId: accountId,
+        masterAccountId: accountId.substring(1, accountId.length - 1),
         edSK: keys.edSK,
       });
     AccountStore.set({

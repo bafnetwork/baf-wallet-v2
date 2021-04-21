@@ -99,7 +99,7 @@ describe('createAccount', () => {
     await deleteAccount(account, true);
   });
 
-  xit('should fail if the secp sig is invalid', async () => {
+  it('should fail if the secp sig is invalid', async () => {
     expect(async () => {
       const aliceNonce = 1;
       const msg = ChainUtil.createUserVerifyMessage(
@@ -135,7 +135,7 @@ describe('createAccount', () => {
     );
   });
 
-  xit('should fail if the ed sig is invalid', async () => {
+  it('should fail if the ed sig is invalid', async () => {
     expect(async () => {
       const aliceNonce = 1;
       const msg = ChainUtil.createUserVerifyMessage(

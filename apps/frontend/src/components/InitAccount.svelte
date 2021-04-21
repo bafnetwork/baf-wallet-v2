@@ -16,7 +16,7 @@
       secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58)
     })
     console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX))
-    const userId = 'lev_s#7844';
+    const userId = '473198585890996224';
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)
@@ -32,7 +32,7 @@
         edSig: ChainUtil.signEd25519(
           $SiteKeyStore.edSK,
           ChainUtil.createUserVerifyMessage(userId, nonce)
-        ).toHex(),
+        ),
         secpSig: secpSig.toDER('hex'),
       },
     });

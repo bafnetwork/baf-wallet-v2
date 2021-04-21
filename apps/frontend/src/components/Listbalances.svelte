@@ -5,7 +5,6 @@
   import trustWalletAssets from '../trust-wallet-assets';
   import { AccountStore } from '../state/accounts.svelte';
   import { getAccountBalance } from '@baf-wallet/multi-chain';
-  import { Account as NearNativeAccount } from 'near-api-js';
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
