@@ -85,6 +85,7 @@ describe('createAccount', () => {
       aliceEdPublicKey,
       aliceUserId,
       aliceNonce.toString(),
+      // Converts the signature into a string
       secpSig.toDER('hex'),
       getBafContract().encodeSecpSig(secpSig),
       edSig.toHex(),

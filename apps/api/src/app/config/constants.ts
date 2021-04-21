@@ -16,6 +16,6 @@ export const constants = {
   torus: {
     verifierName: 'discord',
     network: environment.env === Envs.PROD ? 'mainnet' : 'testnet',
-    proxyAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183'
+    proxyAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
   },
 };
