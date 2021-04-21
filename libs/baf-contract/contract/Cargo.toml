@@ -1,5 +1,5 @@
 [package]
-name = "baf-contract"
+name = "baf-wallet-pk-helper"
 version = "0.1.0"
 authors = ["Lev Stambler <levstamb@gmail.com>"]
 edition = "2018"

@@ -1,8 +1,8 @@
+use ed25519_dalek::Verifier;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::env::keccak256;
+use near_sdk::env::{current_account_id, is_valid_account_id, keccak256, signer_account_id};
 use near_sdk::AccountId;
 use near_sdk::{collections::UnorderedMap, env, near_bindgen};
-use ed25519_dalek::Verifier;
 use std::convert::TryInto;
 
 #[global_allocator]
@@ -19,17 +19,14 @@ pub struct AccountInfo {
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
-pub struct BafContract {
-    owner_id: AccountId,
+pub struct BafWalletPK {
     account_infos: UnorderedMap<SecpPK, AccountInfo>,
 }
 
 #[near_bindgen]
-impl BafContract {
+impl BafWalletPK {
     pub fn new() -> Self {
-        let owner_id = env::predecessor_account_id();
         Self {
-            owner_id,
             account_infos: UnorderedMap::new("account-infos-map".as_bytes()),
         }
     }
@@ -44,6 +41,13 @@ impl BafContract {
         secpSig: [u8; 64],
         newAccountID: AccountId,
     ) -> Result<(), &str> {
+        if !is_valid_account_id(newAccoundID.as_bytes()) {
+            return Err("newAccountID is invalid!");
+        }
+        let signer = signer_account_id();
+        if signer != newAccountID && signer != current_account_id() {
+            return Err("signer must own either newAccountID or the contract itself!");
+        }
         let msg_prehash = format!("{}:{}", userId, nonce).as_bytes();
         let hash: [u8; 32] = keccak256(msg_prehash).try_into().unwrap();
         if !secp256k1::verify(
@@ -56,12 +60,17 @@ impl BafContract {
         }
         let ed_pk_dalek = ed25519_dalek::PublicKey::from_bytes(&edPK).unwrap();
         // TODO: handle fail
-        ed_pk_dalek.verify(&hash, &ed25519_dalek::Signature::new(edSig)).unwrap();
+        ed_pk_dalek
+            .verify(&hash, &ed25519_dalek::Signature::new(edSig))
+            .unwrap();
 
-        self.account_infos.insert(&secpPK, &AccountInfo {
-            ed_pk: edPK,
-            accountId: newAccountID
-        });
+        self.account_infos.insert(
+            &secpPK,
+            &AccountInfo {
+                ed_pk: edPK,
+                accountId: newAccountID,
+            },
+        );
         Ok(())
     }
 }
@@ -111,6 +120,6 @@ mod tests {
     fn test_update_artist_profile() {
         let context = get_context(carol());
         testing_env!(context);
-        let mut contract = BafContract::new();
+        let mut contract = BafWalletPK::new();
     }
 }
