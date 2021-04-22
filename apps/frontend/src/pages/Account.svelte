@@ -8,8 +8,8 @@
   import Listbalances from '../components/Listbalances.svelte';
   import History from '../components/History.svelte';
   import Button from '../components/base/Button.svelte';
+  import InitAccount from '../components/InitAccount.svelte';
   import { saveAs } from 'file-saver';
-  import { KeyFormats } from '@baf-wallet/interfaces';
   import { formatKey } from '@baf-wallet/multi-chain';
 
   let viewMode: 'assets' | 'history' = 'assets';
@@ -97,6 +97,9 @@
         <History />
       </div>
     {/if}
+
+    <InitAccount />
+
     <div class="container z-6 p-4 m-4 danger-zone">
       <h3 class="pb-4 text-2xl text-left">Danger Zone</h3>
       <div class="ml-6">

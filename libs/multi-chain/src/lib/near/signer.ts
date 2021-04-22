@@ -41,7 +41,7 @@ export class NearSigner extends Signer<
   ) {
     super(Chain.NEAR);
     this.keyStore = new keyStores.InMemoryKeyStore();
-    const keyPair = KeyPair.fromString(formatKey(privKey, KeyFormats.bs58));
+    const keyPair = KeyPair.fromString(formatKey(privKey, KeyFormats.BS58));
     this.initProm = this.keyStore.setKey(
       this.networkId,
       this.accountId,

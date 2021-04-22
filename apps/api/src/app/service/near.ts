@@ -2,26 +2,22 @@ import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { ec, eddsa } from 'elliptic';
+import { getBafContract } from '@baf-wallet/baf-contract';
 
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
-  secpPubkey: PublicKey,
-  edPubkey: PublicKey,
-  discordUserId: string,
+  secpPK: PublicKey,
+  edPK: PublicKey,
+  userId: string,
   nonce: string,
-  secpSig: ec.Signature,
-  edSig: eddsa.Signature,
+  secpSig: string,
+  rustEncodedSecpSig: string,
+  edSig: string,
+  accountID: string,
   curve = CryptoCurves.secp256k1
 ) {
-  const sigsValid = verifyBothSigs(
-    discordUserId,
-    nonce,
-    secpSig,
-    edSig,
-    secpPubkey,
-    edPubkey
-  );
+  const msg = ChainUtil.createUserVerifyMessage(userId, nonce);
+  const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
 
   if (!sigsValid) {
     this.setStatus(403);
@@ -33,30 +29,37 @@ export async function createNearAccount(
   }
 
   const near = await NearAccount.get();
-  const accountName = near.getAccountNameFromPubkey(secpPubkey, curve);
+  try {
+    await near.setAccountName(edPK, edSig, secpPK, secpSig, accountID, msg);
+  } catch (e) {
+    this.setStatus(500);
+    throw e;
+  }
+
+  // TODO: make singleton
+  const bafContract = await getBafContract();
+  await bafContract.setAccountInfo(
+    secpPK,
+    userId,
+    [...Buffer.from(rustEncodedSecpSig, 'hex')],
+    accountID
+  );
 
   await near.accountCreator.createAccount(
-    accountName,
-    NearPublicKey.fromString(formatKey(edPubkey, KeyFormats.bs58))
+    accountID,
+    NearPublicKey.fromString(formatKey(edPK, KeyFormats.BS58))
   );
 }
 
 function verifyBothSigs(
-  discordUserId: string,
-  nonce: string,
-  secpSig: ec.Signature,
-  edSig: eddsa.Signature,
+  msg: string,
+  secpSig: string,
+  edSig: string,
   secpPubkey: PublicKey,
   edPubkey: PublicKey
 ): boolean {
-  const msg = ChainUtil.createUserVerifyMessage(discordUserId, nonce);
   return (
     !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) ||
     !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
   );
-}
-
-function toNearKey(edPubkey: PublicKey): NearPublicKey {
-  const x = NearPublicKey.fromString(formatKey(edPubkey, KeyFormats.bs58));
-  return x;
 }

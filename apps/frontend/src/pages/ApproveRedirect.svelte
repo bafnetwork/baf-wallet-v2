@@ -16,6 +16,8 @@
   import { SiteKeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
+  import { getBafContract } from '@baf-wallet/baf-contract';
+  
   export let params = {} as any;
   let transferAmount: string;
   const optsStr: string = params.opts;
@@ -30,11 +32,8 @@
     const networkId = getNearNetworkId(constants.env);
     const signer = new NearSigner(
       edSK,
-      NearAccount.getAccountNameFromPubkey(
-        $SiteKeyStore.secpPK,
-        CryptoCurves.secp256k1,
-        networkId
-      ),
+      // TODO:!!
+      await getBafContract().getAccountId($SiteKeyStore.secpPK),
       networkId
     );
     // TODO: frontend error handling for params

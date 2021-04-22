@@ -13,6 +13,7 @@
     "lib": ["es2017"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@baf-wallet/api-client": ["libs/api-client/src/index.ts"],
@@ -23,8 +24,9 @@
       "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
       "@baf-wallet/trust-wallet-assets": [
         "libs/trust-wallet-assets/src/index.ts"
-      ]
+      ],
+      "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "libs/baf-contract/contract"]
 }
