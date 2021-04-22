@@ -1,20 +1,20 @@
 import { PublicKey } from '@baf-wallet/interfaces';
 import Torus from '@toruslabs/torus.js';
 import NodeDetailsManager from '@toruslabs/fetch-node-details';
+import { constants } from '../config/constants';
+import * as fetch from 'node-fetch';
+import { secp256k1 } from '@baf-wallet/multi-chain';
 
-/**
- * PublicKeyWrapper is intended to be used for API specs as TSOA, the automatic
- * swagger docs generator, does not recognize the type declaration
- */
-export interface PublicKeyWrapper {
-  pk: Buffer;
-}
+export type hexString = string;
 
-export async function getPublicAddress(userId: string, verifierName: string): Promise<PublicKey> {
-  const torus = new Torus({});
+export async function getPublicAddress(
+  userId: string,
+  verifierName: string
+): Promise<PublicKey> {
+  const torus = new Torus({ enableLogging: true });
   const nodeManager = new NodeDetailsManager({
-    network: 'ropsten',
-    proxyAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
+    network: constants.torus.network,
+    proxyAddress: constants.torus.proxyAddress,
   });
 
   const {
@@ -23,6 +23,7 @@ export async function getPublicAddress(userId: string, verifierName: string): Pr
     torusIndexes,
   } = await nodeManager.getNodeDetails();
 
+  (global as any).fetch = fetch;
   const torusPublicKey = await torus.getPublicAddress(
     torusNodeEndpoints,
     torusNodePub,
@@ -30,6 +31,7 @@ export async function getPublicAddress(userId: string, verifierName: string): Pr
     true
   );
 
-  console.log(torusPublicKey.toString());
-  return Buffer.from(torusPublicKey.toString(), 'hex');  
+  const pub = { x: (torusPublicKey as any).X, y: (torusPublicKey as any).Y };
+  const key = secp256k1.keyFromPublic(pub);
+  return Buffer.from(key.getPublic('hex'), 'hex');
 }

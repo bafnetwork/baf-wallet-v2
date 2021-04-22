@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  import { KeyFormats, SecretKey } from '@baf-wallet/interfaces';
+  import { KeyFormats, PublicKey, SecretKey } from '@baf-wallet/interfaces';
 
   import {
     edPubkeyFromSK,
@@ -20,13 +20,13 @@
     return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.hex)}`;
   }
 
-  export function buildKeyStateFromSecpSK(secpSK: SecretKey): KeyState {
+  export function buildKeyStateFromSecpSK(secpSK: SecretKey, secpPK?: PublicKey): KeyState {
     const edSK = edSKFromSeed(new Uint8Array(secpSK));
     return {
       edSK,
       secpSK,
       edPK: edPubkeyFromSK(edSK),
-      secpPK: secpPubkeyFromSK(secpSK),
+      secpPK: secpPK || secpPubkeyFromSK(secpSK),
     };
   }
 

@@ -4,7 +4,7 @@ import * as bs58 from 'bs58';
 export function formatKey(
   key: PublicKey | SecretKey,
   keyFormat = KeyFormats.hex
-) {
+): string {
   switch (keyFormat) {
     case KeyFormats.hex:
       return Buffer.from(key).toString('hex');

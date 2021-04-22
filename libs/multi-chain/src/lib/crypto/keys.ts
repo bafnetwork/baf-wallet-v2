@@ -1,8 +1,8 @@
 import { PublicKey, SecretKey } from '@baf-wallet/interfaces';
-import { ec as EC } from 'elliptic';
+import { ec as EC, eddsa as EDDSA } from 'elliptic';
 import * as nacl from 'tweetnacl';
 
-const secp256k1 = new EC('secp256k1');
+export const secp256k1 = new EC('secp256k1');
 
 export function edPubkeyFromSK(secret: SecretKey): PublicKey {
   return Buffer.from(

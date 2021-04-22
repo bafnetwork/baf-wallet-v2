@@ -6,16 +6,19 @@ import { CryptoCurves } from '@baf-wallet/interfaces';
 export async function discordRevokeAccessToken(token: string) {
   const formData = new FormData();
   formData.append('token', token);
-  console.log(formData);
-  const res = await axios.post('https://discordapp.com/api/oauth2/token/revoke', formData, {
-    headers: {
-      ...formData.getHeaders(),
-      Authorization: `Basic ${Buffer.from(
-        `${constants.discord.clientId}:${constants.discord.clientSecret}`,
-        'binary'
-      ).toString('base64')}`,
-    },
-  });
+  const res = await axios.post(
+    'https://discordapp.com/api/oauth2/token/revoke',
+    formData,
+    {
+      headers: {
+        ...formData.getHeaders(),
+        Authorization: `Basic ${Buffer.from(
+          `${constants.discord.clientId}:${constants.discord.clientSecret}`,
+          'binary'
+        ).toString('base64')}`,
+      },
+    }
+  );
 }
 
 // TODO: spec out

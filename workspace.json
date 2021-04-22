@@ -351,6 +351,27 @@
           }
         }
       }
+    },
+    "baf-contract": {
+      "root": "libs/baf-contract",
+      "sourceRoot": "libs/baf-contract/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/baf-contract/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/baf-contract"],
+          "options": {
+            "jestConfig": "libs/baf-contract/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

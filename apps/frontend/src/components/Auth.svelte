@@ -4,8 +4,6 @@
   import Icon from './base/Icon.svelte';
   import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
   import { AccountStore } from '../state/accounts.svelte';
-  import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
-  import { KeyStore } from 'near-api-js/lib/key_stores';
   import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
   import { keyFromString } from '@baf-wallet/multi-chain';
   import { KeyFormats } from '@baf-wallet/interfaces';
@@ -25,7 +23,6 @@
     const torus = await initTorus();
 
     const token = localStorage.getItem('access-token:discord');
-    // const token = "QAUF0W5pVyxyFRAkEeMvl9GWErRBsk"
     if (token) {
       console.log('revoking token from client')
       await apiClient.revokeToken({
@@ -42,7 +39,7 @@
     
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.hex)
+        keyFromString(userInfo.privateKey, KeyFormats.hex),
       )
     );
     AccountStore.update((state) => {
