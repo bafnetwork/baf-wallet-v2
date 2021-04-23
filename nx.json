@@ -24,6 +24,8 @@
     "redirect-generator": { "tags": [] },
     "interfaces": { "tags": [] },
     "trust-wallet-assets": { "tags": [] },
-    "frontend": { "tags": [] }
+    "frontend": { "tags": [] },
+    "near": { "tags": [] },
+    "utils": { "tags": [] }
   }
 }

@@ -8,5 +8,7 @@ module.exports = {
     '<rootDir>/libs/redirect-generator',
     '<rootDir>/libs/trust-wallet-assets',
     '<rootDir>/apps/frontend',
+    '<rootDir>/libs/near',
+    '<rootDir>/libs/utils',
   ],
 };
