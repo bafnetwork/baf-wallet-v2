@@ -1,8 +1,8 @@
 import {
-  CryptoCurves,
-  KeyFormats,
-  NearNetworkId,
+  Encoding,
   SecretKey,
+  ed25519,
+  secp256k1
 } from '@baf-wallet/interfaces';
 import { Account, connect, ConnectConfig, KeyPair, Near } from 'near-api-js';
 import {
@@ -11,17 +11,18 @@ import {
 } from 'near-api-js/lib/account_creator';
 import { InMemoryKeyStore, KeyStore } from 'near-api-js/lib/key_stores';
 import { PublicKey } from '@baf-wallet/interfaces';
-import { formatKey } from '../utils';
+import { formatKey } from '@baf-wallet/utils';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
+import { NearNetworkID } from './near';
 
 export interface NearAccountParams {
-  networkId: NearNetworkId;
+  networkId: NearNetworkID;
   keyPath: string;
   masterAccountId: string;
 }
 
 interface NearAccountParamsInternal {
-  masterAccountId: string;
+  masterAccountId: NearNetworkID;
   connectConfig: ConnectConfig;
 }
 
@@ -39,7 +40,7 @@ export class NearAccount {
 
   static setConfig(params: NearAccountParams) {
     this.initParams = {
-      masterAccountId: params.masterAccountId,
+      masterAccountId: params.masterAccountId as NearNetworkID,
       connectConfig: {
         networkId: params.networkId,
         nodeUrl: `https://rpc.${params.networkId}.near.org`,
@@ -52,7 +53,7 @@ export class NearAccount {
 
   static async get(): Promise<NearAccount> {
     if (!this.initParams) {
-      throw 'Near params must be set prior to calling getNea';
+      throw 'Near params must be set prior to calling getNear';
     }
     if (this.nearSingleton) {
       return this.nearSingleton;
@@ -84,30 +85,23 @@ export class NearAccount {
     return this.nearSingleton;
   }
 
-  getAccountNameFromPubkey(pubkey: PublicKey, curve: CryptoCurves) {
-    return NearAccount.getAccountNameFromPubkey(
-      pubkey,
-      curve,
-      this.params.connectConfig.networkId as NearNetworkId
-    );
-  }
-
-  static getAccountNameFromPubkey(
-    pubkey: PublicKey,
-    curve: CryptoCurves,
-    networkId: NearNetworkId
-  ): string {
-    return `${curve}_${formatKey(pubkey, KeyFormats.bs58)}.${
-      networkId === NearNetworkId.MAINNET ? 'near' : networkId
-    }`.toLowerCase();
-  }
-
-  async updateKeyPair(accountId: string, secret: SecretKey) {
-    const newKeyPair = new KeyPairEd25519(formatKey(secret, KeyFormats.bs58));
+  async updateKeyPair<Curve>(accountId: string, secret: SecretKey<Curve>) {
+    const newKeyPair = new KeyPairEd25519(formatKey(secret, Encoding.bs58));
     await this.keyStore.setKey(
       this.params.connectConfig.networkId,
       accountId,
       newKeyPair
     );
   }
+
+  static getAccountNameFromPubkey<Curve>(
+    pubkey: PublicKey<Curve>,
+    curve: Curve,
+    networkId: string
+  ): string {
+    return `${curve}_${formatKey(pubkey, Encoding.bs58)}.${
+      networkId === NearNetworkID.MAINNET ? 'near' : networkId
+    }`.toLowerCase();
+  }
+
 }
