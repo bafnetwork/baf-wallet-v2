@@ -1,12 +1,30 @@
-export enum CryptoCurves {
-  secp256k1 = 'secp256k1',
-  ed25519 = 'ed25519',
-}
+export type secp256k1 = {
+  toString: () => "secp256k1"
+};
 
-export enum KeyFormats {
+export type ed25519 = {
+  toString: () => "ed25519"
+};
+
+export enum Encoding {
   bs58,
   hex,
 }
 
-export type PublicKey = Buffer;
-export type SecretKey = Buffer;
+export interface PublicKey<Curve> {
+  data: Buffer;
+  curve: Curve;
+  format: (fmt: Encoding) => string;
+}
+
+export interface SecretKey<Curve> {
+  data: Buffer;
+  curve: Curve;
+  format: (fmt: Encoding) => string;
+}
+
+export interface KeyPair<Curve> {
+  curve: Curve;
+  sk: SecretKey<Curve>;
+  pk: PublicKey<Curve>;
+}
