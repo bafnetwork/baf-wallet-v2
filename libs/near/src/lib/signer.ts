@@ -1,33 +1,42 @@
-import { Signer } from '../interfaces/base-classes';
 import {
   KeyPair,
+  TxInterface,
+  SecretKey,
+  secp256k1,
+  ed25519,
+  Encoding,
+} from '@baf-wallet/interfaces';
+import {
+  KeyPair as NearKeyPair,
   keyStores,
   providers,
   transactions,
   utils,
 } from 'near-api-js';
 import {
-  Chain,
-  KeyFormats,
   NearAction,
-  SecretKey,
   NearSupportedActionTypes,
   NearTransferParam,
-} from '@baf-wallet/interfaces';
-import type { NearNetworkId } from '@baf-wallet/interfaces';
+  NearNetworkID,
+} from './near';
 import { sha256 } from 'js-sha256';
 import { Buffer } from 'buffer';
-import { formatKey } from '../utils';
+import { formatKey } from '@baf-wallet/utils';
 import { Action as NearNativeAction } from 'near-api-js/lib/transaction';
 import BN from 'bn.js';
 
-export interface NearSendTXOpts {
+export interface NearSignTxOpts {
+  tx: transactions.Transaction;
+  keyPair: KeyPair<ed25519> | KeyPair<secp256k1> | NearKeyPair;
+}
+
+export interface NearSendTxOpts {
   actions: NearAction[];
   receiverAccountId: string;
 }
 
 export class NearSigner extends Signer<
-  NearSendTXOpts,
+  NearSendTxOpts,
   transactions.Transaction
 > {
   private keyStore: keyStores.InMemoryKeyStore;
@@ -41,7 +50,7 @@ export class NearSigner extends Signer<
   ) {
     super(Chain.NEAR);
     this.keyStore = new keyStores.InMemoryKeyStore();
-    const keyPair = KeyPair.fromString(formatKey(privKey, KeyFormats.bs58));
+    const keyPair = KeyPair.fromString(privKey.format(Encoding.bs58));
     this.initProm = this.keyStore.setKey(
       this.networkId,
       this.accountId,
