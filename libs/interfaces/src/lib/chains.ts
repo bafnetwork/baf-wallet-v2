@@ -4,16 +4,13 @@ export enum Chain {
   NEAR = 'near',
 }
 
-export interface ChainInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult, Account, AccountLookupParams, AccountCreateParams> {
+export interface ChainInterface<InitParams, Inner, Tx, SignedTx, SignOpts, SendOpts, SendResult, Account, AccountLookupParams, AccountCreateParams> {
   rpc: RpcInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
   tx: TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: AccountsInterface<Account, AccountLookupParams, AccountCreateParams>;
   convert: Converter;
-  inner: ChainSpecificInterface;
-}
-
-export interface ChainSpecificInterface {
-  [name: string]: any;
+  inner: Inner | "uninitialized";
+  init: (params: InitParams) => Promise<Inner>;
 }
 
 export interface AccountsInterface<Account, LookupParams, CreateParams> {
@@ -40,10 +37,10 @@ export interface TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult> {
 // chains are expected to extend this with their own functions and/or values
 export interface Converter {
   skFromBaf: <Curve>(bafSk: SecretKey<Curve>) => any;
-  skToBaf: <Curve>(sk: any) => PublicKey<Curve>;
+  skToBaf: <Curve>(sk: any, curveMarker: Curve) => PublicKey<Curve>;
   pkFromBaf: <Curve>(bafPk: PublicKey<Curve>) => any;
-  pkToBaf: <Curve>(pk: any) => SecretKey<Curve>;
+  pkToBaf: <Curve>(pk: any, curveMarker: Curve) => SecretKey<Curve>;
   keyPairFromBaf: <Curve>(BafKeyPair: KeyPair<Curve>) => any;
-  keyPairToBaf: <Curve>(keyPair: any) => KeyPair<Curve>;
+  keyPairToBaf: <Curve>(keyPair: any, curveMaker: Curve) => KeyPair<Curve>;
   // TODO: add more methods for converting shit
 }
