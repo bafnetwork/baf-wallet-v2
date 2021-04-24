@@ -4,6 +4,8 @@ export enum Chain {
   near,
 }
 
+// ChainInterface but with the partial application already done via a closure somewhere
+// for instance, wrapChainInterface in @baf-wallet/multi-chain/switches
 export interface WrappedChainInterface<
   PK,
   SK,
