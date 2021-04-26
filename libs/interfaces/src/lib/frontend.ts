@@ -1,4 +1,4 @@
-import { PublicKey, SecretKey } from "./crypto";
+import { PublicKey, SecretKey } from './crypto';
 
 export interface KeyState {
   edPK: PublicKey;

@@ -23,6 +23,6 @@ export type ChainAccount = NearAccount;
 export type Balance = string;
 
 export interface ChainBalance {
-  chain: ChainName,
-  balance: Balance
+  chain: ChainName;
+  balance: Balance;
 }

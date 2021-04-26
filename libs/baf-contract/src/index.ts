@@ -1,2 +1,2 @@
 export * from './lib/baf-contract';
-export * from './lib/constants'
+export * from './lib/constants';

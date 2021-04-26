@@ -5,7 +5,7 @@ import {
   secpPubkeyFromSK,
   secpSKFromSeed,
 } from '../crypto';
-import { ec  } from 'elliptic';
+import { ec } from 'elliptic';
 import * as sha3 from 'js-sha3';
 const ecSecp = new ec('secp256k1');
 

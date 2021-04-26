@@ -1,4 +1,4 @@
 export const bafContractConstants = {
   // :)
-  beneficiaryId: "lev.near"
-}
+  beneficiaryId: 'lev.near',
+};
