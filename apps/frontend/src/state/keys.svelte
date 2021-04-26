@@ -22,7 +22,6 @@
 
   export function buildKeyStateFromSecpSK(secpSK: SecretKey, secpPK?: PublicKey): KeyState {
     const edSK = edSKFromSeed(new Uint8Array(secpSK));
-    console.log(secpPK)
     return {
       edSK,
       secpSK,

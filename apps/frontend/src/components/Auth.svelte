@@ -13,7 +13,8 @@
   async function initTorus(): Promise<DirectWebSdk> {
     const torus = new DirectWebSdk({
       baseUrl: `${constants.baseUrl}/serviceworker`,
-      network: 'testnet', // details for test net
+      network: 'testnet', // details for test net, TODO: ropsten
+      proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
     });
     await torus.init();
     return torus;
@@ -24,25 +25,28 @@
 
     const token = localStorage.getItem('access-token:discord');
     if (token) {
-      console.log('revoking token from client')
+      console.log('revoking token from client');
       await apiClient.revokeToken({
         revokeTokenParams: { token },
       });
     }
-    
+
     const userInfo = await torus.triggerLogin({
       typeOfLogin: 'discord',
       verifier: constants.torus.discord.verifier,
       clientId: constants.torus.discord.clientId,
     });
     localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
-    const tmp = secp256k1.keyFromPublic({x: userInfo.pubKey.pub_key_X, y: userInfo.pubKey.pub_key_Y})
-    console.log(tmp.getPublic().encode('hex', true))
-    console.log(userInfo.pubKey)
-    
+    const tmp = secp256k1.keyFromPublic({
+      x: userInfo.pubKey.pub_key_X,
+      y: userInfo.pubKey.pub_key_Y,
+    });
+    console.log(tmp.getPublic().encode('hex', true));
+    console.log(userInfo.pubKey);
+
     SiteKeyStore.set(
       buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.HEX),
+        keyFromString(userInfo.privateKey, KeyFormats.HEX)
       )
     );
     AccountStore.update((state) => {

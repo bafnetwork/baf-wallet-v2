@@ -48,7 +48,8 @@
           secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
         })).nearId
       : '';
-    if (loggedIn)
+    console.log(accountId)
+    if (accountId)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
         masterAccountId: accountId,
@@ -61,7 +62,7 @@
         : [
             {
               chain: ChainName.NEAR,
-              account: await (await NearAccount.get()).masterAccount,
+              account: !!accountId ? await (await NearAccount.get()).masterAccount : null,
               // TODO: idk if this is the best way of doing things
               // its initialized if the account is truthy
               init: !!accountId,

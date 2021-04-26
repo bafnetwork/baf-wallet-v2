@@ -29,7 +29,7 @@ export async function setBafContract(account): Promise<BafContract> {
 
 export function getBafContract(): BafContract {
   if (bafContract) return bafContract;
-  throw 'BAF Contract is not initialized yet, plese call setBafContract';
+  throw 'BAF Contract is not initialized yet, please call setBafContract';
 }
 
 async function buildBafContract(account: Account): Promise<BafContract> {
