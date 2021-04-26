@@ -16,7 +16,7 @@
       alert('Cannot delete an unitialized account');
       return;
     }
-    const userId = 'lev_s#7844';
+    const userId = $AccountStore.oauthInfo.verifiedId;
 
     const nonce = await apiClient.getAccountNonce({
       secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),

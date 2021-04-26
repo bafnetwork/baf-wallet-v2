@@ -57,11 +57,7 @@ export class NearAccount {
     const newKeyPair = new KeyPairEd25519(
       formatKey(params.edSK, KeyFormats.BS58)
     );
-    await keyStore.setKey(
-      params.networkId,
-      params.masterAccountId,
-      newKeyPair
-    );
+    await keyStore.setKey(params.networkId, params.masterAccountId, newKeyPair);
     this.initParams.connectConfig.keyStore = keyStore;
   }
 
@@ -106,7 +102,8 @@ export class NearAccount {
       near,
       masterAccount,
       urlAccountCreator,
-      this.initParams.connectConfig.deps?.keyStore || this.initParams.connectConfig.keyStore,
+      this.initParams.connectConfig.deps?.keyStore ||
+        this.initParams.connectConfig.keyStore,
       this.initParams
     );
     return this.nearSingleton;

@@ -17,8 +17,14 @@
     pubkey: string;
   }
 
+  interface OAuthState {
+    verifiedId: string;
+    name: string;
+    email: string;
+  }
   export interface AccountState {
     loggedIn: boolean;
+    oauthInfo?: OAuthState;
     chainAccounts?: {
       chain: ChainName;
       account: ChainAccount;
@@ -27,6 +33,7 @@
   }
 
   export const AccountStore = writable<AccountState | null>(null);
+  const oauthInfoStoreName = 'oauthInfo';
 
   export function logout() {
     SiteKeyStore.set(null);
@@ -50,7 +57,6 @@
           })
         ).nearId
       : '';
-    console.log(accountId);
     if (accountId)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
@@ -59,6 +65,9 @@
       });
     const accountState = {
       loggedIn,
+      OAuthState: !loggedIn
+        ? null
+        : JSON.parse(window.localStorage.getItem(oauthInfoStoreName)),
       chainAccounts: !loggedIn
         ? []
         : [
@@ -75,5 +84,8 @@
     };
     AccountStore.set(accountState);
     return accountState;
+  }
+  export function storeOauthState(oauthInfo: OAuthState) {
+    window.localStorage.setItem(oauthInfoStoreName, JSON.stringify(oauthInfo));
   }
 </script>

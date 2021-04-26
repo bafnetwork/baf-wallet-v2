@@ -9,7 +9,11 @@ import {
   SuccessResponse,
 } from 'tsoa';
 
-import { createNearAccount, getAccountInfoFromSecpPK, getAccountNonceFromSecpPK } from '../service/near';
+import {
+  createNearAccount,
+  getAccountInfoFromSecpPK,
+  getAccountNonceFromSecpPK,
+} from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
 import { getPublicAddress } from './common';
 import { constants } from '../config/constants';

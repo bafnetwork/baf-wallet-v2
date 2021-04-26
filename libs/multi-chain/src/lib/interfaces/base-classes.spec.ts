@@ -1,5 +1,10 @@
 import { ChainUtil } from './base-classes';
-import {edPubkeyFromSK, edSKFromSeed, secpPubkeyFromSK, secpSKFromSeed} from '../crypto'
+import {
+  edPubkeyFromSK,
+  edSKFromSeed,
+  secpPubkeyFromSK,
+  secpSKFromSeed,
+} from '../crypto';
 import { ec, eddsa } from 'elliptic';
 import * as sha3 from 'js-sha3';
 const ecSecp = new ec('secp256k1');
@@ -68,9 +73,9 @@ describe('Test the base classes core functionality', () => {
 
       let signature = ChainUtil.signEd25519(aliceEdSecretKey, msg);
 
-      expect(ChainUtil.verifySignedEd25519(aliceEdPublicKey, msg, signature)).toEqual(
-        true
-      );
+      expect(
+        ChainUtil.verifySignedEd25519(aliceEdPublicKey, msg, signature)
+      ).toEqual(true);
     });
     it('test failed signing verification Ed', () => {
       let msg = 'Message for signing';
@@ -78,9 +83,9 @@ describe('Test the base classes core functionality', () => {
 
       let signature = ChainUtil.signEd25519(bobEdSecretKey, msgHash);
 
-      expect(ChainUtil.verifySignedEd25519(aliceEdPublicKey, msg, signature)).toEqual(
-        false
-      );
+      expect(
+        ChainUtil.verifySignedEd25519(aliceEdPublicKey, msg, signature)
+      ).toEqual(false);
     });
   });
 });

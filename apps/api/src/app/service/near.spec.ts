@@ -105,7 +105,7 @@ describe('createAccount', () => {
       aliceUserId,
       await getBafContract().getAccountNonce(aliceSecpPublicKey)
     );
-     const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
+    const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
     await getBafContract().deleteAccountInfo(
       aliceSecpPublicKey,
       aliceUserId,

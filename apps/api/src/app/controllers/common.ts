@@ -19,7 +19,7 @@ export async function getPublicAddress(
   Torus.setAPIKey('torus-default');
   // TODO: why????
   const nodeManager = new NodeDetailsManager({
-    network: "ropsten",//constants.torus.network,
+    network: 'ropsten', //constants.torus.network,
     proxyAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
     // proxyAddress: constants.torus.proxyAddress,
   });
@@ -29,7 +29,6 @@ export async function getPublicAddress(
     torusNodePub,
     torusIndexes,
   } = await nodeManager.getNodeDetails();
-
 
   (global as any).fetch = fetch;
   // [

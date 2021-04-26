@@ -1,1 +1,1 @@
-declare type GlobalFetch = WindowOrWorkerGlobalScope
+declare type GlobalFetch = WindowOrWorkerGlobalScope;

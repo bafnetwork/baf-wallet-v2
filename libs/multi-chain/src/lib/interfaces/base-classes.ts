@@ -1,5 +1,5 @@
 import { ChainName, PublicKey, SecretKey } from '@baf-wallet/interfaces';
-import { ec  } from 'elliptic';
+import { ec } from 'elliptic';
 import * as sha3 from 'js-sha3';
 import * as nacl from 'tweetnacl';
 
@@ -52,7 +52,7 @@ export abstract class ChainUtil {
     const sig = nacl.sign.detached(
       new Uint8Array(Buffer.from(msgHash, 'hex')),
       new Uint8Array(sk)
-    )
+    );
     return Buffer.from(sig).toString('hex');
   }
 

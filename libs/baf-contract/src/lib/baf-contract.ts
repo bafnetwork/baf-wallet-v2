@@ -1,6 +1,10 @@
 import { Account, Contract } from 'near-api-js';
 import ContractConfig from '../../config.json';
-import { AccountId, PublicKey, RustEncodedSecpSig } from '@baf-wallet/interfaces';
+import {
+  AccountId,
+  PublicKey,
+  RustEncodedSecpSig,
+} from '@baf-wallet/interfaces';
 import { formatKeyArray } from '@baf-wallet/multi-chain';
 import { ec } from 'elliptic';
 

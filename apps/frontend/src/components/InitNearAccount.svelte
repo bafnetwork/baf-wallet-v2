@@ -6,18 +6,17 @@
   import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { KeyFormats } from '@baf-wallet/interfaces';
-  import {
-    encodeSecpSigBafContract,
-  } from '@baf-wallet/baf-contract';
+  import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
+  import { AccountStore } from '../state/accounts.svelte';
 
   let newAccountId: string;
 
   async function initNearAccount() {
     const nonce = await apiClient.getAccountNonce({
-      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58)
-    })
-    console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX))
-    const userId = '473198585890996224';
+      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
+    });
+    console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX));
+    const userId = $AccountStore.oauthInfo.verifiedId;
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)
@@ -29,7 +28,7 @@
         nonce,
         edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
         accountID: newAccountId,
-        secpSigS:  encodeSecpSigBafContract(secpSig),
+        secpSigS: encodeSecpSigBafContract(secpSig),
         edSig: ChainUtil.signEd25519(
           $SiteKeyStore.edSK,
           ChainUtil.createUserVerifyMessage(userId, nonce)
@@ -37,8 +36,8 @@
         secpSig: secpSig.toDER('hex'),
       },
     });
-    alert('Success')
-    reinitApp()
+    alert('Success');
+    reinitApp();
   }
 </script>
 
@@ -50,7 +49,11 @@
       initNearAccount();
     }}
   >
-    <Input label="Account ID" placeholder="john.doe.testnet" bind:value={newAccountId} />
+    <Input
+      label="Account ID"
+      placeholder="john.doe.testnet"
+      bind:value={newAccountId}
+    />
     <Button type="submit">Initialize Account with Near</Button>
   </form>
 </div>

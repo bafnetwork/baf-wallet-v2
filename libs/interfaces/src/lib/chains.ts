@@ -1,4 +1,4 @@
-import { Account as NearAccount } from 'near-api-js'
+import { Account as NearAccount } from 'near-api-js';
 // TODO: have some intelligent way to get the rest
 export enum ChainName {
   ETH = 'ethereum',
@@ -18,6 +18,6 @@ export enum ChainName {
 }
 
 // Or the type with all the supported chain account types
-export type ChainAccount = NearAccount
+export type ChainAccount = NearAccount;
 
-export type Balance = string
+export type Balance = string;
