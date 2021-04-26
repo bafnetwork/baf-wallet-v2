@@ -115,7 +115,7 @@
                 "command": "rm -r libs/api-client/src/build; mkdir libs/api-client/src/build"
               },
               {
-                "command": "yarn openapi-generator-cli generate -i ./swagger/swagger.json --generator-name typescript-fetch -o libs/api-client/src/build"
+                "command": "$(npm bin)/openapi-generator-cli generate -i ./swagger/swagger.json --generator-name typescript-fetch -o libs/api-client/src/build"
               }
             ]
           }
@@ -339,7 +339,7 @@
         "check": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
-            "command": "yarn svelte-check",
+            "command": "$(npm bin)/svelte-check",
             "cwd": "apps/frontend"
           }
         },
