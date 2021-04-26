@@ -1,5 +1,4 @@
 <script lang="ts">
-  import './typings';
   import { Buffer } from 'buffer';
   (window as any).Buffer = Buffer;
   import Modal from './components/base/Modal.svelte';
@@ -36,7 +35,7 @@
     {/if}
   </Modal>
 {:catch error}
-  <p>An error occured loading the page: {console.error(error)}</p>
+  <p>An error occured loading the page: {error.toString()}</p>
 {/await}
 
 <style global lang="postcss">

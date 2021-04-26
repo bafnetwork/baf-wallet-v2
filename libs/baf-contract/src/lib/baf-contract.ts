@@ -6,7 +6,6 @@ import {
   RustEncodedSecpSig,
 } from '@baf-wallet/interfaces';
 import { formatKeyArray } from '@baf-wallet/multi-chain';
-import { ec } from 'elliptic';
 
 interface BafContract {
   getAccountId: (secp_pk: PublicKey) => Promise<AccountId>;

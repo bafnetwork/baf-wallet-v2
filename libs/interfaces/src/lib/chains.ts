@@ -21,3 +21,8 @@ export enum ChainName {
 export type ChainAccount = NearAccount;
 
 export type Balance = string;
+
+export interface ChainBalance {
+  chain: ChainName,
+  balance: Balance
+}

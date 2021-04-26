@@ -16,7 +16,7 @@
       secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
     });
     console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX));
-    const userId = $AccountStore.oauthInfo.verifiedId;
+    const userId = $AccountStore.oauthInfo.verifierId;
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)

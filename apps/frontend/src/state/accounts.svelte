@@ -18,7 +18,7 @@
   }
 
   interface OAuthState {
-    verifiedId: string;
+    verifierId: string;
     name: string;
     email: string;
   }
@@ -50,22 +50,22 @@
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
     const networkId = getNearNetworkId(constants.env);
-    const accountId = loggedIn
+    const nearAccountId = loggedIn
       ? (
           await apiClient.getAccountInfo({
             secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
           })
         ).nearId
       : '';
-    if (accountId)
+    if (nearAccountId)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
-        masterAccountId: accountId,
+        masterAccountId: nearAccountId,
         edSK: keys.edSK,
       });
-    const accountState = {
+    const accountState: AccountState = {
       loggedIn,
-      OAuthState: !loggedIn
+      oauthInfo: !loggedIn
         ? null
         : JSON.parse(window.localStorage.getItem(oauthInfoStoreName)),
       chainAccounts: !loggedIn
@@ -73,12 +73,10 @@
         : [
             {
               chain: ChainName.NEAR,
-              account: !!accountId
+              account: !!nearAccountId
                 ? await (await NearAccount.get()).masterAccount
                 : null,
-              // TODO: idk if this is the best way of doing things
-              // its initialized if the account is truthy
-              init: !!accountId,
+              init: nearAccountId !== null && nearAccountId !== "",
             },
           ],
     };

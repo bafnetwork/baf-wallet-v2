@@ -60,10 +60,14 @@ impl AccountInfos for BafWalletPK {
         if !is_valid_account_id(new_account_id.as_bytes()) {
             panic!("new account id is invalid!");
         }
-        // let signer = signer_account_id();
-        // if signer != new_account_id && signer != current_account_id() {
-        //     panic!("signer must own either new account id or the contract itself!");
-        // }
+        // TODO: we have to consider if we want to allow just anybody to interact with
+        // with the map or if we should have a control access list
+        if false {
+            let signer = signer_account_id();
+            if signer != new_account_id && signer != current_account_id() {
+                panic!("signer must own either new account id or the contract itself!");
+            }
+        }
         let (secp_pk_internal, nonce) = self.verify_sig(user_id, secp_pk, secp_sig_s);
         self.account_infos.insert(
             &secp_pk_internal,
@@ -74,11 +78,10 @@ impl AccountInfos for BafWalletPK {
         );
     }
 
-    // TODO: add tests
     fn delete_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>) {
         let (secp_pk_internal, _) = self.verify_sig(user_id, secp_pk, secp_sig_s);
         // TODO: this leaves vulnrebaility to replay attacks. If an account is made, deleted, and made again,
-        // The nonce resets to 0
+        // The nonce resets to 0. Please see https://github.com/bafnetwork/baf-wallet-v2/issues/32
         self.account_infos.remove(&secp_pk_internal);
     }
 

@@ -2,6 +2,7 @@
   import {
     encodeSecpSigBafContract,
     getBafContract,
+    bafContractConstants,
   } from '@baf-wallet/baf-contract';
   import Button from './base/Button.svelte';
   import { reinitApp } from '../config/init.svelte';
@@ -16,7 +17,7 @@
       alert('Cannot delete an unitialized account');
       return;
     }
-    const userId = $AccountStore.oauthInfo.verifiedId;
+    const userId = $AccountStore.oauthInfo.verifierId;
 
     const nonce = await apiClient.getAccountNonce({
       secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
@@ -25,7 +26,6 @@
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)
     );
-    // TODO: factor out benefieciery.
     // TODO: Fn to get account from chain accounts
     // TODO: abstract
     await getBafContract().deleteAccountInfo(
@@ -35,10 +35,10 @@
     );
     // Deleteing the account must come after whiping it from the contract
     await $AccountStore.chainAccounts[0].account.deleteAccount(
-      'levtester.testnet'
+      bafContractConstants.beneficiaryId
     );
     alert('Your account was deleted');
-    reinitApp()
+    reinitApp();
   }
 </script>
 

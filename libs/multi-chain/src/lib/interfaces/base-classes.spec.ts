@@ -5,12 +5,10 @@ import {
   secpPubkeyFromSK,
   secpSKFromSeed,
 } from '../crypto';
-import { ec, eddsa } from 'elliptic';
+import { ec  } from 'elliptic';
 import * as sha3 from 'js-sha3';
 const ecSecp = new ec('secp256k1');
-const ecEd = new eddsa('ed25519');
 
-// TODO: fix!!!!const seed = new Uint8Array(
 const seed = new Uint8Array(
   Buffer.from(
     'af4391c50ca34de55165ffbfcd9e43a846a37ef97905988b694ba886d23c05d5',

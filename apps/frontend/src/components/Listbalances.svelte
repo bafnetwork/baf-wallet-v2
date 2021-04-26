@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Balance } from '../interfaces';
+  import { ChainBalance } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
@@ -9,20 +9,20 @@
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
   async function initBalances(): Promise<
-    { chainInfo: ChainInfo; bal: Balance }[]
+    { chainInfo: ChainInfo; bal: ChainBalance }[]
   > {
-    const balanceProms: Promise<Balance>[] = $AccountStore.chainAccounts.map(
+    const balanceProms: Promise<ChainBalance>[] = $AccountStore.chainAccounts.map(
       async (account) => {
         return {
-          tok: account.chain,
+          chain: account.chain,
           balance: await getAccountBalance(account.chain, account.account),
-        };
+        } as ChainBalance;
       }
     );
-    const balances: Balance[] = await Promise.all(balanceProms);
+    const balances: ChainBalance[] = await Promise.all(balanceProms);
     return Promise.all(
-      balances.map((bal: Balance) => {
-        return getChainInfo(bal.tok).then((chainInfo) => {
+      balances.map((bal: ChainBalance) => {
+        return getChainInfo(bal.chain).then((chainInfo) => {
           return {
             bal,
             chainInfo,
@@ -49,8 +49,8 @@
             <td class="mr-2">
               <img
                 class="object-scale-down mx-2"
-                src={getChainLogoUrl(chain.bal.tok)}
-                alt={`${chain.bal.tok}.png`}
+                src={getChainLogoUrl(chain.bal.chain)}
+                alt={`${chain.bal.chain}.png`}
               />
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>

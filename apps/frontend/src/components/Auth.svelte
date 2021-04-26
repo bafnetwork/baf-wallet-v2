@@ -25,7 +25,6 @@
 
     const token = localStorage.getItem('access-token:discord');
     if (token) {
-      console.log('revoking token from client');
       await apiClient.revokeToken({
         revokeTokenParams: { token },
       });
@@ -37,8 +36,6 @@
       clientId: constants.torus.discord.clientId,
     });
     localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
-
-    console.log(userInfo.userInfo);
     storeOauthState({
       name: userInfo.userInfo.name,
       email: userInfo.userInfo.email,
