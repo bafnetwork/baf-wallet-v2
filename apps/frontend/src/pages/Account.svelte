@@ -11,8 +11,8 @@
   import InitNearAccount from '../components/InitNearAccount.svelte';
   import { saveAs } from 'file-saver';
   import { formatKey } from '@baf-wallet/multi-chain';
-  import { getBafContract } from '@baf-wallet/baf-contract';
   import DeleteNearAccount from '../components/DeleteNearAccount.svelte';
+  import { ChainName } from '@baf-wallet/interfaces';
 
   let viewMode: 'assets' | 'history' = 'assets';
 
@@ -20,7 +20,7 @@
   let accounts = $AccountStore;
   let pubkey = formatKey($SiteKeyStore.secpPK);
   // TODO: there has to be a better way than this
-  let initNearAccount = $AccountStore?.chainAccounts[0]?.init;
+  let initNearAccount = $AccountStore?.chainInfos[ChainName.NEAR]?.init;
 
   function hashdisplayName(displayName: string) {
     var hash = 0;

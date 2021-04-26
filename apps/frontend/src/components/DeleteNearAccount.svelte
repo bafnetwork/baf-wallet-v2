@@ -10,10 +10,10 @@
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { apiClient } from '../config/api';
-  import { KeyFormats } from '@baf-wallet/interfaces';
+  import { ChainName, KeyFormats } from '@baf-wallet/interfaces';
 
   async function deleteAccount() {
-    if (!$AccountStore.chainAccounts[0].init) {
+    if (!$AccountStore.chainInfos[ChainName.NEAR]) {
       alert('Cannot delete an unitialized account');
       return;
     }
@@ -26,15 +26,13 @@
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)
     );
-    // TODO: Fn to get account from chain accounts
-    // TODO: abstract
     await getBafContract().deleteAccountInfo(
       $SiteKeyStore.secpPK,
       userId,
       encodeSecpSigBafContract(secpSig)
     );
     // Deleteing the account must come after whiping it from the contract
-    await $AccountStore.chainAccounts[0].account.deleteAccount(
+    await $AccountStore.chainInfos[ChainName.NEAR].account.deleteAccount(
       bafContractConstants.beneficiaryId
     );
     alert('Your account was deleted');

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChainBalance } from '@baf-wallet/interfaces';
+  import { ChainBalance, ChainName } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
@@ -11,11 +11,12 @@
   async function initBalances(): Promise<
     { chainInfo: ChainInfo; bal: ChainBalance }[]
   > {
-    const balanceProms: Promise<ChainBalance>[] = $AccountStore.chainAccounts.map(
-      async (account) => {
+    const balanceProms: Promise<ChainBalance>[] = Object.keys($AccountStore.chainInfos).map(
+      async (chain: ChainName) => {
+        const chainInfo = $AccountStore.chainInfos[chain]
         return {
-          chain: account.chain,
-          balance: await getAccountBalance(account.chain, account.account),
+          chain,
+          balance: await getAccountBalance(chain, chainInfo.account),
         } as ChainBalance;
       }
     );

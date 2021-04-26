@@ -22,14 +22,18 @@
     name: string;
     email: string;
   }
-  export interface AccountState {
-    loggedIn: boolean;
-    oauthInfo?: OAuthState;
-    chainAccounts?: {
+
+  type ChainInfos = {
+    [key in ChainName]?: {
       chain: ChainName;
       account: ChainAccount;
       init: boolean;
-    }[];
+    };
+  };
+  export interface AccountState {
+    loggedIn: boolean;
+    oauthInfo?: OAuthState;
+    chainInfos: ChainInfos;
   }
 
   export const AccountStore = writable<AccountState | null>(null);
@@ -63,26 +67,24 @@
         masterAccountId: nearAccountId,
         edSK: keys.edSK,
       });
+    const chainInfos = {};
+    chainInfos[ChainName.NEAR] = {
+      account: !!nearAccountId
+        ? await (await NearAccount.get()).masterAccount
+        : null,
+      init: nearAccountId !== null && nearAccountId !== '',
+    };
     const accountState: AccountState = {
       loggedIn,
       oauthInfo: !loggedIn
         ? null
         : JSON.parse(window.localStorage.getItem(oauthInfoStoreName)),
-      chainAccounts: !loggedIn
-        ? []
-        : [
-            {
-              chain: ChainName.NEAR,
-              account: !!nearAccountId
-                ? await (await NearAccount.get()).masterAccount
-                : null,
-              init: nearAccountId !== null && nearAccountId !== "",
-            },
-          ],
+      chainInfos,
     };
     AccountStore.set(accountState);
     return accountState;
   }
+
   export function storeOauthState(oauthInfo: OAuthState) {
     window.localStorage.setItem(oauthInfoStoreName, JSON.stringify(oauthInfo));
   }
