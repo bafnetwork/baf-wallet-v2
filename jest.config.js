@@ -9,5 +9,6 @@ module.exports = {
     '<rootDir>/libs/trust-wallet-assets',
     '<rootDir>/apps/frontend',
     '<rootDir>/libs/baf-contract',
+    '<rootDir>/libs/torus',
   ],
 };
