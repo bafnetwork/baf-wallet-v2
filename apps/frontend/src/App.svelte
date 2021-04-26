@@ -7,7 +7,8 @@
   import Account from './pages/Account.svelte';
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
-  import { AccountStore, initAccount } from './state/accounts.svelte';
+  import { AccountStore } from './state/accounts.svelte';
+  import { initApp } from './config/init.svelte';
 
   const routesLoggedIn = {
     '/': Account,
@@ -20,10 +21,7 @@
     '/:attemptedRoute': Login,
   };
 
-  async function init(): Promise<void> {
-    await initAccount();
-  }
-  const initProm = init();
+  const initProm = initApp();
 </script>
 
 {#await initProm}

@@ -9,7 +9,7 @@ import { setBafContract } from '@baf-wallet/baf-contract';
 const app = express();
 
 async function initChains() {
-  NearAccount.setConfig(constants.nearAccountConfig);
+  NearAccount.setConfigNode(constants.nearAccountConfig);
 }
 
 async function initContracts() {

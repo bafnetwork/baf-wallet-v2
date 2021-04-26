@@ -1,5 +1,10 @@
 <script lang="ts" context="module">
-  import { KeyFormats, PublicKey, SecretKey } from '@baf-wallet/interfaces';
+  import {
+    KeyFormats,
+    PublicKey,
+    SecretKey,
+    KeyState,
+  } from '@baf-wallet/interfaces';
 
   import {
     edPubkeyFromSK,
@@ -10,7 +15,6 @@
   } from '@baf-wallet/multi-chain';
 
   import { writable } from 'svelte/store';
-  import { KeyState } from '../interfaces';
 
   const keyStoreName = 'key-store';
 
@@ -20,7 +24,10 @@
     return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.HEX)}`;
   }
 
-  export function buildKeyStateFromSecpSK(secpSK: SecretKey, secpPK?: PublicKey): KeyState {
+  export function buildKeyStateFromSecpSK(
+    secpSK: SecretKey,
+    secpPK?: PublicKey
+  ): KeyState {
     const edSK = edSKFromSeed(new Uint8Array(secpSK));
     return {
       edSK,
@@ -54,14 +61,11 @@
       window.localStorage.setItem(keyStoreName, stringified);
   });
 
-  /**
-   * @returns true if the user is logged in
-   */
-  export function loadKeys(): boolean {
+  export function loadKeys(): KeyState | null {
     const keysStored = window.localStorage.getItem(keyStoreName);
-    if (!keysStored) return false;
+    if (!keysStored) return null;
     const keysParse = unpackKey(keysStored);
     SiteKeyStore.set(keysParse);
-    return true;
+    return keysParse;
   }
 </script>

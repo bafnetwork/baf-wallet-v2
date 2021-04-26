@@ -1,19 +1,22 @@
 <script lang="ts">
   import Input from './base/Input.svelte';
   import Button from './base/Button.svelte';
+  import { reinitApp } from '../config/init.svelte';
   import { apiClient } from '../config/api';
   import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { KeyFormats } from '@baf-wallet/interfaces';
-  import {
-    getBafContract,
-  } from '@baf-wallet/baf-contract';
+  import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
+  import { AccountStore } from '../state/accounts.svelte';
 
   let newAccountId: string;
 
   async function initNearAccount() {
-    const nonce = await getBafContract().getAccountNonce($SiteKeyStore.secpPK);
-    const userId = 'lev_s#7844';
+    const nonce = await apiClient.getAccountNonce({
+      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
+    });
+    console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX));
+    const userId = $AccountStore.oauthInfo.verifierId;
     const secpSig = ChainUtil.signSecp256k1(
       $SiteKeyStore.secpSK,
       ChainUtil.createUserVerifyMessage(userId, nonce)
@@ -25,14 +28,16 @@
         nonce,
         edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
         accountID: newAccountId,
-        secpSigS: getBafContract().encodeSecpSig(secpSig),
+        secpSigS: encodeSecpSigBafContract(secpSig),
         edSig: ChainUtil.signEd25519(
           $SiteKeyStore.edSK,
           ChainUtil.createUserVerifyMessage(userId, nonce)
-        ).toHex(),
+        ),
         secpSig: secpSig.toDER('hex'),
       },
     });
+    alert('Success');
+    reinitApp();
   }
 </script>
 
@@ -44,7 +49,11 @@
       initNearAccount();
     }}
   >
-    <Input bind:value={newAccountId} />
+    <Input
+      label="Account ID"
+      placeholder="john.doe.testnet"
+      bind:value={newAccountId}
+    />
     <Button type="submit">Initialize Account with Near</Button>
   </form>
 </div>

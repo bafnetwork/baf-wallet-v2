@@ -1,13 +1,11 @@
-import { Chain, PublicKey, SecretKey } from '@baf-wallet/interfaces';
-import { ec, eddsa } from 'elliptic';
+import { ChainName, PublicKey, SecretKey } from '@baf-wallet/interfaces';
+import { ec } from 'elliptic';
 import * as sha3 from 'js-sha3';
-import { formatKey } from '../utils';
+import * as nacl from 'tweetnacl';
 
 const ecSecp = new ec('secp256k1');
-const ecEd = new eddsa('ed25519');
-
 export abstract class Signer<SendOpts, TX> {
-  constructor(public chain: Chain) {}
+  constructor(public chain: ChainName) {}
 
   abstract awaitConstructorInit(): Promise<void>;
 
@@ -34,7 +32,7 @@ export abstract class Signer<SendOpts, TX> {
 }
 
 export abstract class ChainUtil {
-  constructor(public chain: Chain) {}
+  constructor(public chain: ChainName) {}
 
   public static verifySignedEd25519(
     pubkey: PublicKey,
@@ -42,19 +40,20 @@ export abstract class ChainUtil {
     signedMsg: string
   ): boolean {
     const msgHash = sha3.keccak256(msg);
-
-    let validSig = ecEd.verify(
-      msgHash,
-      signedMsg,
-      Buffer.from(pubkey).toString('hex')
+    return nacl.sign.detached.verify(
+      new Uint8Array(Buffer.from(msgHash, 'hex')),
+      new Uint8Array(Buffer.from(signedMsg, 'hex')),
+      new Uint8Array(pubkey)
     );
-    return validSig;
   }
 
-  public static signEd25519(sk: SecretKey, msg: string): eddsa.Signature {
+  public static signEd25519(sk: SecretKey, msg: string): string {
     const msgHash = sha3.keccak256(msg);
-    const sig = ecEd.sign(msgHash, Buffer.from(sk).toString('hex'));
-    return sig;
+    const sig = nacl.sign.detached(
+      new Uint8Array(Buffer.from(msgHash, 'hex')),
+      new Uint8Array(sk)
+    );
+    return Buffer.from(sig).toString('hex');
   }
 
   public static verifySignedSecp256k1(
@@ -62,7 +61,7 @@ export abstract class ChainUtil {
     msg: string,
     signedMsg: string
   ): boolean {
-    const msgHash = sha3.keccak256(msg);
+    const msgHash = Buffer.from(sha3.keccak256(msg), 'hex');
     let validSig = ecSecp.verify(
       msgHash,
       Buffer.from(signedMsg, 'hex'),

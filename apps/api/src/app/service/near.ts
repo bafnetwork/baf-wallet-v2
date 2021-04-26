@@ -20,7 +20,6 @@ export async function createNearAccount(
   const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
 
   if (!sigsValid) {
-    this.setStatus(403);
     throw 'Proof that the sender owns this public key must provided';
   }
 
@@ -29,19 +28,12 @@ export async function createNearAccount(
   }
 
   const near = await NearAccount.get();
-  try {
-    await near.setAccountName(edPK, edSig, secpPK, secpSig, accountID, msg);
-  } catch (e) {
-    this.setStatus(500);
-    throw e;
-  }
 
-  // TODO: make singleton
   const bafContract = await getBafContract();
   await bafContract.setAccountInfo(
     secpPK,
     userId,
-    [...Buffer.from(rustEncodedSecpSig, 'hex')],
+    rustEncodedSecpSig,
     accountID
   );
 
@@ -49,6 +41,18 @@ export async function createNearAccount(
     accountID,
     NearPublicKey.fromString(formatKey(edPK, KeyFormats.BS58))
   );
+}
+
+export async function getAccountNonceFromSecpPK(
+  secpPK: PublicKey
+): Promise<string> {
+  return await getBafContract().getAccountNonce(secpPK);
+}
+
+export async function getAccountInfoFromSecpPK(secpPK: PublicKey) {
+  return {
+    near_id: await getBafContract().getAccountId(secpPK),
+  };
 }
 
 function verifyBothSigs(
@@ -59,7 +63,7 @@ function verifyBothSigs(
   edPubkey: PublicKey
 ): boolean {
   return (
-    !ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) ||
-    !ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
+    ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) &&
+    ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
   );
 }

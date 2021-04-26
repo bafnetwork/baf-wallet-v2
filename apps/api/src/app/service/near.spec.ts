@@ -17,7 +17,11 @@ import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { getBafContract, setBafContract } from '@baf-wallet/baf-contract';
+import {
+  encodeSecpSigBafContract,
+  getBafContract,
+  setBafContract,
+} from '@baf-wallet/baf-contract';
 
 (global as any).window = {
   name: 'nodejs',
@@ -54,7 +58,7 @@ describe('createAccount', () => {
   let nearAccount: NearAccount;
 
   beforeAll(async () => {
-    NearAccount.setConfig(constants.nearAccountConfig);
+    NearAccount.setConfigNode(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
     await setBafContract(nearAccount.masterAccount);
 
@@ -78,17 +82,17 @@ describe('createAccount', () => {
       aliceNonce.toString()
     );
     const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
+    console.log(edSig, edSig.length);
     const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
 
     await createNearAccount(
       aliceSecpPublicKey,
       aliceEdPublicKey,
       aliceUserId,
-      aliceNonce.toString(),
-      // Converts the signature into a string
+      aliceNonce,
       secpSig.toDER('hex'),
-      getBafContract().encodeSecpSig(secpSig),
-      edSig.toHex(),
+      encodeSecpSigBafContract(secpSig),
+      edSig,
       accountName,
       CryptoCurves.secp256k1
     );
@@ -96,6 +100,17 @@ describe('createAccount', () => {
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
+
+    const msgDelete = ChainUtil.createUserVerifyMessage(
+      aliceUserId,
+      await getBafContract().getAccountNonce(aliceSecpPublicKey)
+    );
+    const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
+    await getBafContract().deleteAccountInfo(
+      aliceSecpPublicKey,
+      aliceUserId,
+      encodeSecpSigBafContract(secpSigNew)
+    );
     await deleteAccount(account, true);
   });
 
@@ -118,7 +133,7 @@ describe('createAccount', () => {
         aliceNonce.toString(),
         secpSig.toDER('hex'),
         secpSig.s.toString('hex'),
-        edSig.toHex(),
+        edSig,
         accountName,
         CryptoCurves.secp256k1
       );
@@ -153,7 +168,7 @@ describe('createAccount', () => {
         aliceUserId,
         aliceNonce.toString(),
         secpSig.toDER('hex'),
-        edSig.toHex(),
+        edSig,
         accountName,
         CryptoCurves.secp256k1
       );
