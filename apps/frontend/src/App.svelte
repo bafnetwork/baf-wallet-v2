@@ -8,9 +8,8 @@
   import Account from './pages/Account.svelte';
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
-  import { AccountStore, initAccount } from './state/accounts.svelte';
-  import { setBafContract } from '@baf-wallet/baf-contract';
-  import { NearAccount } from '@baf-wallet/multi-chain';
+  import { AccountStore } from './state/accounts.svelte';
+  import { initApp } from './config/init.svelte';
 
   const routesLoggedIn = {
     '/': Account,
@@ -23,12 +22,7 @@
     '/:attemptedRoute': Login,
   };
 
-  async function init(): Promise<void> {
-    await initAccount();
-    if ($AccountStore.chainAccounts[0].init)
-      await setBafContract((await NearAccount.get()).masterAccount);
-  }
-  const initProm = init();
+  const initProm = initApp();
 </script>
 
 {#await initProm}

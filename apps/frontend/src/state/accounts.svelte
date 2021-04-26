@@ -39,35 +39,41 @@
     });
   }
 
-  export async function initAccount() {
+  export async function initAccount(): Promise<AccountState> {
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
     const networkId = getNearNetworkId(constants.env);
     const accountId = loggedIn
-      ? (await apiClient.getAccountInfo({
-          secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
-        })).nearId
+      ? (
+          await apiClient.getAccountInfo({
+            secpPubkeyB58: formatKey(keys.secpPK, KeyFormats.BS58),
+          })
+        ).nearId
       : '';
-    console.log(accountId)
+    console.log(accountId);
     if (accountId)
       await NearAccount.setConfigFrontend({
         networkId: networkId,
         masterAccountId: accountId,
         edSK: keys.edSK,
       });
-    AccountStore.set({
+    const accountState = {
       loggedIn,
       chainAccounts: !loggedIn
         ? []
         : [
             {
               chain: ChainName.NEAR,
-              account: !!accountId ? await (await NearAccount.get()).masterAccount : null,
+              account: !!accountId
+                ? await (await NearAccount.get()).masterAccount
+                : null,
               // TODO: idk if this is the best way of doing things
               // its initialized if the account is truthy
               init: !!accountId,
             },
           ],
-    });
+    };
+    AccountStore.set(accountState);
+    return accountState;
   }
 </script>

@@ -20,6 +20,10 @@
       "svelte/transition",
       "svelte/animate",
       "svelte/easing"
+    ],
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
     ]
   }
 }

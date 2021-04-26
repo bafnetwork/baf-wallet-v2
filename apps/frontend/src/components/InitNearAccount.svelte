@@ -1,6 +1,7 @@
 <script lang="ts">
   import Input from './base/Input.svelte';
   import Button from './base/Button.svelte';
+  import { reinitApp } from '../config/init.svelte';
   import { apiClient } from '../config/api';
   import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { SiteKeyStore } from '../state/keys.svelte';
@@ -37,6 +38,7 @@
       },
     });
     alert('Success')
+    reinitApp()
   }
 </script>
 

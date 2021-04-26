@@ -17,7 +17,6 @@ export async function getPublicAddress(
     allowHost: 'https://signer.tor.us/api/allow',
   });
   Torus.setAPIKey('torus-default');
-  console.log(constants.torus.network, userId);
   // TODO: why????
   const nodeManager = new NodeDetailsManager({
     network: "ropsten",//constants.torus.network,
@@ -31,7 +30,6 @@ export async function getPublicAddress(
     torusIndexes,
   } = await nodeManager.getNodeDetails();
 
-  console.log(userId, torusNodePub, torusNodeEndpoints);
 
   (global as any).fetch = fetch;
   // [
@@ -69,10 +67,8 @@ export async function getPublicAddress(
     { verifier: 'baf wallet-discord-testnet', verifierId: userId },
     true
   );
-  console.log(torusPublicKey);
 
   const pub = { x: (torusPublicKey as any).X, y: (torusPublicKey as any).Y };
   const key = secp256k1.keyFromPublic(pub, 'hex');
-  console.log(key.getPublic().encode('hex', false));
   return Buffer.from(key.getPublic('hex'), 'hex');
 }

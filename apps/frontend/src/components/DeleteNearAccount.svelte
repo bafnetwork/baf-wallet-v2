@@ -4,7 +4,7 @@
     getBafContract,
   } from '@baf-wallet/baf-contract';
   import Button from './base/Button.svelte';
-
+  import { reinitApp } from '../config/init.svelte';
   import { AccountStore } from '../state/accounts.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
@@ -37,6 +37,8 @@
     await $AccountStore.chainAccounts[0].account.deleteAccount(
       'levtester.testnet'
     );
+    alert('Your account was deleted');
+    reinitApp()
   }
 </script>
 
