@@ -34,6 +34,7 @@ pub trait AccountInfos {
         secp_sig_s: Vec<u8>,
         new_account_id: AccountId,
     );
+    fn delete_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>);
 }
 
 #[near_bindgen]
@@ -59,28 +60,11 @@ impl AccountInfos for BafWalletPK {
         if !is_valid_account_id(new_account_id.as_bytes()) {
             panic!("new account id is invalid!");
         }
-        let signer = signer_account_id();
-        if signer != new_account_id && signer != current_account_id() {
-            panic!("signer must own either new account id or the contract itself!");
-        }
-        let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
-        let nonce = self.get_account_nonce_internal(&secp_pk_internal);
-        let nonce_str = format!("{}:{}", user_id, nonce);
-        let msg_prehash = nonce_str.as_bytes();
-        let hash: [u8; 32] = keccak256(msg_prehash)
-            .try_into()
-            .map_err(|e| "An error occured hashing the message")
-            .unwrap();
-        let sig = &secp256k1::Signature::parse_slice(&secp_sig_s.as_slice())
-            .map_err(|e| "Incorrect signature format")
-            .unwrap();
-        let pubkey = secp256k1::PublicKey::parse(&secp_pk_internal)
-            .map_err(|e| "Error parsing pk")
-            .unwrap();
-        if !secp256k1::verify(&secp256k1::Message::parse(&hash), sig, &pubkey) {
-            panic!("The signature is incorrect");
-        }
-
+        // let signer = signer_account_id();
+        // if signer != new_account_id && signer != current_account_id() {
+        //     panic!("signer must own either new account id or the contract itself!");
+        // }
+        let (secp_pk_internal, nonce) = self.verify_sig(user_id, secp_pk, secp_sig_s);
         self.account_infos.insert(
             &secp_pk_internal,
             &AccountInfo {
@@ -88,6 +72,14 @@ impl AccountInfos for BafWalletPK {
                 nonce: nonce + 1,
             },
         );
+    }
+
+    // TODO: add tests
+    fn delete_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>) {
+        let (secp_pk_internal, nonce) = self.verify_sig(user_id, secp_pk, secp_sig_s);
+        // TODO: this leaves vulnrebaility to replay attacks. If an account is made, deleted, and made again,
+        // The nonce resets to 0
+        self.account_infos.remove(&secp_pk_internal);
     }
 
     /******** Private helper functions ************/
@@ -106,6 +98,32 @@ impl BafWalletPK {
     fn get_account_info(&self, secp_pk: SecpPK) -> Option<AccountInfo> {
         let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
         self.account_infos.get(&secp_pk_internal)
+    }
+
+    fn verify_sig(
+        &mut self,
+        user_id: String,
+        secp_pk: SecpPK,
+        secp_sig_s: Vec<u8>,
+    ) -> (SecpPKInternal, i32) {
+        let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
+        let nonce = self.get_account_nonce_internal(&secp_pk_internal);
+        let nonce_str = format!("{}:{}", user_id, nonce);
+        let msg_prehash = nonce_str.as_bytes();
+        let hash: [u8; 32] = keccak256(msg_prehash)
+            .try_into()
+            .map_err(|e| "An error occured hashing the message")
+            .unwrap();
+        let sig = &secp256k1::Signature::parse_slice(&secp_sig_s.as_slice())
+            .map_err(|e| "Incorrect signature format")
+            .unwrap();
+        let pubkey = secp256k1::PublicKey::parse(&secp_pk_internal)
+            .map_err(|e| "Error parsing pk")
+            .unwrap();
+        if !secp256k1::verify(&secp256k1::Message::parse(&hash), sig, &pubkey) {
+            panic!("The signature is incorrect");
+        }
+        return (secp_pk_internal, nonce);
     }
 }
 
@@ -168,6 +186,7 @@ mod tests {
 
     fn sign_and_set_account(
         msg_str: String,
+        user_id: String,
         contract: &mut BafWalletPK,
         nonce: i32,
         sk: &SecretKey,
@@ -178,7 +197,12 @@ mod tests {
         let msg = secp256k1::Message::parse(&msg_hash_array);
 
         let (sig, _) = secp256k1::sign(&msg, &sk);
-        contract.set_account_info(pk.serialize().to_vec(), sig.serialize().to_vec(), alice());
+        contract.set_account_info(
+            user_id,
+            pk.serialize().to_vec(),
+            sig.serialize().to_vec(),
+            alice(),
+        );
     }
 
     #[test]
@@ -189,8 +213,8 @@ mod tests {
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 0;
-        let msg_str = format!("{}", nonce);
-        sign_and_set_account(msg_str, &mut contract, nonce, &sk, &pk);
+        let msg_str = format!("John:{}", nonce);
+        sign_and_set_account(msg_str, "John".to_string(), &mut contract, nonce, &sk, &pk);
         let set_account_id = contract.get_account_id(pk.serialize().to_vec()).unwrap();
         assert_eq!(set_account_id, alice());
     }
@@ -205,7 +229,7 @@ mod tests {
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let bad_nonce = 1;
         let msg_str = format!("fake me {}", bad_nonce);
-        sign_and_set_account(msg_str, &mut contract, bad_nonce, &sk, &pk);
+        sign_and_set_account(msg_str, "".to_string(), &mut contract, bad_nonce, &sk, &pk);
     }
 
     #[test]
@@ -217,7 +241,7 @@ mod tests {
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 0;
-        let msg_str = format!("{}", nonce);
+        let msg_str = format!("John:{}", nonce);
         let msg_hash = keccak256(msg_str.as_bytes());
         let msg_hash_array: [u8; 32] = msg_hash.try_into().unwrap();
         let msg = secp256k1::Message::parse(&msg_hash_array);
@@ -225,7 +249,12 @@ mod tests {
         let (sig, _) = secp256k1::sign(&msg, &sk);
         let mut faulty_sig = vec![1, 2, 3];
         faulty_sig.append(&mut sig.serialize().to_vec());
-        contract.set_account_info(pk.serialize().to_vec(), faulty_sig, alice());
+        contract.set_account_info(
+            "John".to_string(),
+            pk.serialize().to_vec(),
+            faulty_sig,
+            alice(),
+        );
     }
 
     #[test]
@@ -237,7 +266,7 @@ mod tests {
         let sk = secp256k1::SecretKey::default();
         let pk = secp256k1::PublicKey::from_secret_key(&sk);
         let nonce = 1;
-        let msg_str = format!("{}", nonce);
+        let msg_str = format!("John:{}", nonce);
         let msg_hash = keccak256(msg_str.as_bytes());
         let msg_hash_array: [u8; 32] = msg_hash.try_into().unwrap();
         let msg = secp256k1::Message::parse(&msg_hash_array);
@@ -245,6 +274,11 @@ mod tests {
         let (sig, _) = secp256k1::sign(&msg, &sk);
         let mut faulty_pk = vec![1, 2, 3];
         faulty_pk.append(&mut pk.serialize().to_vec());
-        contract.set_account_info(faulty_pk, sig.serialize().to_vec(), alice());
+        contract.set_account_info(
+            "John".to_string(),
+            faulty_pk,
+            sig.serialize().to_vec(),
+            alice(),
+        );
     }
 }

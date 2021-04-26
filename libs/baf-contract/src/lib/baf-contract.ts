@@ -13,6 +13,11 @@ interface BafContract {
     secp_sig_s: number[],
     new_account_id: AccountId
   ) => Promise<void>;
+  deleteAccountInfo: (
+    secp_pk: PublicKey,
+    user_id: string,
+    secp_sig_s: number[]
+  ) => Promise<void>;
 }
 
 let bafContract: BafContract;
@@ -30,7 +35,7 @@ export function getBafContract(): BafContract {
 async function buildBafContract(account: Account): Promise<BafContract> {
   const contract = new Contract(account, ContractConfig.contractName, {
     viewMethods: ['get_account_id', 'get_account_nonce'],
-    changeMethods: ['set_account_info'],
+    changeMethods: ['set_account_info', 'delete_account_info'],
   });
   return {
     getAccountId: (secp_pk: PublicKey) =>
@@ -47,6 +52,12 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_pk: formatKeyArray(secp_pk),
         secp_sig_s,
         new_account_id,
+      }),
+    deleteAccountInfo: (secp_pk, user_id, secp_sig_s) =>
+      (contract as any).delete_account_info({
+        user_id,
+        secp_pk: formatKeyArray(secp_pk),
+        secp_sig_s,
       }),
   };
 }

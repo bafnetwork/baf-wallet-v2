@@ -8,9 +8,11 @@
   import Listbalances from '../components/Listbalances.svelte';
   import History from '../components/History.svelte';
   import Button from '../components/base/Button.svelte';
-  import InitAccount from '../components/InitAccount.svelte';
+  import InitNearAccount from '../components/InitNearAccount.svelte';
   import { saveAs } from 'file-saver';
   import { formatKey } from '@baf-wallet/multi-chain';
+  import { getBafContract } from '@baf-wallet/baf-contract';
+  import DeleteNearAccount from '../components/DeleteNearAccount.svelte';
 
   let viewMode: 'assets' | 'history' = 'assets';
 
@@ -18,7 +20,7 @@
   let accounts = $AccountStore;
   let pubkey = formatKey($SiteKeyStore.secpPK);
   // TODO: there has to be a better way than this
-  let initNearAccount = $AccountStore?.chainAccounts[0]?.init;
+  let initNearAccount = false//$AccountStore?.chainAccounts[0]?.init;
 
   function hashdisplayName(displayName: string) {
     var hash = 0;
@@ -103,15 +105,16 @@
       <h2>
         Hello, before getting started, please initialize your account on NEAR
       </h2>
-      <InitAccount />
+      <InitNearAccount />
     {/if}
   </Card>
   <Card>
     <div class="container z-6 p-4 m-4 danger-zone">
       <h3 class="pb-4 text-2xl text-left">Danger Zone</h3>
-      <div class="ml-6">
+      <div class="ml-6 p-6">
         <Button onClick={downloadKeys}>Download your keys</Button>
       </div>
+      <DeleteNearAccount />
     </div>
   </Card>
 </Layout>

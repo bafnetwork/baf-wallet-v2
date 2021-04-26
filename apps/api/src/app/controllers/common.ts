@@ -12,7 +12,7 @@ export async function getPublicAddress(
   verifierName: string
 ): Promise<PublicKey> {
   const torus = new Torus();
-  console.log(constants.torus.network);
+  console.log(constants.torus.network, userId);
   const nodeManager = new NodeDetailsManager({
     network: constants.torus.network,
     proxyAddress: constants.torus.proxyAddress,

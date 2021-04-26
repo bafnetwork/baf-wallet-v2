@@ -1,5 +1,5 @@
 <script lang="ts">
-  import "./typings"
+  import './typings';
   import { Buffer } from 'buffer';
   (window as any).Buffer = Buffer;
   import Modal from './components/base/Modal.svelte';
@@ -9,6 +9,8 @@
   import ApproveRedirect from './pages/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { AccountStore, initAccount } from './state/accounts.svelte';
+  import { setBafContract } from '@baf-wallet/baf-contract';
+  import { NearAccount } from '@baf-wallet/multi-chain';
 
   const routesLoggedIn = {
     '/': Account,
@@ -23,6 +25,8 @@
 
   async function init(): Promise<void> {
     await initAccount();
+    if ($AccountStore.chainAccounts[0].init)
+      await setBafContract((await NearAccount.get()).masterAccount);
   }
   const initProm = init();
 </script>

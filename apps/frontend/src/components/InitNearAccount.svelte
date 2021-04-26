@@ -36,6 +36,7 @@
         secpSig: secpSig.toDER('hex'),
       },
     });
+    alert('Success')
   }
 </script>
 
