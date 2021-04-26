@@ -17,7 +17,11 @@ import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 import { ChainUtil } from '@baf-wallet/multi-chain';
-import { encodeSecpSigBafContract, getBafContract, setBafContract } from '@baf-wallet/baf-contract';
+import {
+  encodeSecpSigBafContract,
+  getBafContract,
+  setBafContract,
+} from '@baf-wallet/baf-contract';
 
 (global as any).window = {
   name: 'nodejs',
@@ -78,7 +82,7 @@ describe('createAccount', () => {
       aliceNonce.toString()
     );
     const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
-    console.log(edSig, edSig.length)
+    console.log(edSig, edSig.length);
     const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
 
     await createNearAccount(
@@ -96,6 +100,17 @@ describe('createAccount', () => {
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
+
+    const msgDelete = ChainUtil.createUserVerifyMessage(
+      aliceUserId,
+      await getBafContract().getAccountNonce(aliceSecpPublicKey)
+    );
+     const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
+    await getBafContract().deleteAccountInfo(
+      aliceSecpPublicKey,
+      aliceUserId,
+      encodeSecpSigBafContract(secpSigNew)
+    );
     await deleteAccount(account, true);
   });
 

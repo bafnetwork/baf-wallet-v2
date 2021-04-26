@@ -76,7 +76,7 @@ impl AccountInfos for BafWalletPK {
 
     // TODO: add tests
     fn delete_account_info(&mut self, user_id: String, secp_pk: SecpPK, secp_sig_s: Vec<u8>) {
-        let (secp_pk_internal, nonce) = self.verify_sig(user_id, secp_pk, secp_sig_s);
+        let (secp_pk_internal, _) = self.verify_sig(user_id, secp_pk, secp_sig_s);
         // TODO: this leaves vulnrebaility to replay attacks. If an account is made, deleted, and made again,
         // The nonce resets to 0
         self.account_infos.remove(&secp_pk_internal);

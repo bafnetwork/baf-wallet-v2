@@ -20,7 +20,7 @@
   let accounts = $AccountStore;
   let pubkey = formatKey($SiteKeyStore.secpPK);
   // TODO: there has to be a better way than this
-  let initNearAccount = false//$AccountStore?.chainAccounts[0]?.init;
+  let initNearAccount = $AccountStore?.chainAccounts[0]?.init;
 
   function hashdisplayName(displayName: string) {
     var hash = 0;

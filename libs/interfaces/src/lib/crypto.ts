@@ -11,3 +11,8 @@ export enum KeyFormats {
 
 export type PublicKey = Buffer;
 export type SecretKey = Buffer;
+
+/**
+ * A hex encoded string for the signature where sig.s is concated with sig.r
+ */
+export type RustEncodedSecpSig = string;

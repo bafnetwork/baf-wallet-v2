@@ -1,6 +1,6 @@
 import { Account, Contract } from 'near-api-js';
 import ContractConfig from '../../config.json';
-import { AccountId, PublicKey } from '@baf-wallet/interfaces';
+import { AccountId, PublicKey, RustEncodedSecpSig } from '@baf-wallet/interfaces';
 import { formatKeyArray } from '@baf-wallet/multi-chain';
 import { ec } from 'elliptic';
 
@@ -10,13 +10,13 @@ interface BafContract {
   setAccountInfo: (
     secp_pk: PublicKey,
     user_id: string,
-    secp_sig_s: number[],
+    secp_sig_s: RustEncodedSecpSig,
     new_account_id: AccountId
   ) => Promise<void>;
   deleteAccountInfo: (
     secp_pk: PublicKey,
     user_id: string,
-    secp_sig_s: number[]
+    secp_sig_s: RustEncodedSecpSig
   ) => Promise<void>;
 }
 
@@ -50,18 +50,18 @@ async function buildBafContract(account: Account): Promise<BafContract> {
       (contract as any).set_account_info({
         user_id,
         secp_pk: formatKeyArray(secp_pk),
-        secp_sig_s,
+        secp_sig_s: [...Buffer.from(secp_sig_s, 'hex')],
         new_account_id,
       }),
     deleteAccountInfo: (secp_pk, user_id, secp_sig_s) =>
       (contract as any).delete_account_info({
         user_id,
         secp_pk: formatKeyArray(secp_pk),
-        secp_sig_s,
+        secp_sig_s: [...Buffer.from(secp_sig_s, 'hex')],
       }),
   };
 }
 
-export function encodeSecpSigBafContract(sig) {
+export function encodeSecpSigBafContract(sig): string {
   return sig.r.toString('hex', 64) + sig.s.toString('hex', 64);
 }

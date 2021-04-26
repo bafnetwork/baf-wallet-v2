@@ -33,7 +33,7 @@ export async function createNearAccount(
   await bafContract.setAccountInfo(
     secpPK,
     userId,
-    [...Buffer.from(rustEncodedSecpSig, 'hex')],
+    rustEncodedSecpSig,
     accountID
   );
 
