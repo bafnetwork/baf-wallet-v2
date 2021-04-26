@@ -11,7 +11,7 @@ export async function createNearAccount(
   userId: string,
   nonce: string,
   secpSig: string,
-  secpSig_s: string,
+  rustEncodedSecpSig: string,
   edSig: string,
   accountID: string,
   curve = CryptoCurves.secp256k1
@@ -33,7 +33,7 @@ export async function createNearAccount(
   await bafContract.setAccountInfo(
     secpPK,
     userId,
-    [...Buffer.from(secpSig_s, 'hex')],
+    [...Buffer.from(rustEncodedSecpSig, 'hex')],
     accountID
   );
 

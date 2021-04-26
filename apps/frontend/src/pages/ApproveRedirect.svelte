@@ -16,8 +16,8 @@
   import { SiteKeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';
-import { getBafContract } from '@baf-wallet/baf-contract';
-import { javascript } from 'webpack';
+  import { getBafContract } from '@baf-wallet/baf-contract';
+  
   export let params = {} as any;
   let transferAmount: string;
   const optsStr: string = params.opts;

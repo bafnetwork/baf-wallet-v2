@@ -15,6 +15,7 @@ export async function getPublicAddress(
   console.log(constants.torus.network);
   const nodeManager = new NodeDetailsManager({
     network: constants.torus.network,
+    proxyAddress: constants.torus.proxyAddress,
   });
 
   const {
