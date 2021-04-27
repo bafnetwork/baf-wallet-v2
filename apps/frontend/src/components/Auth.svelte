@@ -9,7 +9,9 @@
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
-import { skFromString } from '@baf-wallet/utils';
+  import { skFromString } from '@baf-wallet/utils';
+      // network: 'testnet', // details for test net, TODO: ropsten
+      // proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
     await apiClient.revokeToken({

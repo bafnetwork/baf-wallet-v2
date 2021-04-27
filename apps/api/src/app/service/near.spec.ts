@@ -17,6 +17,11 @@ import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
 import { ChainUtil } from '@baf-wallet/multi-chain';
+import {
+  encodeSecpSigBafContract,
+  getBafContract,
+  setBafContract,
+} from '@baf-wallet/baf-contract';
 
 (global as any).window = {
   name: 'nodejs',
@@ -36,7 +41,6 @@ const aliceEdPublicKey = edPubkeyFromSK(aliceEdSecretKey);
 const aliceSecpPublicKey = secpPubkeyFromSK(aliceSecpSecretKey);
 
 const aliceUserId = 'alice';
-const aliceNonce = 69;
 
 jest.setTimeout(30000);
 
@@ -54,13 +58,11 @@ describe('createAccount', () => {
   let nearAccount: NearAccount;
 
   beforeAll(async () => {
-    NearAccount.setConfig(constants.nearAccountConfig);
+    NearAccount.setConfigNode(constants.nearAccountConfig);
     nearAccount = await NearAccount.get();
+    await setBafContract(nearAccount.masterAccount);
 
-    accountName = nearAccount.getAccountNameFromPubkey(
-      aliceSecpPublicKey,
-      CryptoCurves.secp256k1
-    );
+    accountName = 'alicehere';
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
 
     const account = await nearAccount.near.account(accountName);
@@ -72,31 +74,49 @@ describe('createAccount', () => {
   });
 
   it('should create the account given good sigs', async () => {
+    const aliceNonce = await getBafContract().getAccountNonce(
+      aliceSecpPublicKey
+    );
     const msg = ChainUtil.createUserVerifyMessage(
       aliceUserId,
       aliceNonce.toString()
     );
     const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
+    console.log(edSig, edSig.length);
     const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
 
     await createNearAccount(
       aliceSecpPublicKey,
       aliceEdPublicKey,
       aliceUserId,
-      aliceNonce.toString(),
-      secpSig,
+      aliceNonce,
+      secpSig.toDER('hex'),
+      encodeSecpSigBafContract(secpSig),
       edSig,
+      accountName,
       CryptoCurves.secp256k1
     );
 
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
+
+    const msgDelete = ChainUtil.createUserVerifyMessage(
+      aliceUserId,
+      await getBafContract().getAccountNonce(aliceSecpPublicKey)
+    );
+    const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
+    await getBafContract().deleteAccountInfo(
+      aliceSecpPublicKey,
+      aliceUserId,
+      encodeSecpSigBafContract(secpSigNew)
+    );
     await deleteAccount(account, true);
   });
 
   it('should fail if the secp sig is invalid', async () => {
     expect(async () => {
+      const aliceNonce = 1;
       const msg = ChainUtil.createUserVerifyMessage(
         aliceUserId,
         aliceNonce.toString()
@@ -111,8 +131,10 @@ describe('createAccount', () => {
         aliceEdPublicKey,
         aliceUserId,
         aliceNonce.toString(),
-        secpSig,
+        secpSig.toDER('hex'),
+        secpSig.s.toString('hex'),
         edSig,
+        accountName,
         CryptoCurves.secp256k1
       );
     }).rejects.toThrow(
@@ -130,6 +152,7 @@ describe('createAccount', () => {
 
   it('should fail if the ed sig is invalid', async () => {
     expect(async () => {
+      const aliceNonce = 1;
       const msg = ChainUtil.createUserVerifyMessage(
         aliceUserId,
         aliceNonce.toString()
@@ -144,8 +167,9 @@ describe('createAccount', () => {
         aliceEdPublicKey,
         aliceUserId,
         aliceNonce.toString(),
-        secpSig,
+        secpSig.toDER('hex'),
         edSig,
+        accountName,
         CryptoCurves.secp256k1
       );
     }).rejects.toThrow(

@@ -38,3 +38,7 @@ export interface KeyPair<Curve> {
   sk: SecretKey<Curve>;
   pk: PublicKey<Curve>;
 }
+/**
+ * A hex encoded string for the signature where sig.s is concated with sig.r
+ */
+export type RustEncodedSecpSig = string;

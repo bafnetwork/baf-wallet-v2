@@ -27,6 +27,7 @@
     "frontend": { "tags": [] },
     "near": { "tags": [] },
     "utils": { "tags": [] },
-    "torus": { "tags": [] }
+    "torus": { "tags": [] },
+    "baf-contract": { "tags": [] }
   }
 }

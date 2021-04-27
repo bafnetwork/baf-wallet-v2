@@ -1,24 +1,37 @@
 <script lang="ts">
-  import type { Balance } from '../interfaces';
-  import { TOKEN } from '../interfaces';
+  import { ChainBalance, ChainName } from '@baf-wallet/interfaces';
+  import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
-  import { ChainName } from '@baf-wallet/trust-wallet-assets';
+  import { AccountStore } from '../state/accounts.svelte';
+  import { getAccountBalance } from '@baf-wallet/multi-chain';
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
-  export const balances: Balance[] = [
-    { tok: TOKEN.Near, balance: '100000000000000000000000000' },
-  ];
-
-  const chainInfosProm = Promise.all(
-    balances.map(({ tok }: Balance) => getChainInfo(tok as ChainName))
-  );
-
-  function getLogoUrl(tok: TOKEN) {
-    return getChainLogoUrl(tok as ChainName)
+  async function initBalances(): Promise<
+    { chainInfo: ChainInfo; bal: ChainBalance }[]
+  > {
+    const balanceProms: Promise<ChainBalance>[] = Object.keys($AccountStore.chainInfos).map(
+      async (chain: ChainName) => {
+        const chainInfo = $AccountStore.chainInfos[chain]
+        return {
+          chain,
+          balance: await getAccountBalance(chain, chainInfo.account),
+        } as ChainBalance;
+      }
+    );
+    const balances: ChainBalance[] = await Promise.all(balanceProms);
+    return Promise.all(
+      balances.map((bal: ChainBalance) => {
+        return getChainInfo(bal.chain).then((chainInfo) => {
+          return {
+            bal,
+            chainInfo,
+          };
+        });
+      })
+    );
   }
-
 </script>
 
 <div class="container px-2 mx-auto sm">
@@ -31,21 +44,21 @@
       </tr>
     </thead>
     <tbody>
-      {#await chainInfosProm then chainInfos}
-        {#each balances as bal, i}
+      {#await initBalances() then chains}
+        {#each chains as chain, i}
           <tr>
             <td class="mr-2">
               <img
                 class="object-scale-down mx-2"
-                src={getLogoUrl(bal.tok)}
-                alt={`${bal.tok}.png`}
+                src={getChainLogoUrl(chain.bal.chain)}
+                alt={`${chain.bal.chain}.png`}
               />
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              {`$${chainInfos[i].symbol}`}
+              {`$${chain.chainInfo.symbol}`}
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              <AmountFormatter {bal} />
+              <AmountFormatter bal={chain.bal} />
             </td>
           </tr>
         {/each}

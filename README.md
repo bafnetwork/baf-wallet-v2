@@ -3,7 +3,7 @@
 ## Setup
 
 In order to get up and running with this projects, first install dependencies.
-Make sure you have both yarn and npm
+Make sure you have npm
 
 ## Development Notes
 

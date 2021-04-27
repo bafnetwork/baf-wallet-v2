@@ -11,5 +11,6 @@ module.exports = {
     '<rootDir>/libs/near',
     '<rootDir>/libs/utils',
     '<rootDir>/libs/torus',
+    '<rootDir>/libs/baf-contract'
   ],
 };
