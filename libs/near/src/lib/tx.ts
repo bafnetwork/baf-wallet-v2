@@ -4,7 +4,7 @@ import {
   PublicKey,
   secp256k1,
   ed25519,
-  ExplorerLink
+  ExplorerLink,
 } from '@baf-wallet/interfaces';
 import { Pair } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/multi-chain';
@@ -22,9 +22,20 @@ import { NearState } from './near';
 import { NearSendOpts, NearSendResult } from './rpc';
 import { NearAccountID } from './accounts';
 import { nearConverter } from './convert';
-import { Action as NearNativeAction, SignedTransaction, Transaction } from 'near-api-js/lib/transaction';
+import {
+  Action as NearNativeAction,
+  SignedTransaction,
+  Transaction,
+} from 'near-api-js/lib/transaction';
 
-export type NearTxInterface = TxInterface<Transaction, NearBuildTxParams, SignedTransaction, NearSignTxOpts, NearSendOpts, NearSendResult>;
+export type NearTxInterface = TxInterface<
+  Transaction,
+  NearBuildTxParams,
+  SignedTransaction,
+  NearSignTxOpts,
+  NearSendOpts,
+  NearSendResult
+>;
 export enum NearSupportedActionTypes {
   TRANSFER = 'transfer',
 }
@@ -48,13 +59,12 @@ export interface NearBuildTxParams {
 }
 export interface NearSignTxOpts {}
 
-
 export function nearTx(innerSdk: NearState): NearTxInterface {
   return {
     build: buildNearTx(innerSdk),
     sign: signNearTx,
-    send: sendNearTx(innerSdk)
-  }
+    send: sendNearTx(innerSdk),
+  };
 }
 
 function buildNativeAction(action: NearAction): NearNativeAction {
@@ -71,10 +81,16 @@ function buildNativeAction(action: NearAction): NearNativeAction {
   }
 }
 
-
-export const buildNearTx = (innerSdk: NearState) => async ({ actions, senderPk, senderAccountID, recipientAccountID }: NearBuildTxParams): Promise<Transaction> => {
+export const buildNearTx = (innerSdk: NearState) => async ({
+  actions,
+  senderPk,
+  senderAccountID,
+  recipientAccountID,
+}: NearBuildTxParams): Promise<Transaction> => {
   const nearSenderPk = nearConverter.pkFromUnified(senderPk);
-  const accessKey = await innerSdk.rpcProvider.query(`access_key/${senderAccountID}/${nearSenderPk.toString()}`);
+  const accessKey = await innerSdk.rpcProvider.query(
+    `access_key/${senderAccountID}/${nearSenderPk.toString()}`
+  );
 
   const nonce = ++accessKey.nonce;
   const recentBlockHash = utils.serialize.base_decode(accessKey.block_hash);
@@ -87,10 +103,14 @@ export const buildNearTx = (innerSdk: NearState) => async ({ actions, senderPk, 
     nonce,
     nativeActions,
     recentBlockHash
-  )
-}
+  );
+};
 
-export async function signNearTx<Curve>(tx: transactions.Transaction, keyPair: KeyPair<Curve>, _opts?: NearSignTxOpts): Promise<transactions.SignedTransaction> {
+export async function signNearTx<Curve>(
+  tx: transactions.Transaction,
+  keyPair: KeyPair<Curve>,
+  _opts?: NearSignTxOpts
+): Promise<transactions.SignedTransaction> {
   const nearKeyPair = nearConverter.keyPairFromUnified(keyPair);
   const serializedTx = utils.serialize.serialize(transactions.SCHEMA, tx);
   const serializedTxHash = new Uint8Array(sha256(Buffer.from(serializedTx)));
@@ -104,16 +124,17 @@ export async function signNearTx<Curve>(tx: transactions.Transaction, keyPair: K
   });
 }
 
-export const sendNearTx = (innerSdk: NearState) => async (tx: Transaction | SignedTransaction): Promise<Pair<NearSendResult, ExplorerLink>> => {
+export const sendNearTx = (innerSdk: NearState) => async (
+  tx: Transaction | SignedTransaction
+): Promise<Pair<NearSendResult, ExplorerLink>> => {
   const serialized = tx.encode();
   const result = await innerSdk.rpcProvider.sendJsonRpc('broadcast_tx_commit', [
-    Buffer.from(serialized).toString('base64')
+    Buffer.from(serialized).toString('base64'),
   ]);
 
   const explorerLink = `https://explorer.${innerSdk.networkID}.near.org/transactions/${result.transaction.hash}`;
   return {
     fst: result,
-    snd: explorerLink
-  }
-}
-
+    snd: explorerLink,
+  };
+};

@@ -31,4 +31,3 @@ export function getNearNetworkID(env: Env): NearNetworkID {
       return NearNetworkID.DEVNET;
   }
 }
-

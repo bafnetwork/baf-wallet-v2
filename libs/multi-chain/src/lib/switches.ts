@@ -28,15 +28,12 @@ export function getChainInterface<T>(chain: Chain): InferChainInterface<T> {
   }
 }
 
-
 // this is kind of ugly, but the ugly should be limited to here
 export async function wrapChainInterface<T>(
   unwrapped: InferChainInterface<T>,
   initParams: InferInitParams<T>
 ): Promise<InferWrapChainInterface<T>> {
-  const innerSdk = await (unwrapped.init(initParams) as Promise<
-    InferInner<T>
-  >);
+  const innerSdk = await (unwrapped.init(initParams) as Promise<InferInner<T>>);
 
   const wrapped = {
     rpc: unwrapped.rpc(innerSdk),

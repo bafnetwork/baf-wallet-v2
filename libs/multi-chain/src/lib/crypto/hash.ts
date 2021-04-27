@@ -6,7 +6,7 @@ export function keccak256(msg: Buffer): Buffer {
 }
 
 export function sha256(msg: Buffer): Buffer {
-    return Buffer.from(js_sha256(msg), 'hex');
+  return Buffer.from(js_sha256(msg), 'hex');
 }
 
 // add more wrappers here as needed

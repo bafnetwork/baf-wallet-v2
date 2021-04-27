@@ -8,14 +8,13 @@ export type ed25519 = {
   toString: () => 'ed25519';
 };
 
-export const ED25519_STR = "ed25519";
-export const SECP256K1_STR = "secp256k1";
+export const ED25519_STR = 'ed25519';
+export const SECP256K1_STR = 'secp256k1';
 
 export const secp256k1Marker: secp256k1 = { toString: () => SECP256K1_STR };
 export const ed25519Marker: ed25519 = { toString: () => ED25519_STR };
 
 export type SupportedCurve = secp256k1 | ed25519;
-
 
 export enum Encoding {
   BS58,

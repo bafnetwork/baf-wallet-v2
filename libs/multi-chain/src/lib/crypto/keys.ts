@@ -1,4 +1,12 @@
-import { PublicKey, SecretKey, Encoding, secp256k1, ed25519, SECP256K1_STR, ED25519_STR } from '@baf-wallet/interfaces';
+import {
+  PublicKey,
+  SecretKey,
+  Encoding,
+  secp256k1,
+  ed25519,
+  SECP256K1_STR,
+  ED25519_STR,
+} from '@baf-wallet/interfaces';
 import { bufferConverter } from '@baf-wallet/utils';
 import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
@@ -7,64 +15,66 @@ const ellipticSecp256k1 = new EC('secp256k1');
 
 export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {
   switch (sk.curve.toString()) {
-    case SECP256K1_STR:
-      {
-        const data = Buffer.from(
-          ellipticSecp256k1.keyFromPrivate(sk.data).getPublic(true, 'hex'),
-          'hex'
-        );
+    case SECP256K1_STR: {
+      const data = Buffer.from(
+        ellipticSecp256k1.keyFromPrivate(sk.data).getPublic(true, 'hex'),
+        'hex'
+      );
 
-        return bufferConverter.pkToUnified(data, sk.curve)
-      }
-    case ED25519_STR:
-      {
-        const data = Buffer.from(
-          nacl.sign.keyPair.fromSecretKey(new Uint8Array(sk.data)).publicKey
-        );
+      return bufferConverter.pkToUnified(data, sk.curve);
+    }
+    case ED25519_STR: {
+      const data = Buffer.from(
+        nacl.sign.keyPair.fromSecretKey(new Uint8Array(sk.data)).publicKey
+      );
 
-        return bufferConverter.pkToUnified(data, sk.curve);
-      }
-    default: 
+      return bufferConverter.pkToUnified(data, sk.curve);
+    }
+    default:
       throw new Error(`Unsupported curve ${sk.curve.toString()}`);
   }
 }
 
-export function skFromSeed<Curve>(seed: Uint8Array, curveMarker: Curve): SecretKey<Curve> {
+export function skFromSeed<Curve>(
+  seed: Uint8Array,
+  curveMarker: Curve
+): SecretKey<Curve> {
   switch (curveMarker.toString()) {
-    case SECP256K1_STR:
-      {
-        const entropy = nacl.hash(seed);
-        const ellipticSk = ellipticSecp256k1.genKeyPair({ entropy }).getPrivate('hex');
+    case SECP256K1_STR: {
+      const entropy = nacl.hash(seed);
+      const ellipticSk = ellipticSecp256k1
+        .genKeyPair({ entropy })
+        .getPrivate('hex');
 
-        const data = Buffer.from(ellipticSk, 'hex');
-        return bufferConverter.skToUnified(data, curveMarker);
-      }
-    case ED25519_STR:
-      {
-        const data = Buffer.from(
-          nacl.sign.keyPair.fromSeed(new Uint8Array(Buffer.from(seed)))
-        );
+      const data = Buffer.from(ellipticSk, 'hex');
+      return bufferConverter.skToUnified(data, curveMarker);
+    }
+    case ED25519_STR: {
+      const data = Buffer.from(
+        nacl.sign.keyPair.fromSeed(new Uint8Array(Buffer.from(seed)))
+      );
 
-        return bufferConverter.pkToUnified(data, curveMarker);
-      }
+      return bufferConverter.pkToUnified(data, curveMarker);
+    }
     default:
-      throw new Error(`Unsupported curve ${curveMarker.toString()}`)
+      throw new Error(`Unsupported curve ${curveMarker.toString()}`);
   }
 }
 
 export function skFromRng<Curve>(curveMarker: Curve): SecretKey<Curve> {
-  switch(curveMarker.toString()) {
-    case SECP256K1_STR:
-      {
-        const data = Buffer.from(nacl.sign.keyPair().secretKey);
-        return bufferConverter.skToUnified(data, curveMarker);
-      }
-    case ED25519_STR:
-      {
-        const data = Buffer.from(ellipticSecp256k1.genKeyPair().getPrivate('hex'), 'hex');
-        return bufferConverter.pkToUnified(data, curveMarker);
-      }
+  switch (curveMarker.toString()) {
+    case SECP256K1_STR: {
+      const data = Buffer.from(nacl.sign.keyPair().secretKey);
+      return bufferConverter.skToUnified(data, curveMarker);
+    }
+    case ED25519_STR: {
+      const data = Buffer.from(
+        ellipticSecp256k1.genKeyPair().getPrivate('hex'),
+        'hex'
+      );
+      return bufferConverter.pkToUnified(data, curveMarker);
+    }
     default:
-      throw new Error(`Unsupported curve ${curveMarker.toString()}`)
+      throw new Error(`Unsupported curve ${curveMarker.toString()}`);
   }
 }

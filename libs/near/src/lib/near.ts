@@ -19,7 +19,6 @@ import {
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
 
-
 export type NearChainInterface = ChainInterface<
   NearUtils.PublicKey,
   Buffer,
@@ -48,7 +47,7 @@ export const nearChainInterface: NearChainInterface = {
   tx: nearTx,
   convert: nearConverter,
   rpc: nearRpc,
-  init
+  init,
 };
 
 export interface NearInitParams {
@@ -77,5 +76,5 @@ async function init({
     near,
     networkID,
     rpcProvider: new providers.JsonRpcProvider(nodeUrl),
-  }
+  };
 }

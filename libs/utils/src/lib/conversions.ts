@@ -9,8 +9,11 @@ import { formatBytes } from './bytes';
 import { Pair } from './types';
 import { Buffer } from 'buffer';
 
-
-export const bufferConverter: Converter<Buffer, Buffer, Pair<Buffer, Buffer>> = {
+export const bufferConverter: Converter<
+  Buffer,
+  Buffer,
+  Pair<Buffer, Buffer>
+> = {
   skFromUnified,
   skToUnified,
   pkFromUnified,
