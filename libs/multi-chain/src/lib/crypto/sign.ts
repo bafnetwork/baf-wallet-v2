@@ -6,10 +6,13 @@ import {
   ed25519,
   ED25519_STR,
   SECP256K1_STR,
+  Encoding,
 } from '@baf-wallet/interfaces';
 import { sha256 } from './hash';
 import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
+import { encodeBytes } from '@baf-wallet/utils';
+import {encodeSecpSigBafContract} from '@baf-wallet/baf-contract'
 
 const ellipticSecp256k1 = new EC('secp256k1');
 
@@ -40,18 +43,21 @@ export function verifySignature<Curve>(
 
 export function signMsg<Curve>(
   sk: SecretKey<Curve>,
-  msg: Buffer,
+  msg: Buffer | string,
+  bafContractFormat=false,
   hashFn: (buf: Buffer) => Buffer = sha256
 ): Buffer {
+  const msgFormat =
+    typeof msg === 'string' ? encodeBytes(msg, Encoding.HEX) : msg;
   switch (sk.curve.toString()) {
     case SECP256K1_STR: {
-      const msgHash = hashFn(msg);
+      const msgHash = hashFn(msgFormat);
       const ecPrivateKey = ellipticSecp256k1.keyFromPrivate(sk.data);
       const ellipticSig = ecPrivateKey.sign(msgHash);
-      return Buffer.from(ellipticSig.toDER());
+      return bafContractFormat ? encodeSecpSigBafContract(ellipticSig) : Buffer.from(ellipticSig.toDER());
     }
     case ED25519_STR: {
-      const msgHash = hashFn(msg);
+      const msgHash = hashFn(msgFormat);
       return Buffer.from(
         nacl.sign(new Uint8Array(msgHash), new Uint8Array(sk.data))
       );

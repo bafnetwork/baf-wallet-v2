@@ -1,5 +1,6 @@
 import { Account, Contract } from 'near-api-js';
 import ContractConfig from '../../config.json';
+import { ec as EC } from 'elliptic';
 import {
   AccountId,
   PublicKey,
@@ -65,6 +66,6 @@ async function buildBafContract(account: Account): Promise<BafContract> {
   };
 }
 
-export function encodeSecpSigBafContract(sig): string {
+export function encodeSecpSigBafContract(sig: EC.Signature): string {
   return sig.r.toString('hex', 64) + sig.s.toString('hex', 64);
 }

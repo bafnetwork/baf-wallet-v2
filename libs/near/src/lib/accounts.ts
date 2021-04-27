@@ -23,10 +23,13 @@ export function nearAccounts(
 
     create: async ({
       accountID,
-      payerPk,
+      newAccountPk,
       initialBalance,
       method = 'helper',
     }: NearCreateAccountParams): Promise<NearAccount> => {
+      if (method === 'local' && !initialBalance) {
+        throw 'An initial balance must be specified when using a local account creator';
+      }
       const masterAccount = await near.account(near.config.masterAccount);
       const accountCreator: AccountCreator =
         method === 'helper'
@@ -35,7 +38,7 @@ export function nearAccounts(
 
       await accountCreator.createAccount(
         accountID,
-        nearConverter.pkFromUnified(payerPk)
+        nearConverter.pkFromUnified(newAccountPk)
       );
       return await near.account(accountID);
     },
@@ -44,7 +47,7 @@ export function nearAccounts(
 
 export interface NearCreateAccountParams {
   accountID: NearAccountID;
-  payerPk: PublicKey<ed25519 | secp256k1>;
-  initialBalance: BN;
-  method: 'helper' | 'local';
+  newAccountPk: PublicKey<ed25519 | secp256k1>;
+  initialBalance?: BN;
+  method?: 'helper' | 'local';
 }

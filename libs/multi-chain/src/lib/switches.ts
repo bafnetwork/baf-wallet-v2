@@ -22,7 +22,7 @@ export async function getWrappedInterface<T>(
 // NOTE: This will return the wrong type if you put in a type paramter that conflicts with the 'chain' argument
 export function getChainInterface<T>(chain: Chain): InferChainInterface<T> {
   switch (chain) {
-    case Chain.near:
+    case Chain.NEAR:
       return nearChainInterface as InferChainInterface<T>;
     default:
       throw new Error(`Unsupported chain ${chain}`);

@@ -1,13 +1,16 @@
 import { Envs, getNearNetworkId } from '@baf-wallet/interfaces';
+import { NearInitParams } from '@baf-wallet/near';
 import { environment, initDotEnv } from '../../environments/environment';
 
 initDotEnv();
 
 export const constants = {
-  nearAccountConfig: {
-    keyPath: process.env.NEAR_KEYPATH,
-    networkId: getNearNetworkId(environment.env),
-    masterAccountId: process.env.NEAR_MASTER_ACCOUNT_ID,
+  chainInitParams: {
+    near: {
+      keyPath: process.env.NEAR_KEYPATH,
+      networkID: getNearNetworkId(environment.env),
+      masterAccountID: process.env.NEAR_MASTER_ACCOUNT_ID,
+    } as NearInitParams,
   },
   discord: {
     clientId: process.env.DISCORD_CLIENT_ID,

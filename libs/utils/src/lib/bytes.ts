@@ -19,6 +19,13 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
   }
 }
 
+export function pkToString<Curve> (
+  key: PublicKey<Curve>,
+  keyFormat = Encoding.HEX,
+): string {
+  return formatBytes(key.data, keyFormat)
+}
+
 export function pkFromString<Curve>(
   key: string,
   curve: Curve,

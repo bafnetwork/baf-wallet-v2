@@ -1,4 +1,4 @@
-import { ChainInterface } from '@baf-wallet/interfaces';
+import { ChainInterface, InferWrapChainInterface, WrappedChainInterface } from '@baf-wallet/interfaces';
 import {
   Account,
   connect,
@@ -18,6 +18,8 @@ import {
 } from './accounts';
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
+
+export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>
 
 export type NearChainInterface = ChainInterface<
   NearUtils.PublicKey,

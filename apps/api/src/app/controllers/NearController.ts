@@ -23,10 +23,10 @@ import { keyFromString } from '@baf-wallet/multi-chain';
 interface CreateNearAccountParams {
   userID: string;
   nonce: hexString;
-  secpSig: hexString;
+  secpSigHex: hexString;
   secpSig_s: hexString;
   edPubkey: hexString;
-  edSig: hexString;
+  edSigHex: hexString;
   accountID: string;
 }
 

@@ -3,25 +3,35 @@
 };
 window.name = 'nodejs';
 
-import { CryptoCurves, KeyFormats } from '@baf-wallet/interfaces';
 import {
-  edPubkeyFromSK,
-  NearAccount,
-  secpPubkeyFromSK,
-  secpSKFromSeed,
-  edSKFromSeed,
-  edSKFromRng,
-  secpSKFromRng,
+  Encoding,
+  secp256k1,
+  ed25519,
+  secp256k1,
+  secp256k1Marker,
+  ed25519Marker,
+} from '@baf-wallet/interfaces';
+import {
+  pkFromSk,
+  signMsg,
+  skFromRng,
+  skFromSeed,
+  skFromSeed,
 } from '@baf-wallet/multi-chain';
 import { createNearAccount } from './near';
 import { Account } from 'near-api-js';
 import { constants } from '../config/constants';
-import { ChainUtil } from '@baf-wallet/multi-chain';
 import {
   encodeSecpSigBafContract,
   getBafContract,
   setBafContract,
 } from '@baf-wallet/baf-contract';
+import {
+  createUserVerifyMessage,
+  encodeBytes,
+  formatBytes,
+  skFromString,
+} from '@baf-wallet/utils';
 
 (global as any).window = {
   name: 'nodejs',
@@ -34,11 +44,11 @@ const seed = new Uint8Array(
   )
 );
 
-const aliceEdSecretKey = edSKFromSeed(seed);
-const aliceSecpSecretKey = secpSKFromSeed(seed);
+const aliceEdSecretKey = skFromSeed(seed, ed25519Marker);
+const aliceSecpSecretKey = skFromSeed(seed, secp256k1Marker);
 
-const aliceEdPublicKey = edPubkeyFromSK(aliceEdSecretKey);
-const aliceSecpPublicKey = secpPubkeyFromSK(aliceSecpSecretKey);
+const aliceEdPublicKey = pkFromSk(aliceEdSecretKey);
+const aliceSecpPublicKey = pkFromSk(aliceSecpSecretKey);
 
 const aliceUserId = 'alice';
 
@@ -77,35 +87,34 @@ describe('createAccount', () => {
     const aliceNonce = await getBafContract().getAccountNonce(
       aliceSecpPublicKey
     );
-    const msg = ChainUtil.createUserVerifyMessage(
-      aliceUserId,
-      aliceNonce.toString()
-    );
-    const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
+    const msg = createUserVerifyMessage(aliceUserId, aliceNonce.toString());
+    const edSig = signMsg(aliceEdSecretKey, encodeBytes(msg, Encoding.HEX));
     console.log(edSig, edSig.length);
-    const secpSig = ChainUtil.signSecp256k1(aliceSecpSecretKey, msg);
+    const secpSig = signMsg(aliceSecpSecretKey, encodeBytes(msg, Encoding.HEX));
 
     await createNearAccount(
       aliceSecpPublicKey,
       aliceEdPublicKey,
       aliceUserId,
       aliceNonce,
-      secpSig.toDER('hex'),
+      formatBytes(secpSig),
       encodeSecpSigBafContract(secpSig),
-      edSig,
-      accountName,
-      CryptoCurves.secp256k1
+      formatBytes(edSig),
+      accountName
     );
 
     const account = await nearAccount.near.account(accountName);
     expect(account).toBeTruthy();
     await nearAccount.updateKeyPair(accountName, aliceEdSecretKey);
 
-    const msgDelete = ChainUtil.createUserVerifyMessage(
+    const msgDelete = createUserVerifyMessage(
       aliceUserId,
       await getBafContract().getAccountNonce(aliceSecpPublicKey)
     );
-    const secpSigNew = ChainUtil.signSecp256k1(aliceSecpSecretKey, msgDelete);
+    const secpSigNew = signMsg(
+      aliceSecpSecretKey,
+      encodeBytes(msgDelete, Encoding.HEX)
+    );
     await getBafContract().deleteAccountInfo(
       aliceSecpPublicKey,
       aliceUserId,
@@ -117,25 +126,24 @@ describe('createAccount', () => {
   it('should fail if the secp sig is invalid', async () => {
     expect(async () => {
       const aliceNonce = 1;
-      const msg = ChainUtil.createUserVerifyMessage(
+      const msg = createUserVerifyMessage(
         aliceUserId,
         aliceNonce.toString()
       );
 
       //* use random SK instead of alice's SK
-      const edSig = ChainUtil.signEd25519(aliceEdSecretKey, msg);
-      const secpSig = ChainUtil.signSecp256k1(secpSKFromRng(), msg);
+      const edSig = signMsg(aliceEdSecretKey, msg)
+      const secpSig = signMsg(skFromRng(secp256k1Marker), msg);
 
       await createNearAccount(
         aliceSecpPublicKey,
         aliceEdPublicKey,
         aliceUserId,
         aliceNonce.toString(),
-        secpSig.toDER('hex'),
+        secpSig,
         secpSig.s.toString('hex'),
         edSig,
         accountName,
-        CryptoCurves.secp256k1
       );
     }).rejects.toThrow(
       'Proof that the sender owns this public key must provided'

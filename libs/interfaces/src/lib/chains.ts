@@ -2,25 +2,26 @@ import { PublicKey, SecretKey, KeyPair } from './crypto';
 import { Pair } from '@baf-wallet/utils';
 import { Account as NearAccount } from 'near-api-js';
 
-// export enum Chain {
-//   near,
-// // TODO: have some intelligent way to get the rest
-export enum ChainName {
-  ETH = 'ethereum',
-  BTC = 'bitcoin',
+export enum Chain {
   NEAR = 'near',
-  SOLANA = 'solana',
-  COSMOS = 'cosmos',
-  CELO = 'celo',
-  DOT = 'polkadot',
-  FILECOIN = 'filecoin',
-  HARMONEY = 'harmony',
-  ALGORAND = 'algorand',
-  AVALANCHE = 'avalanche',
-  MATIC = 'matic',
-  DOGE = 'doge',
-  TERRA = 'terra',
 }
+// // TODO: have some intelligent way to get the rest
+// export enum Chain {
+//   ETH = 'ethereum',
+//   BTC = 'bitcoin',
+//   NEAR = 'near',
+//   SOLANA = 'solana',
+//   COSMOS = 'cosmos',
+//   CELO = 'celo',
+//   DOT = 'polkadot',
+//   FILECOIN = 'filecoin',
+//   HARMONEY = 'harmony',
+//   ALGORAND = 'algorand',
+//   AVALANCHE = 'avalanche',
+//   MATIC = 'matic',
+//   DOGE = 'doge',
+//   TERRA = 'terra',
+// }
 
 // Or the type with all the supported chain account types
 export type ChainAccount = NearAccount;
@@ -216,8 +217,8 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
   infer PK,
   infer SK,
   infer KP,
-  infer Inner,
   infer _,
+  infer Inner,
   infer Tx,
   infer BuildTxParams,
   infer SignedTx,
