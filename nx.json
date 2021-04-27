@@ -26,6 +26,7 @@
     "trust-wallet-assets": { "tags": [] },
     "frontend": { "tags": [] },
     "near": { "tags": [] },
-    "utils": { "tags": [] }
+    "utils": { "tags": [] },
+    "torus": { "tags": [] }
   }
 }

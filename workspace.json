@@ -362,6 +362,25 @@
           }
         }
       }
+    },
+    "torus": {
+      "root": "libs/torus",
+      "sourceRoot": "libs/torus/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/torus/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/torus"],
+          "options": {
+            "jestConfig": "libs/torus/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

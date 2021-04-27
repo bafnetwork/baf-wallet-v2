@@ -25,7 +25,8 @@
         "libs/trust-wallet-assets/src/index.ts"
       ],
       "@baf-wallet/near": ["libs/near/src/index.ts"],
-      "@baf-wallet/utils": ["libs/utils/src/index.ts"]
+      "@baf-wallet/utils": ["libs/utils/src/index.ts"],
+      "@baf-wallet/torus": ["libs/torus/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

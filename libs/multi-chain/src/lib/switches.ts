@@ -1,6 +1,4 @@
 import {
-  WrappedChainInterface,
-  ChainInterface,
   InferChainInterface,
   Chain,
   InferInner,
@@ -8,6 +6,9 @@ import {
   InferInitParams,
 } from '@baf-wallet/interfaces';
 import { nearChainInterface } from '@baf-wallet/near';
+
+
+// these are kind of ugly, but the ugly should be limited to here, all in the pursuit of typed-ness and editor completions
 
 // NOTE: This will return the wrong type if you put in a type paramteter that conflicts with the 'chain' argument
 export async function getWrappedInterface<T>(
@@ -28,7 +29,6 @@ export function getChainInterface<T>(chain: Chain): InferChainInterface<T> {
   }
 }
 
-// this is kind of ugly, but the ugly should be limited to here
 export async function wrapChainInterface<T>(
   unwrapped: InferChainInterface<T>,
   initParams: InferInitParams<T>

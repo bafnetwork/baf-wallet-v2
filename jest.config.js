@@ -10,5 +10,6 @@ module.exports = {
     '<rootDir>/apps/frontend',
     '<rootDir>/libs/near',
     '<rootDir>/libs/utils',
+    '<rootDir>/libs/torus',
   ],
 };

@@ -1,9 +1,7 @@
 import {
   PublicKey,
   SecretKey,
-  Encoding,
-  secp256k1,
-  ed25519,
+  KeyPair,
   SECP256K1_STR,
   ED25519_STR,
 } from '@baf-wallet/interfaces';
@@ -12,6 +10,15 @@ import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
 
 const ellipticSecp256k1 = new EC('secp256k1');
+
+export function keyPairFromSk<Curve>(sk: SecretKey<Curve>): KeyPair<Curve> {
+  const pk = pkFromSk(sk);
+  return {
+    curve: sk.curve,
+    pk,
+    sk,
+  }
+}
 
 export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {
   switch (sk.curve.toString()) {

@@ -1,39 +1,30 @@
-import { SupportedCurve, SecretKey, KeyPair, PublicKey } from './crypto';
+import { SupportedCurve, KeyPair } from './crypto';
 
-export enum KeyStorageMethod {
-  torus,
-  localStorage,
+export enum KeySourceMethod {
+  TORUS,
+  LOCAL_STORAGE,
   // e.g. file, ledger, brain, etc, as they are implemented
 }
 
 // `KeyID` is a type that represents the type used to "look up" a key
-// in theory this could be the public key itself, but some storage mechanisms
+// in theory this could be the public key itself, but some source mechanisms
 // may offer different ways of doing so, for instance the key for use in localStorage.setItem
 // a file path, or a derived account number for a keypair stored on a ledger nano
-export interface KeyStorage<KeyID> {
-  method: KeyStorageMethod;
-  setKeyPair: <Curve>(
-    keyID: KeyID,
-    key: SecretKey<Curve> | KeyPair<Curve>
-  ) => Promise<void>;
+export interface KeySource<KeyID> {
+  method: KeySourceMethod;
   getKeyPair: <Curve>(
     keyID: KeyID,
     curveMarker: Curve
-  ) => Promise<KeyPair<Curve>>;
-  getPublicKey: <Curve>(
-    keyID: KeyID,
-    curveMarker: Curve
-  ) => Promise<PublicKey<Curve>>;
+  ) => Promise<KeyPair<Curve> | null>;
 
   // these methods are for the off-chance that you don't know which curve a particular key-pair is on
   // to use this, you'd typically call this and then case on the returned value
-  // for the vast majority of cases there will be only one curve used by a particular storage mechansim
+  // for the vast majority of cases there will be only one curve used by a particular key source mechansim
   // so these method aren't required.
   // implementors are expected to implement either all of these methods or none of them.
   getKeyCurve?: (keyID: KeyID) => Promise<SupportedCurve>;
-  setKeyPairUnknownCurve?: (keyID: KeyID) => Promise<KeyPair<SupportedCurve>>;
   getKeyPairUnknownCurve?: (keyID: KeyID) => Promise<KeyPair<SupportedCurve>>;
-  getPublicKeyUnknownCurve?: (
-    keyID: KeyID
-  ) => Promise<PublicKey<SupportedCurve>>;
 }
+
+// then every keySource implementation should provide this function
+export type KeySourceInitFn<KeyID, InitParams> = (params: InitParams) => Promise<KeySource<KeyID>>;
