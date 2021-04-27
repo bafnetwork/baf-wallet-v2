@@ -24,7 +24,7 @@ export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {
   switch (sk.curve.toString()) {
     case SECP256K1_STR: {
       const data = Buffer.from(
-        ellipticSecp256k1.keyFromPrivate(sk.data).getPublic(true, 'hex'),
+        ellipticSecp256k1.keyFromPrivate(sk.data).getPublic(false, 'hex'),
         'hex'
       );
 
@@ -58,7 +58,7 @@ export function skFromSeed<Curve>(
     }
     case ED25519_STR: {
       const data = Buffer.from(
-        nacl.sign.keyPair.fromSeed(new Uint8Array(Buffer.from(seed)))
+        nacl.sign.keyPair.fromSeed(new Uint8Array(Buffer.from(seed))).secretKey
       );
 
       return bufferConverter.pkToUnified(data, curveMarker);

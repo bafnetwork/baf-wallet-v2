@@ -14,7 +14,6 @@ import {
 } from '@baf-wallet/utils';
 import { verifySignature } from '@baf-wallet/multi-chain';
 import { getNearChain } from '../chains/singletons';
-import BN from 'bn.js';
 
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(

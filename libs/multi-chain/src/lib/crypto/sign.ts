@@ -8,11 +8,11 @@ import {
   SECP256K1_STR,
   Encoding,
 } from '@baf-wallet/interfaces';
-import { sha256 } from './hash';
+import { keccak256, sha256 } from './hash';
 import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
 import { encodeBytes } from '@baf-wallet/utils';
-import {encodeSecpSigBafContract} from '@baf-wallet/baf-contract'
+import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
 
 const ellipticSecp256k1 = new EC('secp256k1');
 
@@ -20,7 +20,7 @@ export function verifySignature<Curve>(
   pk: PublicKey<Curve>,
   msg: Buffer,
   signedMsg: Buffer,
-  hashFn: (buf: Buffer) => Buffer = sha256
+  hashFn: (buf: Buffer) => Buffer = keccak256
 ): boolean {
   switch (pk.curve.toString()) {
     case SECP256K1_STR: {
@@ -44,22 +44,25 @@ export function verifySignature<Curve>(
 export function signMsg<Curve>(
   sk: SecretKey<Curve>,
   msg: Buffer | string,
-  bafContractFormat=false,
-  hashFn: (buf: Buffer) => Buffer = sha256
+  bafContractFormat = false,
+  hashFn: (buf: Buffer) => Buffer = keccak256
 ): Buffer {
   const msgFormat =
     typeof msg === 'string' ? encodeBytes(msg, Encoding.HEX) : msg;
   switch (sk.curve.toString()) {
     case SECP256K1_STR: {
       const msgHash = hashFn(msgFormat);
-      const ecPrivateKey = ellipticSecp256k1.keyFromPrivate(sk.data);
-      const ellipticSig = ecPrivateKey.sign(msgHash);
-      return bafContractFormat ? encodeSecpSigBafContract(ellipticSig) : Buffer.from(ellipticSig.toDER());
+      const ellipticSig = ellipticSecp256k1.sign(msgHash, sk.data, 'hex', {
+        canonical: true
+      })
+      return bafContractFormat
+        ? encodeSecpSigBafContract(ellipticSig)
+        : Buffer.from(ellipticSig.toDER());
     }
     case ED25519_STR: {
       const msgHash = hashFn(msgFormat);
       return Buffer.from(
-        nacl.sign(new Uint8Array(msgHash), new Uint8Array(sk.data))
+        nacl.sign.detached(new Uint8Array(msgHash), new Uint8Array(sk.data))
       );
     }
     default:

@@ -1,4 +1,4 @@
-import { Envs } from '@baf-wallet/interfaces';
+import { Env } from '@baf-wallet/interfaces';
 import { config as dotenvConfig } from 'dotenv';
 
 export function initDotEnv() {
@@ -6,6 +6,6 @@ export function initDotEnv() {
 }
 
 export const environment = {
-  env: Envs.DEV,
+  env: Env.DEV,
   production: false,
 };

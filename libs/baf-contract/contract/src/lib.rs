@@ -111,8 +111,8 @@ impl BafWalletPK {
     ) -> (SecpPKInternal, i32) {
         let secp_pk_internal = BafWalletPK::parse_secp_pk(secp_pk).unwrap();
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
-        let nonce_str = format!("{}:{}", user_id, nonce);
-        let msg_prehash = nonce_str.as_bytes();
+        let msg_str = format!("{}:{}", user_id, nonce);
+        let msg_prehash = msg_str.as_bytes();
         let hash: [u8; 32] = keccak256(msg_prehash)
             .try_into()
             .map_err(|e| "An error occured hashing the message")
@@ -124,7 +124,7 @@ impl BafWalletPK {
             .map_err(|e| "Error parsing pk")
             .unwrap();
         if !secp256k1::verify(&secp256k1::Message::parse(&hash), sig, &pubkey) {
-            panic!("The signature is incorrect");
+            panic!("The signature is incorrect for message {}", msg_str);
         }
         return (secp_pk_internal, nonce);
     }

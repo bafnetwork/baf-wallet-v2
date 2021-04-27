@@ -22,7 +22,7 @@ import {
 } from './accounts';
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
-import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import { InMemoryKeyStore, UnencryptedFileSystemKeyStore } from 'near-api-js/lib/key_stores';
 
 export { NearAccountID, NearCreateAccountParams } from './accounts';
 export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>;
@@ -82,7 +82,17 @@ async function init({
   if (keyPair) {
     const keyStore = new InMemoryKeyStore()
     keyStore.setKey(networkID, masterAccountID, keyPair)
+    connectConfig.deps = {
+      keyStore: keyStore
+    }
     connectConfig.keyStore = keyStore;
+  } else if (keyPath) {
+    const keyStore = new InMemoryKeyStore()
+    connectConfig.deps = {
+      keyStore: keyStore
+    }
+  } else {
+    throw "A key path or key pair must be provided"
   }
 
   const near = await connect(connectConfig);
