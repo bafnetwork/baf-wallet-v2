@@ -1,14 +1,12 @@
 <script lang="ts" context="module">
-  import { KeyFormats, SecretKey } from '@baf-wallet/interfaces';
+  import { ed25519, ed25519Marker, Encoding, secp256k1, secp256k1Marker, SecretKey } from '@baf-wallet/interfaces';
 
   import {
-    edPubkeyFromSK,
-    edSKFromSeed,
-    secpPubkeyFromSK,
-    keyFromString,
-    formatKey,
+    pkFromSk,
+    skFromSeed,
   } from '@baf-wallet/multi-chain';
 
+  import { bufferConverter, encodeBytes } from '@baf-wallet/utils';
   import { writable } from 'svelte/store';
   import { KeyState } from '../interfaces';
 
@@ -16,18 +14,17 @@
 
   export const SiteKeyStore = writable<KeyState | null>(null);
 
-  export function packKey(keyState: KeyState): string {
-    return `secp256k1:${formatKey(keyState.secpSK, KeyFormats.hex)}`;
-  }
-
-  export function buildKeyStateFromSecpSK(secpSK: SecretKey): KeyState {
-    const edSK = edSKFromSeed(new Uint8Array(secpSK));
+  export function buildKeyStateFromSecpSk(secpSk: SecretKey<secp256k1>): KeyState {
+    const edSk = skFromSeed<ed25519>(secpSk.data, ed25519Marker);
     return {
-      edSK,
-      secpSK,
-      edPK: edPubkeyFromSK(edSK),
-      secpPK: secpPubkeyFromSK(secpSK),
+      edSk,
+      secpSk,
+      edPk: pkFromSk(edSk),
+      secpPk: pkFromSk(secpSk),
     };
+  }
+  export function packKey(keyState: KeyState): string {
+    return `secp256k1:${keyState.secpSk.format(Encoding.HEX)}`;
   }
 
   function unpackKey(keyState: string): KeyState {
@@ -37,7 +34,8 @@
     } else if (split[0] !== 'secp256k1') {
       throw 'Only secp256k1 keys are supported as base keys right not';
     }
-    return buildKeyStateFromSecpSK(keyFromString(split[1], KeyFormats.hex));
+    const keyBytes = encodeBytes(split[1], Encoding.HEX);
+    return buildKeyStateFromSecpSk(bufferConverter.skToUnified(keyBytes, secp256k1Marker));
   }
 
   export function clearKeysFromStorage() {

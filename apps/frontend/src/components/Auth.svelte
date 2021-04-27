@@ -2,45 +2,42 @@
   import Button from './base/Button.svelte';
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
-  import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
+  import { initTorusKeySource } from '@baf-wallet/torus';
+  import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
+  import { secp256k1, ed25519, secp256k1Marker, ed25519Marker }  from '@baf-wallet/interfaces';
   import { AccountStore } from '../state/accounts.svelte';
-  import { LOGIN as TORUS_LOGIN } from '@toruslabs/torus-direct-web-sdk';
-  import { KeyStore } from 'near-api-js/lib/key_stores';
-  import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
-  import { keyFromString } from '@baf-wallet/multi-chain';
-  import { KeyFormats } from '@baf-wallet/interfaces';
+  import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
+import { skFromString } from '@baf-wallet/utils';
 
-  async function initTorus(): Promise<DirectWebSdk> {
-    const torus = new DirectWebSdk({
-      baseUrl: `${constants.baseUrl}/serviceworker`,
-      network: 'testnet', // details for test net
+  async function torusPostLoginHook(userInfo: TorusLoginResponse) {
+    await apiClient.revokeToken({
+      revokeTokenParams: { token: userInfo.userInfo.accessToken },
     });
-    await torus.init();
-    return torus;
-  }
 
-  async function discordLogin() {
-    const torus = await initTorus();
-    const userInfo = await torus.triggerLogin({
-      typeOfLogin: 'discord',
-      verifier: constants.torus.discord.verifier,
-      clientId: constants.torus.discord.clientId,
-    });
-    SiteKeyStore.set(
-      buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.hex)
-      )
-    );
+    const secpSk = skFromString(userInfo.privateKey, secp256k1Marker);
+
+    SiteKeyStore.set(buildKeyStateFromSecpSk(secpSk));
+
     AccountStore.update((state) => {
       return {
         ...state,
         loggedIn: true,
       };
     });
-    await apiClient.revokeToken({
-      revokeTokenParams: { token: userInfo.userInfo.accessToken },
+  }
+
+  async function discordLogin() {
+    await initTorusKeySource({
+      sdkArgs: {
+        baseUrl: `${constants.baseUrl}/serviceworker`,
+        network: 'testnet', // details for test net
+      },
+      oauthProvider: 'discord',
+      torusVerifierName: constants.torus.discord.verifier,
+      oauthClientID: constants.torus.discord.clientId,
+      postLoginHook: torusPostLoginHook
     });
   }
 </script>

@@ -3,6 +3,7 @@
   import { TOKEN } from '../interfaces';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
+  import { ChainName } from '@baf-wallet/trust-wallet-assets';
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
@@ -11,8 +12,13 @@
   ];
 
   const chainInfosProm = Promise.all(
-    balances.map(({ tok }: Balance) => getChainInfo(tok))
+    balances.map(({ tok }: Balance) => getChainInfo(tok as ChainName))
   );
+
+  function getLogoUrl(tok: TOKEN) {
+    return getChainLogoUrl(tok as ChainName)
+  }
+
 </script>
 
 <div class="container px-2 mx-auto sm">
@@ -31,7 +37,7 @@
             <td class="mr-2">
               <img
                 class="object-scale-down mx-2"
-                src={getChainLogoUrl(bal.tok)}
+                src={getLogoUrl(bal.tok)}
                 alt={`${bal.tok}.png`}
               />
             </td>

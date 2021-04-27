@@ -28,3 +28,6 @@ export interface KeySource<KeyID> {
 
 // then every keySource implementation should provide this function
 export type KeySourceInitFn<KeyID, InitParams> = (params: InitParams) => Promise<KeySource<KeyID>>;
+
+export type KeySourceInferKeyID<T> = T extends KeySource<infer KeyID> ? KeyID : never;
+export type KeySourceInitFnInferInitParams<T> = T extends KeySourceInitFn<infer _, infer InitParams> ? InitParams : never;
