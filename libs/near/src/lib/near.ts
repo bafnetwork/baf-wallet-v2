@@ -1,7 +1,11 @@
-import { ChainInterface, InferWrapChainInterface, WrappedChainInterface } from '@baf-wallet/interfaces';
+import {
+  ChainInterface,
+  InferWrapChainInterface,
+} from '@baf-wallet/interfaces';
 import {
   Account,
   connect,
+  ConnectConfig,
   KeyPair as NearKeyPair,
   Near,
   providers,
@@ -18,8 +22,10 @@ import {
 } from './accounts';
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 
-export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>
+export { NearAccountID, NearCreateAccountParams } from './accounts';
+export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>;
 
 export type NearChainInterface = ChainInterface<
   NearUtils.PublicKey,
@@ -56,12 +62,14 @@ export interface NearInitParams {
   networkID: NearNetworkID;
   masterAccountID: NearAccountID;
   keyPath?: string;
+  keyPair?: NearKeyPair
 }
 
 async function init({
   networkID,
   masterAccountID,
   keyPath,
+  keyPair,
 }: NearInitParams): Promise<NearState> {
   const nodeUrl = `https://rpc.${networkID}.near.org`;
   const connectConfig = {
@@ -70,7 +78,12 @@ async function init({
     helperUrl: `https://helper.${networkID}.near.org`,
     masterAccount: masterAccountID,
     keyPath,
-  };
+  } as ConnectConfig;
+  if (keyPair) {
+    const keyStore = new InMemoryKeyStore()
+    keyStore.setKey(networkID, masterAccountID, keyPair)
+    connectConfig.keyStore = keyStore;
+  }
 
   const near = await connect(connectConfig);
 

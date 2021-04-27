@@ -29,7 +29,7 @@ export type ChainAccount = NearAccount;
 export type Balance = string;
 
 export interface ChainBalance {
-  chain: ChainName;
+  chain: Chain;
   balance: Balance;
 }
 

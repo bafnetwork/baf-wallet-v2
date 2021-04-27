@@ -41,4 +41,4 @@ export interface KeyPair<Curve> {
 /**
  * A hex encoded string for the signature where sig.s is concated with sig.r
  */
-export type RustEncodedSecpSig = string;
+export type RustEncodedSecpSig = Buffer;

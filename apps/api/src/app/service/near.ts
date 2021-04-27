@@ -34,22 +34,21 @@ export async function createNearAccount(
     throw 'Proof that the sender owns this public key must provided';
   }
 
-  const near = await getNearChain()
+  const near = await getNearChain();
 
-  const nearAccount = near.accounts
-  await nearAccount.create({ 
+  const nearAccount = near.accounts;
+  await nearAccount.create({
     accountID,
     newAccountPk: edPK,
-  })
+  });
 
   const bafContract = await getBafContract();
   await bafContract.setAccountInfo(
     secpPK,
     userId,
-    rustEncodedSecpSig,
+    encodeBytes(rustEncodedSecpSig, Encoding.HEX),
     accountID
   );
-
 }
 
 export async function getAccountNonce(
@@ -72,7 +71,15 @@ function verifyBothSigs(
   edPubkey: PublicKey<ed25519>
 ): boolean {
   return (
-    verifySignature(secpPubkey, encodeBytes(msg, Encoding.HEX), encodeBytes(secpSig, Encoding.HEX)) &&
-    verifySignature(edPubkey, encodeBytes(msg, Encoding.HEX), encodeBytes(edSig, Encoding.HEX))
+    verifySignature(
+      secpPubkey,
+      encodeBytes(msg, Encoding.HEX),
+      encodeBytes(secpSig, Encoding.HEX)
+    ) &&
+    verifySignature(
+      edPubkey,
+      encodeBytes(msg, Encoding.HEX),
+      encodeBytes(edSig, Encoding.HEX)
+    )
   );
 }
