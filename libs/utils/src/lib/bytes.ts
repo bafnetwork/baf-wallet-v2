@@ -1,20 +1,20 @@
 import { Encoding, PublicKey, SecretKey } from '@baf-wallet/interfaces';
 import * as bs58 from 'bs58';
 
-export function formatBytes(buf: Buffer, fmt = Encoding.hexs) {
+export function formatBytes(buf: Buffer, fmt = Encoding.HEX) {
   switch (fmt) {
-    case Encoding.hex:
+    case Encoding.HEX:
       return Buffer.from(buf).toString('hex');
-    case Encoding.bs58:
+    case Encoding.BS58:
       return bs58.encode(Buffer.from(buf));
   }
 }
 
 export function encodeBytes(str: string, fmt: Encoding): Buffer {
   switch (fmt) {
-    case Encoding.hex:
+    case Encoding.HEX:
       return Buffer.from(str, 'hex');
-    case Encoding.bs58:
+    case Encoding.BS58:
       return bs58.encode(str);
   }
 }
@@ -22,7 +22,7 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
 export function pkFromString<Curve>(
   key: string,
   curve: Curve,
-  keyFormat = Encoding.hex
+  keyFormat = Encoding.HEX
 ): PublicKey<Curve> {
   const data = encodeBytes(key, keyFormat);
   return {
@@ -35,7 +35,7 @@ export function pkFromString<Curve>(
 export function skFromString<Curve>(
   key: string,
   curve: Curve,
-  keyFormat = Encoding.hex
+  keyFormat = Encoding.HEX
 ): SecretKey<Curve> {
   const data = encodeBytes(key, keyFormat);
   return {

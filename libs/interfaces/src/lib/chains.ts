@@ -1,8 +1,11 @@
 import { PublicKey, SecretKey, KeyPair } from './crypto';
+import { Pair } from '@baf-wallet/utils';
 
 export enum Chain {
   near,
 }
+
+export type ExplorerLink = string;
 
 // ChainInterface but with the partial application already done via a closure somewhere
 // for instance, wrapChainInterface in @baf-wallet/multi-chain/switches
@@ -10,7 +13,9 @@ export interface WrappedChainInterface<
   PK,
   SK,
   KP,
+  Inner,
   Tx,
+  BuildTxParams,
   SignedTx,
   SignOpts,
   SendOpts,
@@ -19,14 +24,15 @@ export interface WrappedChainInterface<
   AccountLookupParams,
   AccountCreateParams
 > {
-  rpc: RpcInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
-  tx: TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
+  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
+  tx: TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: AccountsInterface<
     Account,
     AccountLookupParams,
     AccountCreateParams
   >;
   convert: Converter<PK, SK, KP>;
+  getInner: () => Inner;
 }
 
 // interface that every chain implementation is expected to implement
@@ -44,6 +50,7 @@ export interface ChainInterface<
   InitParams,
   Inner,
   Tx,
+  BuildTxParams,
   SignedTx,
   SignOpts,
   SendOpts,
@@ -54,10 +61,10 @@ export interface ChainInterface<
 > {
   rpc: (
     innerSdk: Inner
-  ) => RpcInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
+  ) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: (
     innerSdk: Inner
-  ) => TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult>;
+  ) => TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: (
     innerSdk: Inner
   ) => AccountsInterface<Account, AccountLookupParams, AccountCreateParams>;
@@ -72,19 +79,20 @@ export interface AccountsInterface<Account, LookupParams, CreateParams> {
 
 // bare minimum interface representing direct RPC methods to the chain
 // chains are expected to extend this with their own functions and/or values
-export interface RpcInterface<Tx, SignedTx, SignOpts, SendOpts, Send> {
+export interface RpcInterface<Tx, SignedTx, SendOpts, SendResult> {
   endpoint: (network?: string) => string;
 }
 
 // minimum interface representing all transaction-related operations
 // chains are expected to extend this with their own functions and/or values
-export interface TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult> {
+export interface TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult> {
+  build: (params: BuildTxParams) => Promise<Tx>;
   sign: <Curve>(
     tx: Tx,
     keyPair: KeyPair<Curve>,
     opts?: SignOpts
   ) => Promise<SignedTx>;
-  send: (tx: Tx | SignedTx, opts?: SendOpts) => Promise<SendResult>;
+  send: (tx: Tx | SignedTx, opts?: SendOpts) => Promise<Pair<SendResult, ExplorerLink>>;
 }
 
 // utility for going to/from key BAF Wallet unified types
@@ -92,12 +100,12 @@ export interface TxInterface<Tx, SignedTx, SignOpts, SendOpts, SendResult> {
 // we aren't ever locked into using BAF types and reimplementing wheelsA
 // chains are expected to extend this with their own functions and/or values
 export interface Converter<PK, SK, KP> {
-  skFromBaf: <Curve>(bafSk: SecretKey<Curve>) => SK;
-  skToBaf: <Curve>(sk: SK, curveMarker: Curve) => PublicKey<Curve>;
-  pkFromBaf: <Curve>(bafPk: PublicKey<Curve>) => PK;
-  pkToBaf: <Curve>(pk: PK, curveMarker: Curve) => SecretKey<Curve>;
-  keyPairFromBaf: <Curve>(BafKeyPair: KeyPair<Curve>) => KP;
-  keyPairToBaf: <Curve>(keyPair: KP, curveMaker: Curve) => KeyPair<Curve>;
+  skFromUnified: <Curve>(unifiedSk: SecretKey<Curve>) => SK;
+  skToUnified: <Curve>(sk: SK, curveMarker: Curve) => PublicKey<Curve>;
+  pkFromUnified: <Curve>(unifiedPk: PublicKey<Curve>) => PK;
+  pkToUnified: <Curve>(pk: PK, curveMarker: Curve) => SecretKey<Curve>;
+  keyPairFromUnified: <Curve>(unifiedKeyPair: KeyPair<Curve>) => KP;
+  keyPairToUnified: <Curve>(unifiedKeyPair: KP, curveMaker: Curve) => KeyPair<Curve>;
   // TODO: add more methods for converting shit
 }
 
@@ -108,6 +116,7 @@ export type InferChainInterface<T> = T extends ChainInterface<
   infer InitParams,
   infer Inner,
   infer Tx,
+  infer BuildTxParams,
   infer SignedTx,
   infer SignOpts,
   infer SendOpts,
@@ -123,6 +132,7 @@ export type InferChainInterface<T> = T extends ChainInterface<
       InitParams,
       Inner,
       Tx,
+      BuildTxParams,
       SignedTx,
       SignOpts,
       SendOpts,
@@ -136,7 +146,9 @@ export type InferWrappedChainInterface<T> = T extends WrappedChainInterface<
   infer PK,
   infer SK,
   infer KP,
+  infer Inner,
   infer Tx,
+  infer BuildTxParams,
   infer SignedTx,
   infer SignOpts,
   infer SendOpts,
@@ -149,7 +161,9 @@ export type InferWrappedChainInterface<T> = T extends WrappedChainInterface<
       PK,
       SK,
       KP,
+      Inner,
       Tx,
+      BuildTxParams,
       SignedTx,
       SignOpts,
       SendOpts,
@@ -164,9 +178,10 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
   infer PK,
   infer SK,
   infer KP,
-  infer _,
+  infer Inner,
   infer _,
   infer Tx,
+  infer BuildTxParams,
   infer SignedTx,
   infer SignOpts,
   infer SendOpts,
@@ -179,7 +194,9 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
       PK,
       SK,
       KP,
+      Inner,
       Tx,
+      BuildTxParams,
       SignedTx,
       SignOpts,
       SendOpts,
@@ -192,221 +209,253 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
 
 export type InferPK<T> = T extends ChainInterface<
   infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? PK
   : never;
 export type InferSK<T> = T extends ChainInterface<
-  infer PK,
+  infer _,
   infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? SK
   : never;
 export type InferKP<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
+  infer _,
+  infer _,
   infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? KP
   : never;
 export type InferInitParams<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
+  infer _,
+  infer _,
+  infer _,
   infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? InitParams
   : never;
 export type InferInner<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? Inner
   : never;
 export type InferTx<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? Tx
   : never;
+export type InferTxBuildParams<T> = T extends ChainInterface<
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer TxBuildParams,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
+>
+  ? TxBuildParams
+  : never;
+
 export type InferSignedTx<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? SignedTx
   : never;
 export type InferSignOpts<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? SignOpts
   : never;
 export type InferSendOpts<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _,
+  infer _
 >
   ? SendOpts
   : never;
 export type InferSendResult<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _,
+  infer _
 >
   ? SendResult
   : never;
 export type InferAccount<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer Account,
-  infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _,
+  infer _
 >
   ? Account
   : never;
 export type InferAccountLookupParams<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer AccountLookupParams,
-  infer AccountCreateParams
+  infer _
 >
   ? AccountLookupParams
   : never;
 export type InferAccountCreateParams<T> = T extends ChainInterface<
-  infer PK,
-  infer SK,
-  infer KP,
-  infer InitParams,
-  infer Inner,
-  infer Tx,
-  infer SignedTx,
-  infer SignOpts,
-  infer SendOpts,
-  infer SendResult,
-  infer Account,
-  infer AccountLookupParams,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
+  infer _,
   infer AccountCreateParams
 >
   ? AccountCreateParams

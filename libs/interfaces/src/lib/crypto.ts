@@ -4,17 +4,20 @@ export type secp256k1 = {
   toString: () => 'secp256k1';
 };
 
-export const secp256k1Marker: secp256k1 = { toString: () => 'secp256k1' };
-
 export type ed25519 = {
   toString: () => 'ed25519';
 };
 
-export const ed25519Marker: ed25519 = { toString: () => 'ed25519' };
+export const ED25519_STR = "ed25519";
+export const SECP256K1_STR = "secp256k1";
+
+export const secp256k1Marker: secp256k1 = { toString: () => SECP256K1_STR };
+export const ed25519Marker: ed25519 = { toString: () => ED25519_STR };
+
 
 export enum Encoding {
-  bs58,
-  hex,
+  BS58,
+  HEX,
 }
 
 export interface PublicKey<Curve> {

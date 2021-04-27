@@ -1,45 +1,54 @@
-import { ChainInterface } from '@baf-wallet/interfaces';
+import { ChainInterface, ed25519, PublicKey } from '@baf-wallet/interfaces';
 import {
   Account,
   connect,
-  ConnectConfig,
   KeyPair as NearKeyPair,
   Near,
+  providers,
   transactions,
   utils as NearUtils,
 } from 'near-api-js';
+
+import { NearBuildTxParams, NearSignTxOpts, nearTx } from './tx';
+import { nearRpc, NearSendOpts, NearSendResult } from './rpc';
 import {
   NearAccountID,
   nearAccounts,
   NearCreateAccountParams,
 } from './accounts';
-import { nearConverter } from './converter';
+import { nearConverter } from './convert';
+import { NearNetworkID } from './utils';
 
-export type NearNetworkID = 'devnet' | 'testnet' | 'mainnet';
-
-type NearSendTxOpts = 'TODO';
-type NearSendResult = 'TODO';
-type NearSignTxOpts = 'TODO';
 
 export type NearChainInterface = ChainInterface<
   NearUtils.PublicKey,
   Buffer,
   NearKeyPair,
   NearInitParams,
-  Near,
+  NearState,
   transactions.Transaction,
+  NearBuildTxParams,
   transactions.SignedTransaction,
   NearSignTxOpts,
-  NearSendTxOpts,
+  NearSendOpts,
   NearSendResult,
   Account,
   NearAccountID,
   NearCreateAccountParams
 >;
 
-export const nearInterface: NearChainInterface = {
+export interface NearState {
+  near: Near;
+  rpcProvider: providers.JsonRpcProvider;
+  networkID: NearNetworkID;
+}
+
+export const nearChainInterface: NearChainInterface = {
   accounts: nearAccounts,
+  tx: nearTx,
   convert: nearConverter,
+  rpc: nearRpc,
+  init
 };
 
 export interface NearInitParams {
@@ -52,13 +61,21 @@ async function init({
   networkID,
   masterAccountID,
   keyPath,
-}: NearInitParams): Promise<Near> {
+}: NearInitParams): Promise<NearState> {
+  const nodeUrl = `https://rpc.${networkID}.near.org`;
   const connectConfig = {
     networkId: networkID,
-    nodeUrl: `https://rpc.${networkID}.near.org`,
+    nodeUrl,
     helperUrl: `https://helper.${networkID}.near.org`,
     masterAccount: masterAccountID,
     keyPath,
   };
-  return await connect(connectConfig);
+
+  const near = await connect(connectConfig);
+
+  return {
+    near,
+    networkID,
+    rpcProvider: new providers.JsonRpcProvider(nodeUrl),
+  }
 }

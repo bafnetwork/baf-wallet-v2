@@ -22,7 +22,7 @@ export const nearConverter: Converter<
 > = {
   ...bufferConverter,
 
-  pkToBaf<Curve>(
+  pkToUnified<Curve>(
     pk: NearUtils.PublicKey,
     curveMarker: Curve
   ): PublicKey<Curve> {
@@ -39,10 +39,10 @@ export const nearConverter: Converter<
     };
   },
 
-  pkFromBaf: <Curve>(bafPk: PublicKey<Curve>): NearUtils.PublicKey =>
-    NearUtils.PublicKey.fromString(bafPk.format(Encoding.bs58)),
+  pkFromUnified: <Curve>(unifiedPk: PublicKey<Curve>): NearUtils.PublicKey =>
+    NearUtils.PublicKey.fromString(unifiedPk.format(Encoding.BS58)),
 
-  keyPairToBaf<Curve>(
+  keyPairToUnified<Curve>(
     keyPair: NearKeyPair,
     curveMarker: Curve
   ): KeyPair<Curve> {
@@ -54,7 +54,7 @@ export const nearConverter: Converter<
     }
 
     const skStr = skFmt.split(':')[1];
-    const skData = encodeBytes(skStr, Encoding.bs58);
+    const skData = encodeBytes(skStr, Encoding.BS58);
     const pkData = Buffer.from(keyPair.getPublicKey().data);
 
     return {
@@ -72,9 +72,9 @@ export const nearConverter: Converter<
     };
   },
 
-  keyPairFromBaf<Curve>(bafKeyPair: KeyPair<Curve>): NearKeyPair {
-    const prefix = bafKeyPair.curve.toString();
-    const skStr = bafKeyPair.sk.format(Encoding.bs58);
+  keyPairFromUnified<Curve>(unifiedKeyPair: KeyPair<Curve>): NearKeyPair {
+    const prefix = unifiedKeyPair.curve.toString();
+    const skStr = unifiedKeyPair.sk.format(Encoding.BS58);
     return NearKeyPair.fromString(`${prefix}:${skStr}`);
   },
 };

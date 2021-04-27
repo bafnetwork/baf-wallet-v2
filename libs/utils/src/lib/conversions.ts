@@ -9,20 +9,21 @@ import { formatBytes } from './bytes';
 import { Pair } from './types';
 import { Buffer } from 'buffer';
 
-export const bufferConverter: Converter = {
-  skFromBaf,
-  skToBaf,
-  pkFromBaf,
-  pkToBaf,
-  keyPairFromBaf,
-  keyPairToBaf,
+
+export const bufferConverter: Converter<Buffer, Buffer, Pair<Buffer, Buffer>> = {
+  skFromUnified,
+  skToUnified,
+  pkFromUnified,
+  pkToUnified,
+  keyPairFromUnified,
+  keyPairToUnified,
 };
 
-function skFromBaf<Curve>(bafSk: SecretKey<Curve>): Buffer {
-  return Buffer.from(bafSk.data);
+function skFromUnified<Curve>(unifiedSk: SecretKey<Curve>): Buffer {
+  return Buffer.from(unifiedSk.data);
 }
 
-function skToBaf<Curve>(sk: Buffer, curveMarker: Curve): SecretKey<Curve> {
+function skToUnified<Curve>(sk: Buffer, curveMarker: Curve): SecretKey<Curve> {
   const data = Buffer.from(sk);
   return {
     data,
@@ -31,11 +32,11 @@ function skToBaf<Curve>(sk: Buffer, curveMarker: Curve): SecretKey<Curve> {
   };
 }
 
-function pkFromBaf<Curve>(bafPk: PublicKey<Curve>): Buffer {
+function pkFromUnified<Curve>(bafPk: PublicKey<Curve>): Buffer {
   return Buffer.from(bafPk.data);
 }
 
-function pkToBaf<Curve>(pk: Buffer, curveMarker: Curve): PublicKey<Curve> {
+function pkToUnified<Curve>(pk: Buffer, curveMarker: Curve): PublicKey<Curve> {
   const data = Buffer.from(pk);
   return {
     data,
@@ -44,17 +45,17 @@ function pkToBaf<Curve>(pk: Buffer, curveMarker: Curve): PublicKey<Curve> {
   };
 }
 
-function keyPairFromBaf<Curve>(
-  bafKeyPair: KeyPair<Curve>
+function keyPairFromUnified<Curve>(
+  unifiedKeyPair: KeyPair<Curve>
 ): Pair<Buffer, Buffer> {
-  const { pk, sk } = bafKeyPair;
+  const { pk, sk } = unifiedKeyPair;
   return {
     fst: Buffer.from(sk.data),
     snd: Buffer.from(pk.data),
   };
 }
 
-function keyPairToBaf<Curve>(
+function keyPairToUnified<Curve>(
   keyPair: Pair<Buffer, Buffer>,
   curveMarker: Curve
 ): KeyPair<Curve> {
@@ -62,7 +63,7 @@ function keyPairToBaf<Curve>(
   const pkBytes = keyPair.snd;
   return {
     curve: curveMarker,
-    sk: skToBaf(skBytes, curveMarker),
-    pk: pkToBaf(pkBytes, curveMarker),
+    sk: skToUnified(skBytes, curveMarker),
+    pk: pkToUnified(pkBytes, curveMarker),
   };
 }
