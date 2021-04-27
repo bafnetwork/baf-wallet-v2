@@ -1,10 +1,9 @@
-import DirectWebSdk, { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
 import { PublicKey } from '@baf-wallet/interfaces';
 import Torus from '@toruslabs/torus.js';
 import NodeDetailsManager from '@toruslabs/fetch-node-details';
 import * as fetch from 'node-fetch';
 import { secp256k1 } from '@baf-wallet/multi-chain';
-import { torusConstants } from './constants';
+import { torusConstants, TORUS_LOGIN_TYPE } from './constants';
 
 const torus = new Torus({
   metadataHost: 'https://metadata.tor.us',
@@ -13,8 +12,10 @@ const torus = new Torus({
 Torus.setAPIKey('torus-default');
 
 export async function getTorusPublicAddress(
-  userId: string
+  userId: string,
+  loginType: TORUS_LOGIN_TYPE
 ): Promise<PublicKey> {
+  assertLoginTypeRegistered(loginType)
   // Configuration from https://github.com/torusresearch/torus-direct-web-sdk/blob/master/src/login.ts
   const nodeManager = new NodeDetailsManager({
     network: torusConstants.network,
@@ -31,7 +32,7 @@ export async function getTorusPublicAddress(
   const torusPublicKey = await torus.getPublicAddress(
     torusNodeEndpoints,
     torusNodePub,
-    { verifier: torusConstants.verifier, verifierId: userId },
+    { verifier: torusConstants.verifierInfo[loginType].verifier, verifierId: userId },
     true
   );
 
@@ -40,23 +41,8 @@ export async function getTorusPublicAddress(
   return Buffer.from(key.getPublic('hex'), 'hex');
 }
 
-export async function buildTorusWebSdk(baseUrl): Promise<DirectWebSdk> {
-  const torus = new DirectWebSdk({
-    baseUrl,
-    network: 'testnet', // details for test net, TODO: ropsten
-    proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
-  });
-  await torus.init();
-  return torus;
-}
-
-export async function triggerLogin(
-  torus: DirectWebSdk,
-  typeOfLogin = 'discord'
-) : Promise<TorusLoginResponse> {
-  return await torus.triggerLogin({
-    typeOfLogin: 'discord',
-    verifier: torusConstants.discord.verifier,
-    clientId: torusConstants.discord.clientId,
-  });
+export function assertLoginTypeRegistered(loginType: TORUS_LOGIN_TYPE): boolean {
+  if (!torusConstants.verifierInfo[loginType])
+    throw `No verifier info exits for login type ${loginType}`
+  return true
 }

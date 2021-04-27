@@ -8,7 +8,7 @@
   import { KeyFormats } from '@baf-wallet/interfaces';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
-  import { buildTorusWebSdk, triggerLogin } from '@baf-wallet/torus';
+  import { buildTorusWebSdk, triggerLogin } from '@baf-wallet/torus/web';
 
   async function discordLogin() {
     const torus = await buildTorusWebSdk(`${constants.baseUrl}/serviceworker`);

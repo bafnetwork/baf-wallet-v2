@@ -15,10 +15,9 @@ import {
   getAccountNonceFromSecpPK,
 } from '../service/near';
 import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { constants } from '../config/constants';
 import { hexString } from './common';
 import { keyFromString } from '@baf-wallet/multi-chain';
-import { getTorusPublicAddress } from '@baf-wallet/torus';
+import { getTorusPublicAddress } from '@baf-wallet/torus/common';
 
 interface CreateNearAccountParams {
   userID: string;
@@ -39,6 +38,7 @@ export class NearController extends Controller {
   ): Promise<void> {
     const secpPubkey = await getTorusPublicAddress(
       requestBody.userID,
+      'discord'
     );
 
     await createNearAccount(
