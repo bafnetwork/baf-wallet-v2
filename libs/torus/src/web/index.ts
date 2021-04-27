@@ -1,1 +1,1 @@
-export * from './torus-web.ts'
+export * from './torus-web.ts';

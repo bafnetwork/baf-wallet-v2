@@ -1,4 +1,3 @@
 describe('torus', () => {
-  it('should work', () => {
-  });
+  it('should work', () => {});
 });

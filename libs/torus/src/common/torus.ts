@@ -15,7 +15,7 @@ export async function getTorusPublicAddress(
   userId: string,
   loginType: TORUS_LOGIN_TYPE
 ): Promise<PublicKey> {
-  assertLoginTypeRegistered(loginType)
+  assertLoginTypeRegistered(loginType);
   // Configuration from https://github.com/torusresearch/torus-direct-web-sdk/blob/master/src/login.ts
   const nodeManager = new NodeDetailsManager({
     network: torusConstants.network,
@@ -32,7 +32,10 @@ export async function getTorusPublicAddress(
   const torusPublicKey = await torus.getPublicAddress(
     torusNodeEndpoints,
     torusNodePub,
-    { verifier: torusConstants.verifierInfo[loginType].verifier, verifierId: userId },
+    {
+      verifier: torusConstants.verifierInfo[loginType].verifier,
+      verifierId: userId,
+    },
     true
   );
 
@@ -41,8 +44,10 @@ export async function getTorusPublicAddress(
   return Buffer.from(key.getPublic('hex'), 'hex');
 }
 
-export function assertLoginTypeRegistered(loginType: TORUS_LOGIN_TYPE): boolean {
+export function assertLoginTypeRegistered(
+  loginType: TORUS_LOGIN_TYPE
+): boolean {
   if (!torusConstants.verifierInfo[loginType])
-    throw `No verifier info exits for login type ${loginType}`
-  return true
+    throw `No verifier info exits for login type ${loginType}`;
+  return true;
 }

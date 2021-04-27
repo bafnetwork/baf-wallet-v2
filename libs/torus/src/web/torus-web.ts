@@ -1,7 +1,11 @@
 import DirectWebSdk, {
   TorusLoginResponse,
 } from '@toruslabs/torus-direct-web-sdk';
-import { assertLoginTypeRegistered, torusConstants, TORUS_LOGIN_TYPE } from '../common';
+import {
+  assertLoginTypeRegistered,
+  torusConstants,
+  TORUS_LOGIN_TYPE,
+} from '../common';
 export async function buildTorusWebSdk(baseUrl): Promise<DirectWebSdk> {
   const torus = new DirectWebSdk({
     baseUrl,
@@ -16,10 +20,10 @@ export async function triggerLogin(
   torus: DirectWebSdk,
   loginType: TORUS_LOGIN_TYPE
 ): Promise<TorusLoginResponse> {
-  assertLoginTypeRegistered(loginType)
+  assertLoginTypeRegistered(loginType);
   return await torus.triggerLogin({
     typeOfLogin: 'discord',
     verifier: torusConstants.verifierInfo[loginType].verifier,
-    clientId: torusConstants.verifierInfo[loginType].clientId
+    clientId: torusConstants.verifierInfo[loginType].clientId,
   });
 }
