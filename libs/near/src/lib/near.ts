@@ -1,4 +1,4 @@
-import { ChainInterface, ed25519, PublicKey } from '@baf-wallet/interfaces';
+import { ChainInterface } from '@baf-wallet/interfaces';
 import {
   Account,
   connect,

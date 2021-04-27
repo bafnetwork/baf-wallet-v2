@@ -1,14 +1,7 @@
 import {
-  ChainInterface,
-  AccountsInterface,
-  RpcInterface,
-  TxInterface,
   Converter,
   KeyPair,
-  SecretKey,
   PublicKey,
-  secp256k1,
-  ed25519,
   Encoding,
 } from '@baf-wallet/interfaces';
 import { KeyPair as NearKeyPair, utils as NearUtils } from 'near-api-js';

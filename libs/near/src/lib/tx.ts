@@ -2,10 +2,8 @@ import {
   KeyPair,
   TxInterface,
   PublicKey,
-  SecretKey,
   secp256k1,
   ed25519,
-  Encoding,
   ExplorerLink
 } from '@baf-wallet/interfaces';
 import { Pair } from '@baf-wallet/utils';

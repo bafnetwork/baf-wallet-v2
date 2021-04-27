@@ -59,9 +59,7 @@ export interface ChainInterface<
   AccountLookupParams,
   AccountCreateParams
 > {
-  rpc: (
-    innerSdk: Inner
-  ) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
+  rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: (
     innerSdk: Inner
   ) => TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
@@ -85,14 +83,24 @@ export interface RpcInterface<Tx, SignedTx, SendOpts, SendResult> {
 
 // minimum interface representing all transaction-related operations
 // chains are expected to extend this with their own functions and/or values
-export interface TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult> {
+export interface TxInterface<
+  Tx,
+  BuildTxParams,
+  SignedTx,
+  SignOpts,
+  SendOpts,
+  SendResult
+> {
   build: (params: BuildTxParams) => Promise<Tx>;
   sign: <Curve>(
     tx: Tx,
     keyPair: KeyPair<Curve>,
     opts?: SignOpts
   ) => Promise<SignedTx>;
-  send: (tx: Tx | SignedTx, opts?: SendOpts) => Promise<Pair<SendResult, ExplorerLink>>;
+  send: (
+    tx: Tx | SignedTx,
+    opts?: SendOpts
+  ) => Promise<Pair<SendResult, ExplorerLink>>;
 }
 
 // utility for going to/from key BAF Wallet unified types
@@ -105,7 +113,10 @@ export interface Converter<PK, SK, KP> {
   pkFromUnified: <Curve>(unifiedPk: PublicKey<Curve>) => PK;
   pkToUnified: <Curve>(pk: PK, curveMarker: Curve) => SecretKey<Curve>;
   keyPairFromUnified: <Curve>(unifiedKeyPair: KeyPair<Curve>) => KP;
-  keyPairToUnified: <Curve>(unifiedKeyPair: KP, curveMaker: Curve) => KeyPair<Curve>;
+  keyPairToUnified: <Curve>(
+    unifiedKeyPair: KP,
+    curveMaker: Curve
+  ) => KeyPair<Curve>;
   // TODO: add more methods for converting shit
 }
 
