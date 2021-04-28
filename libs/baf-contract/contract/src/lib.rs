@@ -113,6 +113,7 @@ impl BafWalletPK {
         let nonce = self.get_account_nonce_internal(&secp_pk_internal);
         let msg_str = format!("{}:{}", user_id, nonce);
         let msg_prehash = msg_str.as_bytes();
+        // panic!("{:?}", secp_sig_s);
         let hash: [u8; 32] = keccak256(msg_prehash)
             .try_into()
             .map_err(|e| "An error occured hashing the message")

@@ -42,6 +42,7 @@ export async function createNearAccount(
   });
 
   const bafContract = await getBafContract();
+  console.log([...encodeBytes(rustEncodedSecpSig, Encoding.HEX)]);
   await bafContract.setAccountInfo(
     secpPK,
     userId,

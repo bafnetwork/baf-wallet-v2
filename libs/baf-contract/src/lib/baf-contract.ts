@@ -69,7 +69,7 @@ async function buildBafContract(account: Account): Promise<BafContract> {
 
 export function encodeSecpSigBafContract(sig: EC.Signature): Buffer {
   return Buffer.from(
-    sig.r.toString('hex', 64) + sig.s.toString('hex', 64),
+    `${sig.r.toString('hex', 64)}${sig.s.toString('hex', 64)}`,
     'hex'
   );
 }
