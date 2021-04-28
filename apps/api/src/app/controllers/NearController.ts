@@ -13,6 +13,7 @@ import {
   createNearAccount,
   getAccountInfoFromSecpPK,
   getAccountNonce,
+  NearAccountInfo,
 } from '../service/near';
 import { ed25519Marker, Encoding, PublicKey, secp256k1Marker } from '@baf-wallet/interfaces';
 import { getTorusPublicAddress } from '@baf-wallet/torus';
@@ -63,7 +64,7 @@ export class NearController extends Controller {
 
   @SuccessResponse('200')
   @Get('account/{secpPubkeyB58}/id')
-  public async getAccountInfo(@Path() secpPubkeyB58: string) {
+  public async getAccountInfo(@Path() secpPubkeyB58: string): Promise<NearAccountInfo> {
     const pk = pkFromString(secpPubkeyB58, secp256k1Marker, Encoding.BS58);
     return await getAccountInfoFromSecpPK(pk);
   }

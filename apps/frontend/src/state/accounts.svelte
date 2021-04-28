@@ -1,16 +1,10 @@
 <script lang="ts" context="module">
-  import {
-    ChainAccount,
-    ChainName,
-    CryptoCurves,
-    getNearNetworkId,
-    KeyFormats,
-  } from '@baf-wallet/interfaces';
-  import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
+  import { ChainAccount } from '@baf-wallet/interfaces';
 
   import { writable } from 'svelte/store';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
+  import { initChains } from './chains.svelte';
   import { clearKeysFromStorage, loadKeys, SiteKeyStore } from './keys.svelte';
   export interface Account {
     displayName: string;
@@ -23,17 +17,9 @@
     email: string;
   }
 
-  type ChainInfos = {
-    [key in ChainName]?: {
-      chain: ChainName;
-      account: ChainAccount;
-      init: boolean;
-    };
-  };
   export interface AccountState {
     loggedIn: boolean;
     oauthInfo?: OAuthState;
-    chainInfos: ChainInfos;
   }
 
   export const AccountStore = writable<AccountState | null>(null);
@@ -53,7 +39,7 @@
   export async function initAccount(): Promise<AccountState> {
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
-    const networkId = getNearNetworkId(constants.env);
+    await initChains(keys);
     const nearAccountId = loggedIn
       ? (
           await apiClient.getAccountInfo({

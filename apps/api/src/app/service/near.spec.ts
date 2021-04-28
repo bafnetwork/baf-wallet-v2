@@ -13,6 +13,7 @@ import {
 } from '@baf-wallet/interfaces';
 import {
   getWrappedInterface,
+  keyPairFromSk,
   pkFromSk,
   signMsg,
   skFromRng,
@@ -71,7 +72,7 @@ async function getAliceWrappedNear() {
     ...constants.chainParams[Chain.NEAR],
     keyPath: null,
     masterAccountID: aliceAccountName,
-    keyPair: new KeyPairEd25519(pkToString(aliceEdSecretKey, Encoding.BS58)),
+    keyPair: keyPairFromSk(aliceEdSecretKey)
   });
   return nearAlice;
 }

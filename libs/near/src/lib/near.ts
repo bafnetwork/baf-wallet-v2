@@ -1,6 +1,10 @@
 import {
   ChainInterface,
+  ed25519,
+  Encoding,
   InferWrapChainInterface,
+  KeyPair,
+  secp256k1,
 } from '@baf-wallet/interfaces';
 import {
   Account,
@@ -23,6 +27,7 @@ import {
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>;
@@ -62,7 +67,7 @@ export interface NearInitParams {
   networkID: NearNetworkID;
   masterAccountID: NearAccountID;
   keyPath?: string;
-  keyPair?: NearKeyPair
+  keyPair?: KeyPair<ed25519>;
 }
 
 async function init({
@@ -80,19 +85,20 @@ async function init({
     keyPath,
   } as ConnectConfig;
   if (keyPair) {
-    const keyStore = new InMemoryKeyStore()
-    keyStore.setKey(networkID, masterAccountID, keyPair)
+    const keyStore = new InMemoryKeyStore();
+    const nearKp = new NearKeyPairEd25519(keyPair.sk.format(Encoding.BS58));
+    keyStore.setKey(networkID, masterAccountID, nearKp);
     connectConfig.deps = {
-      keyStore: keyStore
-    }
+      keyStore: keyStore,
+    };
     connectConfig.keyStore = keyStore;
   } else if (keyPath) {
-    const keyStore = new InMemoryKeyStore()
+    const keyStore = new InMemoryKeyStore();
     connectConfig.deps = {
-      keyStore: keyStore
-    }
+      keyStore: keyStore,
+    };
   } else {
-    throw "A key path or key pair must be provided"
+    throw 'A key path or key pair must be provided';
   }
 
   const near = await connect(connectConfig);

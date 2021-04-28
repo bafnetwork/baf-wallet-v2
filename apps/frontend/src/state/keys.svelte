@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  import { ed25519, ed25519Marker, Encoding, secp256k1, secp256k1Marker, SecretKey } from '@baf-wallet/interfaces';
+  import { ed25519, ed25519Marker, Encoding, KeyState, secp256k1, secp256k1Marker, SecretKey } from '@baf-wallet/interfaces';
 
   import {
     pkFromSk,
@@ -13,17 +13,17 @@
 
   export const SiteKeyStore = writable<KeyState | null>(null);
 
-  export function buildKeyStateFromSecpSk(secpSk: SecretKey<secp256k1>): KeyState {
-    const edSk = skFromSeed<ed25519>(secpSk.data, ed25519Marker);
+  export function buildKeyStateFromSecpSk(secpSK: SecretKey<secp256k1>): KeyState {
+    const edSK = skFromSeed<ed25519>(secpSK.data, ed25519Marker);
     return {
-      edSk,
-      secpSk,
-      edPk: pkFromSk(edSk),
-      secpPk: pkFromSk(secpSk),
+      edSK,
+      secpSK,
+      edPK: pkFromSk(edSK),
+      secpPK: pkFromSk(secpSK),
     };
   }
   export function packKey(keyState: KeyState): string {
-    return `secp256k1:${keyState.secpSk.format(Encoding.HEX)}`;
+    return `secp256k1:${keyState.secpSK.format(Encoding.HEX)}`;
   }
 
   function unpackKey(keyState: string): KeyState {

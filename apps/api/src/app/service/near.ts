@@ -15,6 +15,10 @@ import {
 import { verifySignature } from '@baf-wallet/multi-chain';
 import { getNearChain } from '../chains/singletons';
 
+export interface NearAccountInfo {
+  near_id: string;
+}
+
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
   secpPK: PublicKey<secp256k1>,
@@ -56,7 +60,7 @@ export async function getAccountNonce(
   return await getBafContract().getAccountNonce(pk);
 }
 
-export async function getAccountInfoFromSecpPK(pk: PublicKey<secp256k1>) {
+export async function getAccountInfoFromSecpPK(pk: PublicKey<secp256k1>): Promise<NearAccountInfo> {
   return {
     near_id: await getBafContract().getAccountId(pk),
   };
