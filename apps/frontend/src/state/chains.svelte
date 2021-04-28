@@ -26,7 +26,7 @@
   //   chain: Chain
   // ) => InferWrapChainInterface<ChainInterface>;
 
-  type ChainsState = {
+  export type ChainsState = {
     [Chain.NEAR]?: WrappedNearChainInterface;
   };
 
@@ -39,7 +39,7 @@
 
   export const ChainStores = writable<ChainsState | null>(null);
 
-  export async function initChains(keys: KeyState) {
+  export async function initChains(keys: KeyState) : Promise<ChainsState> {
     const nearAccountInfo = await apiClient.getAccountInfo({
       secpPubkeyB58: keys.secpPK.format(Encoding.BS58),
     });
@@ -57,5 +57,6 @@
  
     }
    ChainStores.set(chainInfos);
+   return chainInfos
   }
 </script>

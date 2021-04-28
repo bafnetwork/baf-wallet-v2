@@ -8,33 +8,36 @@
   import { reinitApp } from '../config/init.svelte';
   import { AccountStore } from '../state/accounts.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
-  import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { apiClient } from '../config/api';
-  import { ChainName, KeyFormats } from '@baf-wallet/interfaces';
+  import { ChainsStore, checkChainInit } from '../state/chains.svelte';
+  import { Chain, Encoding } from '@baf-wallet/interfaces';
+  import { createUserVerifyMessage } from '@baf-wallet/utils';
+  import { signMsg } from '@baf-wallet/multi-chain';
 
   async function deleteAccount() {
-    if (!$AccountStore.chainInfos[ChainName.NEAR]) {
+    if (!checkChainInit($ChainsStore, Chain.NEAR)) {
       alert('Cannot delete an unitialized account');
       return;
     }
     const userId = $AccountStore.oauthInfo.verifierId;
 
     const nonce = await apiClient.getAccountNonce({
-      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
+      secpPubkeyB58: $SiteKeyStore.secpPK.format(Encoding.BS58),
     });
-    const secpSig = ChainUtil.signSecp256k1(
+    const secpSigBafContractEncoded = signMsg(
       $SiteKeyStore.secpSK,
-      ChainUtil.createUserVerifyMessage(userId, nonce)
+      createUserVerifyMessage(userId, nonce),
+      true
     );
     await getBafContract().deleteAccountInfo(
       $SiteKeyStore.secpPK,
       userId,
-      encodeSecpSigBafContract(secpSig)
+      secpSigBafContractEncoded
     );
     // Deleteing the account must come after whiping it from the contract
-    await $AccountStore.chainInfos[ChainName.NEAR].account.deleteAccount(
-      bafContractConstants.beneficiaryId
-    );
+    await $ChainsStore[Chain.NEAR]
+      .getInner()
+      .masterAccount.deleteAccount(bafContractConstants.beneficiaryId);
     alert('Your account was deleted');
     reinitApp();
   }

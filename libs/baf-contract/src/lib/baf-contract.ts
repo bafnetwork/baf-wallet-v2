@@ -27,7 +27,7 @@ interface BafContract {
 
 let bafContract: BafContract;
 
-export async function setBafContract(account): Promise<BafContract> {
+export async function setBafContract(account: Account): Promise<BafContract> {
   bafContract = await buildBafContract(account);
   return bafContract;
 }

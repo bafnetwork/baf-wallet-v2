@@ -3,37 +3,43 @@
   import Button from './base/Button.svelte';
   import { reinitApp } from '../config/init.svelte';
   import { apiClient } from '../config/api';
-  import { ChainUtil, formatKey } from '@baf-wallet/multi-chain';
   import { SiteKeyStore } from '../state/keys.svelte';
-  import { KeyFormats } from '@baf-wallet/interfaces';
   import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
   import { AccountStore } from '../state/accounts.svelte';
+  import { Encoding } from '@baf-wallet/interfaces';
+  import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
+  import { signMsg } from '@baf-wallet/multi-chain';
 
   let newAccountId: string;
 
   async function initNearAccount() {
     const nonce = await apiClient.getAccountNonce({
-      secpPubkeyB58: formatKey($SiteKeyStore.secpPK, KeyFormats.BS58),
+      secpPubkeyB58: $SiteKeyStore.secpPK.format(Encoding.BS58),
     });
-    console.log(formatKey($SiteKeyStore.secpPK, KeyFormats.HEX));
     const userId = $AccountStore.oauthInfo.verifierId;
-    const secpSig = ChainUtil.signSecp256k1(
+    const edSig = signMsg(
+      $SiteKeyStore.edSK,
+      createUserVerifyMessage(userId, nonce)
+    );
+    const secpSigBafEncoded = signMsg(
       $SiteKeyStore.secpSK,
-      ChainUtil.createUserVerifyMessage(userId, nonce)
+      createUserVerifyMessage(userId, nonce),
+      true
+    );
+    const secpSig = signMsg(
+      $SiteKeyStore.secpSK,
+      createUserVerifyMessage(userId, nonce)
     );
 
     await apiClient.createNearAccount({
       createNearAccountParams: {
         userID: userId,
         nonce,
-        edPubkey: formatKey($SiteKeyStore.edPK, KeyFormats.HEX),
+        edPubkey: $SiteKeyStore.edPK.format(Encoding.HEX),
         accountID: newAccountId,
-        secpSigS: encodeSecpSigBafContract(secpSig),
-        edSig: ChainUtil.signEd25519(
-          $SiteKeyStore.edSK,
-          ChainUtil.createUserVerifyMessage(userId, nonce)
-        ),
-        secpSig: secpSig.toDER('hex'),
+        secpSigS: formatBytes(secpSigBafEncoded, Encoding.HEX),
+        edSigHex: formatBytes(edSig, Encoding.HEX),
+        secpSigHex: formatBytes(secpSig, Encoding.HEX),
       },
     });
     alert('Success');

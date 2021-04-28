@@ -85,7 +85,7 @@ export interface ChainInterface<
   SendResult,
   Account,
   AccountLookupParams,
-  AccountCreateParams
+  AccountCreateParams,
 > {
   rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: (
@@ -101,6 +101,11 @@ export interface ChainInterface<
 export interface AccountsInterface<Account, LookupParams, CreateParams> {
   lookup: (params: LookupParams) => Promise<Account>;
   create: (params: CreateParams) => Promise<Account>;
+  getGenericMasterAccount: () => GenericAccount;
+}
+
+export interface GenericAccount {
+  getBalance: () => Promise<Balance>;
 }
 
 // bare minimum interface representing direct RPC methods to the chain

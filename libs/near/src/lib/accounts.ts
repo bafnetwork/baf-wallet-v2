@@ -1,4 +1,9 @@
-import { AccountsInterface, ed25519, secp256k1 } from '@baf-wallet/interfaces';
+import {
+  AccountsInterface,
+  Balance,
+  ed25519,
+  secp256k1,
+} from '@baf-wallet/interfaces';
 import { Account as NearAccount } from 'near-api-js';
 import {
   AccountCreator,
@@ -21,6 +26,13 @@ export function nearAccounts(
     lookup: async (accountID: NearAccountID): Promise<NearAccount> =>
       await near.account(accountID),
 
+    getGenericMasterAccount: () => {
+      return {
+        getBalance: async () =>
+          (await nearState.nearMasterAccount.getAccountBalance())
+            .total as Balance,
+      };
+    },
     create: async ({
       accountID,
       newAccountPk,

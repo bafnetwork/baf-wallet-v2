@@ -53,6 +53,7 @@ export interface NearState {
   near: Near;
   rpcProvider: providers.JsonRpcProvider;
   networkID: NearNetworkID;
+  nearMasterAccount: Account;
 }
 
 export const nearChainInterface: NearChainInterface = {
@@ -107,5 +108,6 @@ async function init({
     near,
     networkID,
     rpcProvider: new providers.JsonRpcProvider(nodeUrl),
+    nearMasterAccount: await near.account(masterAccountID),
   };
 }

@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
   import { setBafContract } from '@baf-wallet/baf-contract';
+  import { Chain } from '@baf-wallet/interfaces';
   import { initAccount } from '../state/accounts.svelte';
-  import { NearAccount } from '@baf-wallet/multi-chain';
-import { ChainName } from '@baf-wallet/interfaces';
+  import { checkChainInit } from '../state/chains.svelte';
 
   // TODO: we have to improve this to not require a reload, please see
   // https://github.com/bafnetwork/baf-wallet-v2/issues/29
@@ -10,8 +10,10 @@ import { ChainName } from '@baf-wallet/interfaces';
     window.location.reload();
   }
   export async function initApp() {
-    const accountState = await initAccount();
-    if (accountState.chainInfos[ChainName.NEAR]?.init)
-      await setBafContract((await NearAccount.get()).masterAccount);
+    const { chainsState } = await initAccount();
+    if (checkChainInit(chainsState, Chain.NEAR))
+      await setBafContract(
+        chainsState[Chain.NEAR].getInner().nearMasterAccount
+      );
   }
 </script>

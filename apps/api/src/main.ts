@@ -10,7 +10,7 @@ import { getNearChain, initChains } from './app/chains/singletons';
 const app = express();
 
 async function initContracts() {
-  const masterAccount = getNearChain().accounts.lookup(
+  const masterAccount = await getNearChain().accounts.lookup(
     constants.chainParams[Chain.NEAR].masterAccountID
   );
   await setBafContract(masterAccount);
