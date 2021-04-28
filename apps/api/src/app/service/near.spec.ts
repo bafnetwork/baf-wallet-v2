@@ -52,6 +52,8 @@ const aliceSecpSecretKey = skFromSeed(seed, secp256k1Marker);
 
 const aliceEdPublicKey = pkFromSk(aliceEdSecretKey);
 const aliceSecpPublicKey = pkFromSk(aliceSecpSecretKey);
+console.log(aliceSecpPublicKey.format(Encoding.HEX), aliceSecpSecretKey.format(Encoding.HEX));
+// 048bae7823327488f14ced4f0c4051701683c33d69820b775efdd3494aecd971eba0bd9f155c69a9d8d4f5f3904f89e7e2e3964930840d7089c25561f3bb6576bc 4510f9508bc271eb1b1b912806698ebc7f65a9930807e5d7e8f05e90ddecdaf8
 
 const aliceAccountName = 'alicehere';
 
