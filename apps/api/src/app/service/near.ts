@@ -42,7 +42,6 @@ export async function createNearAccount(
   });
 
   const bafContract = await getBafContract();
-  console.log([...encodeBytes(rustEncodedSecpSig, Encoding.HEX)]);
   await bafContract.setAccountInfo(
     secpPK,
     userId,
@@ -73,12 +72,12 @@ function verifyBothSigs(
   return (
     verifySignature(
       secpPubkey,
-      encodeBytes(msg, Encoding.HEX),
+      msg,
       encodeBytes(secpSig, Encoding.HEX)
     ) &&
     verifySignature(
       edPubkey,
-      encodeBytes(msg, Encoding.HEX),
+      msg,
       encodeBytes(edSig, Encoding.HEX)
     )
   );

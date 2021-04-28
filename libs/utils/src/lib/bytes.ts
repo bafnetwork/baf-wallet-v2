@@ -7,6 +7,8 @@ export function formatBytes(buf: Buffer, fmt = Encoding.HEX) {
       return Buffer.from(buf).toString('hex');
     case Encoding.BS58:
       return bs58.encode(Buffer.from(buf));
+    default:
+      throw "Encoding type not supported"
   }
 }
 
@@ -16,6 +18,10 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
       return Buffer.from(str, 'hex');
     case Encoding.BS58:
       return bs58.encode(str);
+    case Encoding.UTF8:
+      return Buffer.from(str, 'utf8');
+    default:
+      throw "Encoding type not supported"
   }
 }
 

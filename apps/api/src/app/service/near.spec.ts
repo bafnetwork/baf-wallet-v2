@@ -52,8 +52,6 @@ const aliceSecpSecretKey = skFromSeed(seed, secp256k1Marker);
 
 const aliceEdPublicKey = pkFromSk(aliceEdSecretKey);
 const aliceSecpPublicKey = pkFromSk(aliceSecpSecretKey);
-console.log(aliceSecpPublicKey.format(Encoding.HEX), aliceSecpSecretKey.format(Encoding.HEX));
-// 048bae7823327488f14ced4f0c4051701683c33d69820b775efdd3494aecd971eba0bd9f155c69a9d8d4f5f3904f89e7e2e3964930840d7089c25561f3bb6576bc 4510f9508bc271eb1b1b912806698ebc7f65a9930807e5d7e8f05e90ddecdaf8
 
 const aliceAccountName = 'alice_35.testnet';
 
@@ -111,9 +109,7 @@ describe('createAccount', () => {
     const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
     const edSig = signMsg(aliceEdSecretKey, msg);
     const secpSig = signMsg(aliceSecpSecretKey, msg);
-    console.log(secpSig.toString('hex'))
     const encodeSecpSigBafContract = signMsg(aliceSecpSecretKey, msg, true);
-    console.log(secpSig.toString('hex'))
 
     await createNearAccount(
       aliceSecpPublicKey,
@@ -137,7 +133,7 @@ describe('createAccount', () => {
     );
     const secpSigNew = signMsg(
       aliceSecpSecretKey,
-      encodeBytes(msgDelete, Encoding.HEX),
+      msgDelete,
       true
     );
     await getBafContract().deleteAccountInfo(
@@ -148,7 +144,7 @@ describe('createAccount', () => {
     await deleteAccount(account, true);
   });
 
-  xit('should fail if the secp sig is invalid', async () => {
+  it('should fail if the secp sig is invalid', async () => {
     expect(async () => {
       const aliceNonce = 1;
       const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
@@ -177,7 +173,7 @@ describe('createAccount', () => {
     );
   });
 
-  xit('should fail if the ed sig is invalid', async () => {
+  it('should fail if the ed sig is invalid', async () => {
     expect(async () => {
       const aliceNonce = 1;
       const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
