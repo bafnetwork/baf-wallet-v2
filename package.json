@@ -71,6 +71,7 @@
     "@yelo/rollup-node-external": "^1.0.1",
     "autoprefixer": "^10.2.5",
     "babel-loader": "^8.2.2",
+    "chai-as-promised": "^7.1.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "core-js": "^3.9.0",
     "cross-env": "^7.0.3",
@@ -144,6 +145,7 @@
     "tsoa": "^3.5.2",
     "tweetnacl": "^1.0.3",
     "typedi": "^0.10.0",
-    "typedjson": "^1.7.0"
+    "typedjson": "^1.7.0",
+    "uninstall": "0.0.0"
   }
 }

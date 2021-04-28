@@ -4,7 +4,6 @@ import {
   KeyPair,
   SECP256K1_STR,
   ED25519_STR,
-  ed25519Marker,
 } from '@baf-wallet/interfaces';
 import { bufferConverter } from '@baf-wallet/utils';
 import { ec as EC } from 'elliptic';
@@ -18,7 +17,7 @@ export function keyPairFromSk<Curve>(sk: SecretKey<Curve>): KeyPair<Curve> {
     curve: sk.curve,
     pk,
     sk,
-  };
+  }
 }
 
 export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {
@@ -71,12 +70,16 @@ export function skFromSeed<Curve>(
 
 export function skFromRng<Curve>(curveMarker: Curve): SecretKey<Curve> {
   switch (curveMarker.toString()) {
-    case SECP256K1_STR: {
+    case ED25519_STR: {
       const data = Buffer.from(nacl.sign.keyPair().secretKey);
       return bufferConverter.skToUnified(data, curveMarker);
     }
-    case ED25519_STR: {
-      return skFromSeed(nacl.randomBytes(32), curveMarker)
+    case SECP256K1_STR: {
+      const data = Buffer.from(
+        ellipticSecp256k1.genKeyPair().getPrivate('hex'),
+        'hex'
+      );
+      return bufferConverter.pkToUnified(data, curveMarker);
     }
     default:
       throw new Error(`Unsupported curve ${curveMarker.toString()}`);

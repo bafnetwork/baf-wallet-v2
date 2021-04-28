@@ -71,7 +71,7 @@ async function getAliceWrappedNear() {
     ...constants.chainInitParams[Chain.NEAR],
     keyPath: null,
     masterAccountID: aliceAccountName,
-    keyPair: new KeyPairEd25519(pkToString(aliceEdSecretKey, Encoding.BS58))
+    keyPair: new KeyPairEd25519(pkToString(aliceEdSecretKey, Encoding.BS58)),
   });
   return nearAlice;
 }
@@ -81,7 +81,7 @@ describe('createAccount', () => {
   let masterAccount: Account;
 
   beforeAll(async () => {
-    await initChains()
+    await initChains();
     // NearAccount.setConfigNode(constants.nearAccountConfig);
     near = await getWrappedInterface<NearChainInterface>(Chain.NEAR, {
       ...constants.chainInitParams[Chain.NEAR],
@@ -106,7 +106,10 @@ describe('createAccount', () => {
     const aliceNonce = await getBafContract().getAccountNonce(
       aliceSecpPublicKey
     );
-    const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
+    const msg = createUserVerifyMessage(
+      aliceAccountName,
+      aliceNonce.toString()
+    );
     const edSig = signMsg(aliceEdSecretKey, msg);
     const secpSig = signMsg(aliceSecpSecretKey, msg);
     const encodeSecpSigBafContract = signMsg(aliceSecpSecretKey, msg, true);
@@ -131,11 +134,7 @@ describe('createAccount', () => {
       aliceAccountName,
       await getBafContract().getAccountNonce(aliceSecpPublicKey)
     );
-    const secpSigNew = signMsg(
-      aliceSecpSecretKey,
-      msgDelete,
-      true
-    );
+    const secpSigNew = signMsg(aliceSecpSecretKey, msgDelete, true);
     await getBafContract().deleteAccountInfo(
       aliceSecpPublicKey,
       aliceAccountName,
@@ -145,19 +144,22 @@ describe('createAccount', () => {
   });
 
   it('should fail if the secp sig is invalid', async () => {
-    expect(async () => {
-      const aliceNonce = 1;
-      const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
+    const aliceNonce = 1;
+    const msg = createUserVerifyMessage(
+      aliceAccountName,
+      aliceNonce.toString()
+    );
 
-      //* use random SK instead of alice's SK
-      const edSig = signMsg(aliceEdSecretKey, msg);
-      const secpSig = signMsg(skFromRng(secp256k1Marker), msg);
-      const secpSigEncodedContract = signMsg(
-        skFromRng(secp256k1Marker),
-        msg,
-        true
-      );
+    //* use random SK instead of alice's SK
+    const edSig = signMsg(aliceEdSecretKey, msg);
+    const secpSig = signMsg(skFromRng(secp256k1Marker), msg);
+    const secpSigEncodedContract = signMsg(
+      skFromRng(secp256k1Marker),
+      msg,
+      true
+    );
 
+    try {
       await createNearAccount(
         aliceSecpPublicKey,
         aliceEdPublicKey,
@@ -168,21 +170,27 @@ describe('createAccount', () => {
         formatBytes(edSig),
         aliceAccountName
       );
-    }).rejects.toThrow(
-      'Proof that the sender owns this public key must provided'
-    );
+      fail('Should have thrown');
+    } catch (e) {
+      expect(e).toEqual(
+        'Proof that the sender owns this public key must provided'
+      );
+    }
   });
 
   it('should fail if the ed sig is invalid', async () => {
-    expect(async () => {
-      const aliceNonce = 1;
-      const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
+    const aliceNonce = 1;
+    const msg = createUserVerifyMessage(
+      aliceAccountName,
+      aliceNonce.toString()
+    );
 
-      //* use random SK instead of alice's SK
-      const edSig = signMsg(skFromRng(ed25519Marker), msg);
-      const secpSig = signMsg(aliceSecpSecretKey, msg);
-      const secpSigEncodedContract = signMsg(aliceSecpSecretKey, msg, true);
+    //* use random SK instead of alice's SK
+    const edSig = signMsg(skFromRng(ed25519Marker), msg);
+    const secpSig = signMsg(aliceSecpSecretKey, msg);
+    const secpSigEncodedContract = signMsg(aliceSecpSecretKey, msg, true);
 
+    try {
       await createNearAccount(
         aliceSecpPublicKey,
         aliceEdPublicKey,
@@ -193,8 +201,11 @@ describe('createAccount', () => {
         formatBytes(edSig),
         aliceAccountName
       );
-    }).rejects.toThrow(
-      'Proof that the sender owns this public key must provided'
-    );
+      fail('Should have thrown');
+    } catch (e) {
+      expect(e).toEqual(
+        'Proof that the sender owns this public key must provided'
+      );
+    }
   });
 });
