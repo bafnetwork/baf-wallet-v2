@@ -112,6 +112,7 @@ describe('createAccount', () => {
     const edSig = signMsg(aliceEdSecretKey, msg);
     const secpSig = signMsg(aliceSecpSecretKey, msg);
     const encodeSecpSigBafContract = signMsg(aliceSecpSecretKey, msg, true);
+    console.log(secpSig.toString('hex'))
 
     await createNearAccount(
       aliceSecpPublicKey,
