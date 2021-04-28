@@ -17,7 +17,7 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
     case Encoding.HEX:
       return Buffer.from(str, 'hex');
     case Encoding.BS58:
-      return bs58.encode(str);
+      return bs58.decode(str);
     case Encoding.UTF8:
       return Buffer.from(str, 'utf8');
     default:
