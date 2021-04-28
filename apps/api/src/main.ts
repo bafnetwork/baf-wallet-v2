@@ -1,20 +1,19 @@
-import { NearAccount } from '@baf-wallet/multi-chain';
 import * as bodyParser from 'body-parser';
 import express from 'express';
 import { RegisterRoutes } from '../build/routes';
 import { constants } from './app/config/constants';
 import * as cors from 'cors';
 import { setBafContract } from '@baf-wallet/baf-contract';
+import { Chain } from '@baf-wallet/interfaces';
+import { getNearChain, initChains } from './app/chains/singletons';
 
 const app = express();
 
-async function initChains() {
-  NearAccount.setConfigNode(constants.nearAccountConfig);
-}
-
 async function initContracts() {
-  const near = await NearAccount.get();
-  await setBafContract(near.masterAccount);
+  const masterAccount = getNearChain().accounts.lookup(
+    constants.chainParams[Chain.NEAR].masterAccountID
+  );
+  await setBafContract(masterAccount);
 }
 
 async function init() {

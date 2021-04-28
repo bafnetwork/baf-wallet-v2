@@ -60,7 +60,7 @@ jest.setTimeout(30000);
 async function deleteAccount(
   account: Account,
   assert = false,
-  beneficiary = constants.chainInitParams[Chain.NEAR].masterAccountID
+  beneficiary = constants.chainParams[Chain.NEAR].masterAccountID
 ) {
   const ret = await account.deleteAccount(beneficiary);
   if (assert) expect(Object.keys(ret.status)[0]).toEqual('SuccessValue');
@@ -68,7 +68,7 @@ async function deleteAccount(
 
 async function getAliceWrappedNear() {
   const nearAlice = await getWrappedInterface<NearChainInterface>(Chain.NEAR, {
-    ...constants.chainInitParams[Chain.NEAR],
+    ...constants.chainParams[Chain.NEAR],
     keyPath: null,
     masterAccountID: aliceAccountName,
     keyPair: new KeyPairEd25519(pkToString(aliceEdSecretKey, Encoding.BS58)),
@@ -84,11 +84,11 @@ describe('createAccount', () => {
     await initChains();
     // NearAccount.setConfigNode(constants.nearAccountConfig);
     near = await getWrappedInterface<NearChainInterface>(Chain.NEAR, {
-      ...constants.chainInitParams[Chain.NEAR],
+      ...constants.chainParams[Chain.NEAR],
     });
 
     masterAccount = await near.accounts.lookup(
-      constants.chainInitParams[Chain.NEAR].masterAccountID
+      constants.chainParams[Chain.NEAR].masterAccountID
     );
     await setBafContract(masterAccount);
 

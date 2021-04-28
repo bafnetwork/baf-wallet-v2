@@ -1,7 +1,6 @@
 import FormData from 'form-data';
 import axios from 'axios';
 import { constants } from '../config/constants';
-import { CryptoCurves } from '@baf-wallet/interfaces';
 
 export async function discordRevokeAccessToken(token: string) {
   const formData = new FormData();

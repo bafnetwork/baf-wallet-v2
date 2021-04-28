@@ -22,9 +22,9 @@ import {
 } from './accounts';
 import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
-import { InMemoryKeyStore, UnencryptedFileSystemKeyStore } from 'near-api-js/lib/key_stores';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 
-export { NearAccountID, NearCreateAccountParams } from './accounts';
+export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>;
 
 export type NearChainInterface = ChainInterface<

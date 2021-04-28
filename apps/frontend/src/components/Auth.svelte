@@ -2,7 +2,7 @@
   import Button from './base/Button.svelte';
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
-  import { initTorusKeySource } from '@baf-wallet/torus';
+  import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1, ed25519, secp256k1Marker, ed25519Marker }  from '@baf-wallet/interfaces';
   import { AccountStore } from '../state/accounts.svelte';

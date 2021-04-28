@@ -2,17 +2,17 @@
 <script lang="ts">
   import Card from '../components/base/Card.svelte';
   import Button from '../components/base/Button.svelte';
-  import {
-    NearAccount,
-    NearSendTXOpts,
-    NearSigner,
-  } from '@baf-wallet/multi-chain';
-  import {
-    CryptoCurves,
-    getNearNetworkId,
-    NearSupportedActionTypes,
-    NearTransferParam,
-  } from '@baf-wallet/interfaces';
+  // import {
+  //   NearAccount,
+  //   NearSendTXOpts,
+  //   NearSigner,
+  // } from '@baf-wallet/multi-chain';
+  // import {
+  //   CryptoCurves,
+  //   getNearNetworkId,
+  //   NearSupportedActionTypes,
+  //   NearTransferParam,
+  // } from '@baf-wallet/interfaces';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { constants } from '../config/constants';
   import { utils } from 'near-api-js';

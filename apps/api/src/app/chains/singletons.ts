@@ -12,7 +12,7 @@ let init = false
 export async function initChains() {
   nearChain = await getWrappedInterface<NearChainInterface>(
     Chain.NEAR,
-    constants.chainInitParams[Chain.NEAR]
+    constants.chainParams[Chain.NEAR]
   );
   init = true
 }

@@ -4,6 +4,8 @@ import {
   KeyPair,
   SECP256K1_STR,
   ED25519_STR,
+  secp256k1,
+  secp256k1Marker,
 } from '@baf-wallet/interfaces';
 import { bufferConverter } from '@baf-wallet/utils';
 import { ec as EC } from 'elliptic';
@@ -11,13 +13,21 @@ import * as nacl from 'tweetnacl';
 
 const ellipticSecp256k1 = new EC('secp256k1');
 
+export function pkSecpFromXY(x: string, y: string): PublicKey<secp256k1> {
+  const key = ellipticSecp256k1.keyFromPublic({ x, y }, 'hex');
+  return bufferConverter.pkToUnified(
+    Buffer.from(key.getPublic('array')),
+    secp256k1Marker
+  );
+}
+
 export function keyPairFromSk<Curve>(sk: SecretKey<Curve>): KeyPair<Curve> {
   const pk = pkFromSk(sk);
   return {
     curve: sk.curve,
     pk,
     sk,
-  }
+  };
 }
 
 export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {

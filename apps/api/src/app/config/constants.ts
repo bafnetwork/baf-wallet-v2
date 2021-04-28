@@ -5,7 +5,7 @@ import { environment, initDotEnv } from '../../environments/environment';
 initDotEnv();
 
 export const constants = {
-  chainInitParams: {
+  chainParams: {
     near: {
       keyPath: process.env.NEAR_KEYPATH,
       networkID: getNearNetworkID(environment.env),

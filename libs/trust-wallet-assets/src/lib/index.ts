@@ -1,7 +1,7 @@
 import axios from 'axios';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
-import { ChainName } from '@baf-wallet/interfaces';
+import { Chain } from '@baf-wallet/interfaces';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -18,7 +18,7 @@ export class SocialMediaInfo {
 @jsonObject
 export class ChainInfo {
   @jsonMember
-  public name: ChainName;
+  public name: Chain;
   @jsonMember
   public website: string;
   @jsonMember
@@ -78,19 +78,19 @@ export type DappUrl =
   | 'uniswap.exchange'
   | 'yearn.finance';
 
-export const getChainFolderPrefix = (chain: ChainName): string =>
+export const getChainFolderPrefix = (chain: Chain): string =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chain}`;
 
-export const getChainInfoUrl = (chain: ChainName): string =>
+export const getChainInfoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
 
-export const getChainLogoUrl = (chain: ChainName): string =>
+export const getChainLogoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/logo.png`;
 
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/dapps/${dappUrl}.png`;
 
-export async function getChainInfo(chain: ChainName): Promise<ChainInfo> {
+export async function getChainInfo(chain: Chain): Promise<ChainInfo> {
   const url = getChainInfoUrl(chain);
   try {
     const res = await axios.get(url);
