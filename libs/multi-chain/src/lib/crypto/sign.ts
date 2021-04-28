@@ -27,6 +27,13 @@ export function verifySignature<Curve>(
       const msgHash = hashFn(msg);
       const ecPublicKey = ellipticSecp256k1.keyFromPublic(pk.data);
       // const sig = new EC.Signature(signedMsg, 'hex')
+      // const msgHash = Buffer.from(sha3.keccak256(msg), 'hex');
+      let validSig = ellipticSecp256k1.verify(
+        msgHash,
+        signedMsg,
+        pk.data
+      );
+      return validSig;
       return ecPublicKey.verify(msgHash, signedMsg.toString('hex'));
     }
     case ED25519_STR: {
@@ -58,7 +65,7 @@ export function signMsg<Curve>(
       })
       return bafContractFormat
         ? encodeSecpSigBafContract(ellipticSig)
-        : Buffer.from(ellipticSig.toDER('hex'));
+        : Buffer.from(ellipticSig.toDER('hex'), 'hex');
     }
     case ED25519_STR: {
       const msgHash = hashFn(msgFormat);

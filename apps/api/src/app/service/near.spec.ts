@@ -111,6 +111,7 @@ describe('createAccount', () => {
     const msg = createUserVerifyMessage(aliceAccountName, aliceNonce.toString());
     const edSig = signMsg(aliceEdSecretKey, msg);
     const secpSig = signMsg(aliceSecpSecretKey, msg);
+    console.log(secpSig.toString('hex'))
     const encodeSecpSigBafContract = signMsg(aliceSecpSecretKey, msg, true);
     console.log(secpSig.toString('hex'))
 
