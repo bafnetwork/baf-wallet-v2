@@ -50,7 +50,6 @@ async function buildBafContract(account: Account): Promise<BafContract> {
       }) 
       if (!ret || ret === '') return null
       else return ret as NearAccountID
-      // as Promise<NearAccountID>,
     },
     getAccountNonce: (pk) =>
       (contract as any).get_account_nonce({

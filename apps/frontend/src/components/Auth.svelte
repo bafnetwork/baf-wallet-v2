@@ -4,14 +4,12 @@
   import Icon from './base/Icon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
-  import { secp256k1, ed25519, secp256k1Marker, ed25519Marker }  from '@baf-wallet/interfaces';
+  import { secp256k1Marker }  from '@baf-wallet/interfaces';
   import { AccountStore } from '../state/accounts.svelte';
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
   import { skFromString } from '@baf-wallet/utils';
-      // network: 'testnet', // details for test net, TODO: ropsten
-      // proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
     await apiClient.revokeToken({
@@ -34,7 +32,7 @@
     await initTorusKeySource({
       sdkArgs: {
         baseUrl: `${constants.baseUrl}/serviceworker`,
-        network: 'testnet', // details for test net
+        network: constants.torus.network, // details for test net
       },
       oauthProvider: 'discord',
       torusVerifierName: constants.torus.discord.verifier,

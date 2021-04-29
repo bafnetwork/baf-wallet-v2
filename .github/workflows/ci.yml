@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Push-CI
+name: CI
 
 # Controls when the action will run. 
 on: push
@@ -14,10 +14,10 @@ jobs:
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
+    # TODO: have an initial build step: https://github.com/bafnetwork/baf-wallet-v2/issues/35
     steps:
-
-      - uses: actions/checkout@main
       - run: |
+          runs-on: ubuntu-latest
           sudo apt-get -y install nodejs npm
           npm i
           npm run client-gen

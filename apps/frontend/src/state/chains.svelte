@@ -22,10 +22,6 @@
   import { environment } from '../environments/environment';
   import { apiClient } from '../config/api';
 
-  // type GetChainInfos = <ChainInterface>(
-  //   chain: Chain
-  // ) => InferWrapChainInterface<ChainInterface>;
-
   export type ChainsState = {
     [Chain.NEAR]?: WrappedNearChainInterface;
   };
