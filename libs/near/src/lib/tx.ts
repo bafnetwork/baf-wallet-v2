@@ -6,7 +6,7 @@ import {
   ed25519,
   ExplorerLink,
 } from '@baf-wallet/interfaces';
-import { Pair } from '@baf-wallet/utils';
+import { Pair  } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/multi-chain';
 import { Buffer } from 'buffer';
 import BN from 'bn.js';
@@ -26,6 +26,7 @@ import {
   Action as NearNativeAction,
   SignedTransaction,
   Transaction,
+  signTransaction
 } from 'near-api-js/lib/transaction';
 
 export type NearTxInterface = TxInterface<
@@ -74,7 +75,7 @@ function buildNativeAction(action: NearAction): NearNativeAction {
         throw 'the input parameters do not match the call';
       }
       return transactions.transfer(
-        new BN((action.params as NearTransferParam).amount)
+        new BN((action.params as NearTransferParam).amount, 10)
       );
     default:
       throw `Action of type ${action.type} is unsupported`;
@@ -89,7 +90,8 @@ export const buildNearTx = (innerSdk: NearState) => async ({
 }: NearBuildTxParams): Promise<Transaction> => {
   const nearSenderPk = nearConverter.pkFromUnified(senderPk);
   const accessKey = await innerSdk.rpcProvider.query(
-    `access_key/${senderAccountID}/${nearSenderPk.toString()}`
+    `access_key/${senderAccountID}/${nearSenderPk.toString()}`,
+    ""
   );
 
   const nonce = ++accessKey.nonce;
@@ -115,8 +117,9 @@ export async function signNearTx<Curve>(
   const serializedTx = utils.serialize.serialize(transactions.SCHEMA, tx);
   const serializedTxHash = new Uint8Array(sha256(Buffer.from(serializedTx)));
   const signature = nearKeyPair.sign(serializedTxHash);
+  // const [_, signedTx] = await signTransaction(tx, )
   return new transactions.SignedTransaction({
-    tx,
+    transaction: tx,
     signature: new transactions.Signature({
       keyType: tx.publicKey.keyType,
       data: signature.signature,
@@ -125,7 +128,7 @@ export async function signNearTx<Curve>(
 }
 
 export const sendNearTx = (innerSdk: NearState) => async (
-  tx: Transaction | SignedTransaction
+  tx: SignedTransaction
 ): Promise<Pair<NearSendResult, ExplorerLink>> => {
   const serialized = tx.encode();
   const result = await innerSdk.rpcProvider.sendJsonRpc('broadcast_tx_commit', [

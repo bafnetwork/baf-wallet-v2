@@ -12,13 +12,12 @@ import DirectWebSdk, {
   DirectWebSDKArgs,
   TorusLoginResponse,
 } from '@toruslabs/torus-direct-web-sdk';
+import { torusConstants } from '@baf-wallet/torus';
 
 export type OAuthDisplayName = string;
 export interface TorusInitArgs {
   sdkArgs: DirectWebSDKArgs;
   oauthProvider: LOGIN_TYPE;
-  torusVerifierName: string;
-  oauthClientID: string;
   postLoginHook?: (userInfo: TorusLoginResponse) => Promise<void>;
 }
 
@@ -41,8 +40,8 @@ export const initTorusKeySource: KeySourceInitFn<
 
   const userInfo = await torus.triggerLogin({
     typeOfLogin: params.oauthProvider,
-    verifier: params.torusVerifierName,
-    clientId: params.oauthClientID,
+    verifier: torusConstants.verifierInfo[params.oauthProvider].verifier,
+    clientId: torusConstants.verifierInfo[params.oauthProvider].clientId,
   });
 
   if (params.postLoginHook) {

@@ -1,3 +1,4 @@
+export * from './lib/platforms'
 export * from './lib/configs';
 export * from './lib/chains';
 export * from './lib/keysource';

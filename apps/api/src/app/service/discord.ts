@@ -2,6 +2,10 @@ import FormData from 'form-data';
 import axios from 'axios';
 import { constants } from '../config/constants';
 
+export interface DiscordPublicInfo {
+  verifierId: string
+}
+
 export async function discordRevokeAccessToken(token: string) {
   const formData = new FormData();
   formData.append('token', token);
@@ -21,12 +25,13 @@ export async function discordRevokeAccessToken(token: string) {
 }
 
 // TODO: spec out
-export async function getPubkeyForUser(
-  username: string,
-  tag: number
-): Promise<string> {
+export async function getPublicInfoForUserId(
+  userId: string,
+): Promise<DiscordPublicInfo> {
   // check tag to make sure it is a 4-digit number, return a helpful error if it isn't
   // try to get the user info object from the discord api, return a helpful error if it DNE
   // use torus's `getPublicAddress` method to get the pubkey given the user ID
-  return 'unimplemented';
+  return { 
+    verifierId: '473198585890996224'
+  }
 }
