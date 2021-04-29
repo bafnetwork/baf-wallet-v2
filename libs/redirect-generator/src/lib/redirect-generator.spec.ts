@@ -8,6 +8,7 @@ describe('frontend', () => {
       'http://localhost:8080',
       {
         recipientUserId: '473198585890996224',
+        recipientUserIdReadable: 'lev_s#7844',
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
