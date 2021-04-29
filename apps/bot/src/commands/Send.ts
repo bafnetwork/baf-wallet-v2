@@ -2,12 +2,13 @@ import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
 import { transactions } from 'near-api-js';
-import {
-  createTransferURL,
-  TransferParams,
-} from '@baf-wallet/redirect-generator';
+import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
-import { Chain } from '@baf-wallet/interfaces';
+import {
+  Chain,
+  GenericTxParams,
+  GenericTxSupportedActions,
+} from '@baf-wallet/interfaces';
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
@@ -67,13 +68,22 @@ export default class SendMoney extends Command {
       return;
     }
 
+    const recipientUser = this.client.users.resolve(recipientParsed);
+    const recipientUserReadable = `${recipientUser.username}#${recipientUser.discriminator}`;
+
     try {
-      const tx: TransferParams = {
+      const tx: GenericTxParams = {
         recipientUserId: recipientParsed,
-        amount: amount.toString(),
+        recipientUserIdReadable: recipientUserReadable,
+        actions: [
+          {
+            type: GenericTxSupportedActions.TRANSFER,
+            amount: amount.toString(),
+          },
+        ],
         oauthProvider: 'discord',
       };
-      const link = createTransferURL(
+      const link = createApproveRedirectURL(
         Chain.NEAR,
         environment.BASE_WALLET_URL,
         tx
