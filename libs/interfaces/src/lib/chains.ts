@@ -1,6 +1,7 @@
-import { PublicKey, SecretKey, KeyPair } from './crypto';
+import { PublicKey, SecretKey, KeyPair, secp256k1, ed25519 } from './crypto';
 import { Pair } from '@baf-wallet/utils';
 import { Account as NearAccount } from 'near-api-js';
+import { GenericTxParams } from './generic-tx';
 
 export enum Chain {
   NEAR = 'near',
@@ -134,6 +135,11 @@ export interface TxInterface<
     tx: Tx | SignedTx,
     opts?: SendOpts
   ) => Promise<Pair<SendResult, ExplorerLink>>;
+  buildParamsFromGenericTx: (
+    params: GenericTxParams,
+    recipientPk: PublicKey<secp256k1>,
+    senderPk: PublicKey<ed25519 | secp256k1>
+  ) => Promise<BuildTxParams>;
 }
 
 // utility for going to/from key BAF Wallet unified types

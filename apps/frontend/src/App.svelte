@@ -12,7 +12,7 @@
 
   const routesLoggedIn = {
     '/': Account,
-    '/approve-redirect/:action/:chain/:txParams': ApproveRedirect,
+    '/approve-redirect/:chain/:txParams': ApproveRedirect,
     '/login': Login,
     '/*': NotFound404,
   };

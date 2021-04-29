@@ -6,68 +6,36 @@
   import { utils } from 'near-api-js';
   import { getBafContract } from '@baf-wallet/baf-contract';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
-  import {
-    convertTxAction,
-    deserializeTxParams,
-    TransferParams,
-  } from '@baf-wallet/redirect-generator';
+  import { deserializeTxParams } from '@baf-wallet/redirect-generator';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/multi-chain';
-  import { NearSupportedActionTypes } from '@baf-wallet/near';
-import { apiClient } from '../config/api';
-import BN from 'bn.js';
+  import BN from 'bn.js';
 
   export let params = {} as any;
   let transferAmount: string;
-  let recipientAccountID: string;
   let tx: any;
-  const actionStr: string = params.action;
   const chain: Chain = params.chain;
-  // const opts: NearSendTXOpts = NearSigner.deserializeSendTXOpts(optsStr);
 
   async function init() {
-    const action = convertTxAction(actionStr);
-    switch (action.toString()) {
-      case 'transfer':
-        const txParams = deserializeTxParams<TransferParams>(params.txParams);
-        console.log(txParams, chain);
-        const recipientPubkey = await getTorusPublicAddress(
-          txParams.recipientUserId,
-          txParams.oauthProvider
+    const txParams = deserializeTxParams(params.txParams);
+    const recipientPubkey = await getTorusPublicAddress(
+      txParams.recipientUserId,
+      txParams.oauthProvider
+    );
+    switch (chain) {
+      case Chain.NEAR:
+        if (!checkChainInit($ChainStores, Chain.NEAR))
+          throw 'You must be logged in to send a tx';
+        const nearTxParams = await $ChainStores[Chain.NEAR].tx.buildParamsFromGenericTx(
+          txParams,
+          recipientPubkey,
+          $SiteKeyStore.edPK
         );
-        console.log(recipientPubkey.format(Encoding.HEX))
-        switch (chain) {
-          case Chain.NEAR:
-            // TODO: error handling
-            if (!checkChainInit($ChainStores, Chain.NEAR))
-              throw 'You must be logged in to send a tx';
-            recipientAccountID = await getBafContract().getAccountId(
-              recipientPubkey
-            );
-            transferAmount = txParams.amount;
-            tx = await $ChainStores[Chain.NEAR].tx.build({
-              actions: [
-                {
-                  type: NearSupportedActionTypes.TRANSFER,
-                  params: {
-                    amount: txParams.amount as string,
-                    discriminator: NearSupportedActionTypes.TRANSFER,
-                  },
-                },
-              ],
-              senderPk: $SiteKeyStore.edPK,
-              senderAccountID: $ChainStores[Chain.NEAR].getInner()
-                .nearMasterAccount.accountId,
-              recipientAccountID,
-            });
-            break;
-          default:
-            throw 'unsupported chain';
-        }
-        break;
+        tx = await $ChainStores[Chain.NEAR].tx.build(nearTxParams)
+        return;
       default:
-        throw 'unsupported action';
+        throw 'unsupported chain';
     }
     // const { chain, params } = deserializeTxParams;
     // const $ChainStores;
@@ -90,7 +58,7 @@ import BN from 'bn.js';
       keyPairFromSk($SiteKeyStore.edSK)
     );
     BN.prototype.toString = undefined;
-    console.log(signed)
+    console.log(signed);
     const ret = await $ChainStores[Chain.NEAR].tx.send(signed);
     const explorerUrl = ret.snd;
     // const tx = await signer.createTX(opts);
@@ -108,7 +76,7 @@ import BN from 'bn.js';
   for more supported actions.
   <!-- {:else} -->
   <Card>
-    Transfering {utils.format.formatNearAmount(transferAmount)} to {recipientAccountID}
+    Transfering {utils.format.formatNearAmount(transferAmount)} to "AAAA"
     <Button onClick={() => onApprove()}>Approve</Button>
     <Button>Decline</Button>
   </Card>
