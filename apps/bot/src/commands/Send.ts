@@ -3,10 +3,11 @@ import { Command } from '../Command';
 import { BotClient } from '../types';
 import { transactions } from 'near-api-js';
 import {
-  NearGenerator,
-  NearCreateUrlOpts,
+  createTransferURL,
+  TransferParams,
 } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
+import { Chain } from '@baf-wallet/interfaces';
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
@@ -54,13 +55,30 @@ export default class SendMoney extends Command {
       recipient = params[2];
     }
 
+    // Recipient should look like <@86890631690977280>
+    let recipientParsed: string;
     try {
-      const tx: NearCreateUrlOpts = {
-        actions: [transactions.transfer(amount)],
-        receiverAccountId: recipient,
+      recipientParsed = recipient.split('<@')[1].split('>')[0];
+    } catch (e) {
+      await super.respond(
+        message.channel,
+        '❌ invalid user ❌: the user must be tagged!'
+      );
+      return;
+    }
+
+    try {
+      const tx: TransferParams = {
+        recipientUserId: recipientParsed,
+        amount: amount.toString(),
+        oauthProvider: 'discord',
       };
-      const linkGenerator = new NearGenerator(environment.BASE_WALLET_URL);
-      await super.respond(message.channel, linkGenerator.createURL(tx));
+      const link = createTransferURL(
+        Chain.NEAR,
+        environment.BASE_WALLET_URL,
+        tx
+      );
+      await super.respond(message.channel, link);
     } catch (err) {
       console.error(err);
       await super.respond(

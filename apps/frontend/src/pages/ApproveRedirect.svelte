@@ -32,11 +32,8 @@ import BN from 'bn.js';
       case 'transfer':
         const txParams = deserializeTxParams<TransferParams>(params.txParams);
         console.log(txParams, chain);
-        const { verifierId } = await apiClient.getPublicInfoForUser({
-          userId: txParams.recipientUserId
-        })
         const recipientPubkey = await getTorusPublicAddress(
-          verifierId,
+          txParams.recipientUserId,
           txParams.oauthProvider
         );
         console.log(recipientPubkey.format(Encoding.HEX))
