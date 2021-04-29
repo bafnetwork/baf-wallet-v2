@@ -16,7 +16,7 @@ import { verifySignature } from '@baf-wallet/multi-chain';
 import { getNearChain } from '../chains/singletons';
 
 export interface NearAccountInfo {
-  near_id: string;
+  near_id: string | null;
 }
 
 // Check the found public key verifies the signature produced by (nonce + userId)

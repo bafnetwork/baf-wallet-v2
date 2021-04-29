@@ -10,7 +10,7 @@ import { NearAccountID } from '@baf-wallet/near';
 import { pkToArray, pkToString } from '@baf-wallet/utils';
 
 interface BafContract {
-  getAccountId: (pk: PublicKey<secp256k1>) => Promise<NearAccountID>;
+  getAccountId: (pk: PublicKey<secp256k1>) => Promise<NearAccountID | null>;
   getAccountNonce: (secp_pk: PublicKey<secp256k1>) => Promise<string>;
   setAccountInfo: (
     secp_pk: PublicKey<secp256k1>,
@@ -43,10 +43,15 @@ async function buildBafContract(account: Account): Promise<BafContract> {
     changeMethods: ['set_account_info', 'delete_account_info'],
   });
   return {
-    getAccountId: (pk) =>
-      (contract as any).get_account_id({
+    getAccountId: async (pk) => {
+
+      const ret = await (contract as any).get_account_id({
         secp_pk: pkToArray(pk),
-      }) as Promise<NearAccountID>,
+      }) 
+      if (!ret || ret === '') return null
+      else return ret as NearAccountID
+      // as Promise<NearAccountID>,
+    },
     getAccountNonce: (pk) =>
       (contract as any).get_account_nonce({
         secp_pk: pkToArray(pk),

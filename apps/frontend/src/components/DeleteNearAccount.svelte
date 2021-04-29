@@ -9,13 +9,13 @@
   import { AccountStore } from '../state/accounts.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
-  import { ChainsStore, checkChainInit } from '../state/chains.svelte';
+  import { ChainStores, checkChainInit } from '../state/chains.svelte';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/multi-chain';
 
   async function deleteAccount() {
-    if (!checkChainInit($ChainsStore, Chain.NEAR)) {
+    if (!checkChainInit($ChainStores, Chain.NEAR)) {
       alert('Cannot delete an unitialized account');
       return;
     }
@@ -35,9 +35,9 @@
       secpSigBafContractEncoded
     );
     // Deleteing the account must come after whiping it from the contract
-    await $ChainsStore[Chain.NEAR]
+    await $ChainStores[Chain.NEAR]
       .getInner()
-      .masterAccount.deleteAccount(bafContractConstants.beneficiaryId);
+      .nearMasterAccount.deleteAccount(bafContractConstants.beneficiaryId);
     alert('Your account was deleted');
     reinitApp();
   }

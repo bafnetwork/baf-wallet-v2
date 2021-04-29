@@ -34,7 +34,7 @@
     chainState: ChainsState,
     chain: Chain
   ): boolean {
-    return !!chainState[chain];
+    return !!chainState && !!chainState[chain];
   }
 
   export const ChainStores = writable<ChainsState | null>(null);
@@ -49,7 +49,7 @@
         Chain.NEAR,
         {
           networkID: getNearNetworkID(environment.env),
-          masterAccountID: '',
+          masterAccountID: nearAccountInfo.nearId,
           keyPair: keyPairFromSk(keys.edSK),
         } as NearInitParams
       );
