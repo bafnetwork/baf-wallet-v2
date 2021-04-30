@@ -21,12 +21,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # - uses: actions/checkout@main
+      - uses: actions/checkout@main
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
           npm run client-gen
-          npx nx build --prod api
+          npx nx run api:build:test
           echo '{ "main": "main.js", "scripts": { "start": "node main.js" } }' > 'dist/apps/api/package.json'
         
       - uses: seanmiddleditch/gha-publish-to-git@master
