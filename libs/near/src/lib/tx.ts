@@ -43,7 +43,7 @@ export type NearTxInterface = TxInterface<
   NearSendResult
 >;
 export type NearSupportedActionTypes = GenericTxSupportedActions;
-export type NearTransaction = Transaction
+export type NearTransaction = Transaction;
 interface NearActionParam {
   // used to type check the parameter input
   discriminator: NearSupportedActionTypes;
@@ -67,6 +67,7 @@ export function nearTx(innerSdk: NearState): NearTxInterface {
     sign: signNearTx,
     send: sendNearTx(innerSdk),
     buildParamsFromGenericTx: buildParamsFromGenericTx(innerSdk),
+    extractGenericActionsFromTx,
   };
 }
 
@@ -80,6 +81,12 @@ function buildNativeAction(action: NearAction): NearNativeAction {
       throw `Action of type ${action.type} is unsupported`;
   }
 }
+
+export const extractGenericActionsFromTx = (
+  txParams: NearBuildTxParams
+): GenericTxAction[] => {
+  return txParams.actions;
+};
 
 export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
   txParams: GenericTxParams,

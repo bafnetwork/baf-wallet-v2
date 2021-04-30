@@ -6,6 +6,8 @@
   import InputNumeric from './base/InputNumeric.svelte';
   import TxModal from './TxModal.svelte';
   import SendNearFormPart from './near/SendNearFormPart.svelte';
+  import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
+  import { constants } from '../config/constants';
 
   let createTX: () => Promise<any>; //ChainTransaction
   export let postSubmitHook: () => void | undefined;
@@ -14,7 +16,7 @@
 
   const { open } = getContext('modal');
 
-  const handleSubmit = (v: any) => {
+  const handleSubmit = async (v: any) => {
     console.log(`submit: ${v}`);
     if (postSubmitHook !== undefined) {
       postSubmitHook();
@@ -23,9 +25,15 @@
     let isComplete = false;
     let error;
 
-    // TODO: execute transaction, set isComplete and error in promise (there's probably a better way to do that)
-    // TODO: get explorer link
-    open(TxModal, { txLink: 'https://explorer.near.org/', isComplete, error });
+    const { txParams, recipientUser } = await createTX()
+    open(TxModal, {
+      txLink: 'https://explorer.near.org/',
+      chain,
+      recipientUser,
+      txParams,
+      isComplete,
+      error,
+    });
   };
 </script>
 
