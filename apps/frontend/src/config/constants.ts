@@ -17,6 +17,7 @@ function getEnv() {
   }
 }
 
+console.log(process.env.NODE_ENV)
 const environment = getEnv();
 
 export const constants = {
