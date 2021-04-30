@@ -6,7 +6,7 @@
   import SendNearFormPart from './near/SendNearFormPart.svelte';
   import { AllBuildTxParams } from '@baf-wallet/multi-chain'
 
-  let createTX: () => Promise<CreateTxReturn<AllBuildTxParams>>; //ChainTransaction
+  let createTX: <T>() => Promise<CreateTxReturn<T>>; 
   export let postSubmitHook: () => void | undefined;
   export let onCancel: () => void | undefined;
   export let chain: Chain;
