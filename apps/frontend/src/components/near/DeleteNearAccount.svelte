@@ -12,7 +12,7 @@
   import { ChainStores, checkChainInit } from '../../state/chains.svelte';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage } from '@baf-wallet/utils';
-  import { signMsg } from '@baf-wallet/multi-chain';
+  import { signMsg } from '@baf-wallet/crypto';
 
   async function deleteAccount() {
     if (!checkChainInit($ChainStores, Chain.NEAR)) {

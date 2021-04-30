@@ -4,7 +4,7 @@
   import {
     pkFromSk,
     skFromSeed,
-  } from '@baf-wallet/multi-chain';
+  } from '@baf-wallet/crypto';
 
   import { bufferConverter, encodeBytes } from '@baf-wallet/utils';
   import { writable } from 'svelte/store';

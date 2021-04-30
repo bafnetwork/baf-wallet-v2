@@ -4,7 +4,6 @@
   import Button from './base/Button.svelte';
   import TxModal from './TxModal.svelte';
   import SendNearFormPart from './near/SendNearFormPart.svelte';
-  import { AllBuildTxParams } from '@baf-wallet/multi-chain'
 
   let createTX: <T>() => Promise<CreateTxReturn<T>>; 
   export let postSubmitHook: () => void | undefined;
