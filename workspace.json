@@ -249,11 +249,9 @@
               "cd apps/frontend && mkdir -p public/build && $(npm bin)/cross-env NODE_ENV=production $(npm bin)/webpack",
               "mkdir -p dist/apps",
               "rm -r dist/apps/frontend || true",
-              "cp apps/frontend/public/ -r dist/apps/frontend",
-              "mkdir -p dist/apps/frontend/build",
-              "cp apps/frontend/public/build/bundle.js dist/apps/frontend/build/bundle.js",
-              "cp apps/frontend/public/build/bundle.css dist/apps/frontend/build/bundle.css"
-            ]
+              "cp apps/frontend/public/ -r dist/apps/frontend"
+            ],
+            "parallel": false
           },
           "configurations": {
             "production": {
