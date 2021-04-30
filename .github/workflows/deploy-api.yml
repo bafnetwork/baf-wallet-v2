@@ -23,11 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - run: |
+          # TODO: use node image to make life easier
           sudo apt-get -y install nodejs npm
           npm i
           npm run client-gen
           npx nx run api:build:test
-          cp package.json dist/apps/api/package.json
           node scripts/create-dist-api-package-json.js
         
       - uses: seanmiddleditch/gha-publish-to-git@master
