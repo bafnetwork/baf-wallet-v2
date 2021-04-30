@@ -25,7 +25,11 @@ async function init() {
     })
   );
   app.use(bodyParser.json());
-  const whitelist = ['http://localhost:8080', 'https://baf-wallet.netlify.app'];
+  const whitelist = [
+    'http://localhost:8080',
+    'https://baf-wallet.netlify.app',
+    'https://baf-wallet-v2-git-deploy-work-baf-wallet.vercel.app',
+  ];
   const corsOptions = {
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1) {
