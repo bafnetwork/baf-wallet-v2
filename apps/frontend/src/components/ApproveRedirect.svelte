@@ -16,7 +16,7 @@
     GenericTxSupportedActions,
   } from '@baf-wallet/interfaces';
   import { getTorusPublicAddress } from '@baf-wallet/torus';
-  import { keyPairFromSk } from '@baf-wallet/multi-chain';
+  import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
 
   export let params = {} as any;

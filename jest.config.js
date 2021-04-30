@@ -12,5 +12,6 @@ module.exports = {
     '<rootDir>/libs/utils',
     '<rootDir>/libs/torus',
     '<rootDir>/libs/baf-contract',
+    '<rootDir>/libs/crypto',
   ],
 };

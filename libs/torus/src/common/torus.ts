@@ -3,7 +3,7 @@ import Torus from '@toruslabs/torus.js';
 import NodeDetailsManager from '@toruslabs/fetch-node-details';
 import * as fetch from 'node-fetch';
 import { torusConstants, TORUS_LOGIN_TYPE } from './constants';
-import { pkSecpFromXY } from '@baf-wallet/multi-chain';
+import { pkSecpFromXY } from '@baf-wallet/crypto';
 
 const torus = new Torus({
   metadataHost: 'https://metadata.tor.us',
