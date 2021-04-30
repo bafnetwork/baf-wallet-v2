@@ -7,6 +7,7 @@
   import { secp256k1Marker } from '@baf-wallet/interfaces';
   import {
     AccountStore,
+    storeOauthState,
     storeTorusAccessToken,
   } from '../state/accounts.svelte';
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
@@ -16,6 +17,11 @@
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
     const accessToken = userInfo.userInfo.accessToken;
+    storeOauthState({
+      verifierId: userInfo.userInfo.verifierId,
+      name: userInfo.userInfo.name,
+      email: userInfo.userInfo.email,
+    });
     storeTorusAccessToken(accessToken);
     await apiClient.revokeToken({
       revokeTokenParams: { token: accessToken },
