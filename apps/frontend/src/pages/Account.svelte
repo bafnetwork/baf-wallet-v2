@@ -48,7 +48,6 @@
     });
     saveAs(fileToSave, 'baf-wallet.json');
   }
-  console.log($SiteKeyStore.secpPK.format(Encoding.HEX))
 </script>
 
 <Layout>

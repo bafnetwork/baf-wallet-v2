@@ -1,1 +1,1 @@
-export * from './torus-web-sdk'
+export * from './torus-web-sdk';

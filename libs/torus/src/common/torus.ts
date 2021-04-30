@@ -29,7 +29,7 @@ export async function getTorusPublicAddress(
   } = await nodeManager.getNodeDetails();
 
   (global as any).fetch = fetch;
-  console.log(torusNodeEndpoints, torusNodePub)
+  console.log(torusNodeEndpoints, torusNodePub);
   const torusPublicKey = await torus.getPublicAddress(
     torusNodeEndpoints,
     torusNodePub,

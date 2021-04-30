@@ -1,4 +1,9 @@
-import type { ed25519, PublicKey, secp256k1, SecretKey } from '@baf-wallet/interfaces';
+import type {
+  ed25519,
+  PublicKey,
+  secp256k1,
+  SecretKey,
+} from '@baf-wallet/interfaces';
 
 export interface KeyState {
   edPk: PublicKey<ed25519>;

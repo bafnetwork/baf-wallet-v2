@@ -44,12 +44,11 @@ async function buildBafContract(account: Account): Promise<BafContract> {
   });
   return {
     getAccountId: async (pk) => {
-
       const ret = await (contract as any).get_account_id({
         secp_pk: pkToArray(pk),
-      }) 
-      if (!ret || ret === '') return null
-      else return ret as NearAccountID
+      });
+      if (!ret || ret === '') return null;
+      else return ret as NearAccountID;
     },
     getAccountNonce: (pk) =>
       (contract as any).get_account_nonce({

@@ -1,8 +1,9 @@
 import { Chain } from '@baf-wallet/interfaces';
+import { getWrappedInterface } from '@baf-wallet/multi-chain';
 import {
-  getWrappedInterface,
-} from '@baf-wallet/multi-chain';
-import { NearChainInterface, WrappedNearChainInterface } from '@baf-wallet/near';
+  NearChainInterface,
+  WrappedNearChainInterface,
+} from '@baf-wallet/near';
 import { constants } from '../config/constants';
 
 let nearChain: WrappedNearChainInterface;

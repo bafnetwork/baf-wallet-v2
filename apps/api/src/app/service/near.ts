@@ -60,7 +60,9 @@ export async function getAccountNonce(
   return await getBafContract().getAccountNonce(pk);
 }
 
-export async function getAccountInfoFromSecpPK(pk: PublicKey<secp256k1>): Promise<NearAccountInfo> {
+export async function getAccountInfoFromSecpPK(
+  pk: PublicKey<secp256k1>
+): Promise<NearAccountInfo> {
   return {
     near_id: await getBafContract().getAccountId(pk),
   };
@@ -74,15 +76,7 @@ function verifyBothSigs(
   edPubkey: PublicKey<ed25519>
 ): boolean {
   return (
-    verifySignature(
-      secpPubkey,
-      msg,
-      encodeBytes(secpSig, Encoding.HEX)
-    ) &&
-    verifySignature(
-      edPubkey,
-      msg,
-      encodeBytes(edSig, Encoding.HEX)
-    )
+    verifySignature(secpPubkey, msg, encodeBytes(secpSig, Encoding.HEX)) &&
+    verifySignature(edPubkey, msg, encodeBytes(edSig, Encoding.HEX))
   );
 }

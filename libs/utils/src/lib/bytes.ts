@@ -8,7 +8,7 @@ export function formatBytes(buf: Buffer, fmt = Encoding.HEX) {
     case Encoding.BS58:
       return bs58.encode(Buffer.from(buf));
     default:
-      throw "Encoding type not supported"
+      throw 'Encoding type not supported';
   }
 }
 
@@ -21,19 +21,19 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
     case Encoding.UTF8:
       return Buffer.from(str, 'utf8');
     default:
-      throw "Encoding type not supported"
+      throw 'Encoding type not supported';
   }
 }
 
-export function pkToArray<Curve>(key: PublicKey<Curve>) : number[] {
-  return [...key.data]
+export function pkToArray<Curve>(key: PublicKey<Curve>): number[] {
+  return [...key.data];
 }
 
-export function pkToString<Curve> (
+export function pkToString<Curve>(
   key: PublicKey<Curve>,
-  keyFormat = Encoding.HEX,
+  keyFormat = Encoding.HEX
 ): string {
-  return formatBytes(key.data, keyFormat)
+  return formatBytes(key.data, keyFormat);
 }
 
 export function pkFromString<Curve>(

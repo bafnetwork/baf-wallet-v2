@@ -83,6 +83,7 @@ function buildNativeAction(action: NearAction): NearNativeAction {
 export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
   txParams: GenericTxParams,
   recipientPk: PublicKey<secp256k1>,
+  _senderPk: PublicKey<secp256k1>,
   senderPk: PublicKey<ed25519>
 ): Promise<NearBuildTxParams> => {
   const recipientAccountID = await getBafContract().getAccountId(recipientPk);
