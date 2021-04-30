@@ -3,8 +3,15 @@
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
-  import { AccountStore } from '../state/accounts.svelte';
   import { ChainStores } from '../state/chains.svelte';
+  import Button from './base/Button.svelte';
+  import { getContext } from 'svelte';
+  import SendModal from './SendModal.svelte';
+  const { open } = getContext('modal');
+
+  function openSendModal(chain: Chain) {
+    open(SendModal, {chain});
+  }
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
@@ -43,6 +50,7 @@
         <th class="w-8" />
         <th class="w-auto">Asset</th>
         <th class="w-auto">Balance</th>
+        <th class="w-auto">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -61,6 +69,13 @@
             </td>
             <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
               <AmountFormatter bal={chain.bal} />
+            </td>
+            <td class='text-center'>
+              <Button
+                onClick={() => openSendModal(chain.bal.chain)}
+                color="blue"
+                classExtra="col-start-12 col-span-1">Transfer</Button
+              >
             </td>
           </tr>
         {/each}

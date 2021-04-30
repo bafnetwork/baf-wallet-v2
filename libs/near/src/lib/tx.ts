@@ -43,6 +43,7 @@ export type NearTxInterface = TxInterface<
   NearSendResult
 >;
 export type NearSupportedActionTypes = GenericTxSupportedActions;
+export type NearTransaction = Transaction
 interface NearActionParam {
   // used to type check the parameter input
   discriminator: NearSupportedActionTypes;
@@ -54,7 +55,7 @@ export interface NearTransferParam extends NearActionParam {
 export type NearAction = GenericTxAction;
 export interface NearBuildTxParams {
   actions: NearAction[];
-  senderPk: PublicKey<ed25519 | secp256k1>;
+  senderPk: PublicKey<ed25519>;
   senderAccountID: NearAccountID;
   recipientAccountID: NearAccountID;
 }
