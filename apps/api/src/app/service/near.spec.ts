@@ -72,7 +72,7 @@ async function getAliceWrappedNear() {
     ...constants.chainParams[Chain.NEAR],
     keyPath: null,
     masterAccountID: aliceAccountName,
-    keyPair: keyPairFromSk(aliceEdSecretKey)
+    keyPair: keyPairFromSk(aliceEdSecretKey),
   });
   return nearAlice;
 }

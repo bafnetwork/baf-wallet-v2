@@ -11,7 +11,12 @@ export const createSendURL = (
   opts: SendMoneyParams
 ) => {};
 
-const createApproveRedirectURL = (chain: Chain, action: string, baseURL: string, opts: any) => {
+const createApproveRedirectURL = (
+  chain: Chain,
+  action: string,
+  baseURL: string,
+  opts: any
+) => {
   return `${baseURL}/approve-redirect/${action}?chain=${chain.toString()}&opts=${JSON.stringify(
     opts
   )}`;

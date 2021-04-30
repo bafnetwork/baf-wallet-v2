@@ -85,7 +85,7 @@ export interface ChainInterface<
   SendResult,
   Account,
   AccountLookupParams,
-  AccountCreateParams,
+  AccountCreateParams
 > {
   rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: (
