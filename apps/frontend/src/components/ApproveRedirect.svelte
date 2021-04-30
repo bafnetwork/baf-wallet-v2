@@ -1,15 +1,17 @@
-<!-- TODO: have it so that the pubkey can be intialized correctly -->
 <script lang="ts">
   import Card from '../components/base/Card.svelte';
   import Button from '../components/base/Button.svelte';
   import AmountFormatter from '../components/base/AmountFormatter.svelte';
+  import SuccessIcon from './base/svg/SuccessIcon.svelte';
+  import ErrorIcon from './base/svg/ErrorIcon.svelte';
+  import Loader from './base/Loader.svelte';
+
   import { SiteKeyStore } from '../state/keys.svelte';
-  import { utils as nearUtils } from 'near-api-js';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
   import { deserializeTxParams } from '@baf-wallet/redirect-generator';
   import {
     Chain,
-    Encoding,
+    GenericTxAction,
     GenericTxParams,
     GenericTxSupportedActions,
   } from '@baf-wallet/interfaces';
@@ -123,131 +125,12 @@
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
-      <svg
-        width="105"
-        height="105"
-        viewBox="0 0 105 105"
-        xmlns="http://www.w3.org/2000/svg"
-        class="fill-current text-lightBlue-900"
-      >
-        <circle cx="12.5" cy="12.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="0s"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="12.5" cy="52.5" r="12.5" fill-opacity=".5">
-          <animate
-            attributeName="fill-opacity"
-            begin="100ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="52.5" cy="12.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="300ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="52.5" cy="52.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="600ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="92.5" cy="12.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="800ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="92.5" cy="52.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="400ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="12.5" cy="92.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="700ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="52.5" cy="92.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="500ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="92.5" cy="92.5" r="12.5">
-          <animate
-            attributeName="fill-opacity"
-            begin="200ms"
-            dur="1s"
-            values="1;.2;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
+      <Loader />
     {:else if error}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-          clip-rule="evenodd"
-        />
-      </svg>
+      <ErrorIcon />
     {:else}
       <p>Success!</p>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 13l4 4L19 7"
-        />
-      </svg>
+      <SuccessIcon />
       <span class="text-center"
         >Explorer: <a
           target="_blank"
