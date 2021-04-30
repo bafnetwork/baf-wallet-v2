@@ -83,7 +83,6 @@ describe('createAccount', () => {
 
   beforeAll(async () => {
     await initChains();
-    // NearAccount.setConfigNode(constants.nearAccountConfig);
     near = await getWrappedInterface<NearChainInterface>(Chain.NEAR, {
       ...constants.chainParams[Chain.NEAR],
     });
