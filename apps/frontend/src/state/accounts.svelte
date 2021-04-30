@@ -38,11 +38,11 @@
 
   export async function initAccount(): Promise<{
     accountState: AccountState;
-    chainsState: ChainsState;
+    chainsState: ChainsState | null;
   }> {
     const keys = loadKeys();
     const loggedIn = loadKeys() !== null;
-    const chainsState = await initChains(keys);
+    const chainsState = keys ? await initChains(keys) : null;
     const accountState: AccountState = {
       loggedIn,
       oauthInfo: !loggedIn
