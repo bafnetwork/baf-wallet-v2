@@ -35,9 +35,7 @@
         network: constants.torus.network, // details for test net
       },
       oauthProvider: 'discord',
-      torusVerifierName: constants.torus.discord.verifier,
-      oauthClientID: constants.torus.discord.clientId,
-      postLoginHook: torusPostLoginHook,
+      postLoginHook: torusPostLoginHook
     });
   }
 </script>

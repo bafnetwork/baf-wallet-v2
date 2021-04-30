@@ -29,9 +29,9 @@
   function unpackKey(keyState: string): KeyState {
     const split = keyState.split(':');
     if (split.length !== 2) {
-      throw 'Incorrect packed key in storage';
+      throw new Error('Incorrect packed key in storage');
     } else if (split[0] !== 'secp256k1') {
-      throw 'Only secp256k1 keys are supported as base keys right not';
+      throw new Error('Only secp256k1 keys are supported as base keys right not');
     }
     const keyBytes = encodeBytes(split[1], Encoding.HEX);
     return buildKeyStateFromSecpSk(bufferConverter.skToUnified(keyBytes, secp256k1Marker));

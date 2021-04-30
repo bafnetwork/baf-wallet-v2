@@ -34,7 +34,7 @@ export async function createNearAccount(
   const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
 
   if (!sigsValid) {
-    throw 'Proof that the sender owns this public key must provided';
+    throw new Error('Proof that the sender owns this public key must provided');
   }
 
   const near = await getNearChain();

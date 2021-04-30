@@ -105,7 +105,7 @@ async function init({
       keyStore: keyStore,
     };
   } else {
-    throw 'A key path or key pair must be provided';
+    throw new Error('A key path or key pair must be provided');
   }
 
   const near = await connect(connectConfig);

@@ -59,12 +59,12 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw "The transaction must be either in the url or passed in through the component's state";
+      throw new Error("The transaction must be either in the url or passed in through the component's state");
     } else if (!isGenericTx && txInUrl) {
-      throw 'Unimplemented';
+      throw new Error('Unimplemented');
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw 'You must be logged in to send a tx';
+      throw new Error('You must be logged in to send a tx');
     }
     if (isGenericTx) {
       await initGenericTx();
