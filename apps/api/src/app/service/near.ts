@@ -12,7 +12,7 @@ import {
   formatBytes,
   pkToString,
 } from '@baf-wallet/utils';
-import { verifySignature } from '@baf-wallet/multi-chain';
+import { verifySignature } from '@baf-wallet/crypto';
 import { getNearChain } from '../chains/singletons';
 
 export interface NearAccountInfo {

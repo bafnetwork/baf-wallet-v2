@@ -29,7 +29,8 @@
       "@baf-wallet/utils": ["libs/utils/src/index.ts"],
       "@baf-wallet/torus/web": ["libs/torus/src/web/index.ts"],
       "@baf-wallet/torus": ["libs/torus/src/common/index.ts"],
-      "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"]
+      "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"],
+      "@baf-wallet/crypto": ["libs/crypto/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "libs/baf-contract/contract"]

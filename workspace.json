@@ -377,9 +377,7 @@
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/torus"],
-          "options": {
-            "jestConfig": "libs/torus/jest.config.js"
-          }
+          "options": { "jestConfig": "libs/torus/jest.config.js" }
         }
       }
     },
@@ -390,15 +388,32 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/baf-contract/**/*.ts"]
-          }
+          "options": { "lintFilePatterns": ["libs/baf-contract/**/*.ts"] }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/baf-contract"],
           "options": {
             "jestConfig": "libs/baf-contract/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "crypto": {
+      "root": "libs/crypto",
+      "sourceRoot": "libs/crypto/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["libs/crypto/**/*.ts"] }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/crypto"],
+          "options": {
+            "jestConfig": "libs/crypto/jest.config.js",
             "passWithNoTests": true
           }
         }

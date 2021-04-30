@@ -28,6 +28,7 @@
     "near": { "tags": [] },
     "utils": { "tags": [] },
     "torus": { "tags": [] },
-    "baf-contract": { "tags": [] }
+    "baf-contract": { "tags": [] },
+    "crypto": { "tags": [] }
   }
 }

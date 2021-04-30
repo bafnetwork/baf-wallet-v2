@@ -11,14 +11,14 @@ import {
   ed25519Marker,
   Chain,
 } from '@baf-wallet/interfaces';
+import { getWrappedInterface } from '@baf-wallet/multi-chain';
 import {
-  getWrappedInterface,
   keyPairFromSk,
   pkFromSk,
   signMsg,
   skFromRng,
   skFromSeed,
-} from '@baf-wallet/multi-chain';
+} from '@baf-wallet/crypto';
 import { createNearAccount } from './near';
 import { Account, KeyPair } from 'near-api-js';
 import { constants } from '../config/constants';
