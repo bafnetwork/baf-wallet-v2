@@ -1,4 +1,4 @@
-import { Chain, GenericTxParams, PLATFORM } from '@baf-wallet/interfaces';
+import { Chain, GenericTxParams } from '@baf-wallet/interfaces';
 import { deserializeData, serializeData } from '@baf-wallet/utils';
 
 // TODO: interface check
