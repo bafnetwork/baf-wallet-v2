@@ -17,6 +17,6 @@ export async function initChains() {
 }
 
 export function getNearChain(): WrappedNearChainInterface {
-  if (!init) throw 'You must first initialize the chains';
+  if (!init) throw new Error('You must first initialize the chains');
   return nearChain;
 }
