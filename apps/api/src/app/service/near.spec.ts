@@ -11,9 +11,7 @@ import {
   ed25519Marker,
   Chain,
 } from '@baf-wallet/interfaces';
-import {
-  getWrappedInterface,
-} from '@baf-wallet/multi-chain';
+import { getWrappedInterface } from '@baf-wallet/multi-chain';
 import {
   keyPairFromSk,
   pkFromSk,
