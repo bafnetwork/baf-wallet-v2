@@ -27,7 +27,8 @@ jobs:
           npm i
           npm run client-gen
           npx nx run api:build:test
-          echo '{ "main": "main.js", "scripts": { "start": "node main.js" } }' > 'dist/apps/api/package.json'
+          cp package.json dist/apps/api/package.json
+          node scripts/create-dist-api-package-json.js
         
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
