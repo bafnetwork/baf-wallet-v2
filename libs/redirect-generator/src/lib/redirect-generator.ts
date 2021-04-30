@@ -1,23 +1,19 @@
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, GenericTxParams } from '@baf-wallet/interfaces';
+import { deserializeData, serializeData } from '@baf-wallet/utils';
 
-export interface SendMoneyParams {
-  amount: string;
-  userId: string;
-}
+// TODO: interface check
+export const deserializeTxParams = (paramsEncoded: string): GenericTxParams => {
+  return deserializeData(decodeURIComponent(paramsEncoded)) as GenericTxParams;
+};
 
-export const createSendURL = (
+export const createApproveRedirectURL = (
   chain: Chain,
   baseURL: string,
-  opts: SendMoneyParams
-) => {};
-
-const createApproveRedirectURL = (
-  chain: Chain,
-  action: string,
-  baseURL: string,
-  opts: any
+  opts: GenericTxParams
 ) => {
-  return `${baseURL}/approve-redirect/${action}?chain=${chain.toString()}&opts=${JSON.stringify(
-    opts
-  )}`;
+  return encodeURI(
+    `${baseURL}/#/approve-redirect/${chain.toString()}/${encodeURIComponent(
+      serializeData(opts)
+    )}`
+  );
 };

@@ -1,4 +1,4 @@
-import { PublicKey, secp256k1 } from '@baf-wallet/interfaces';
+import { Encoding, PublicKey, secp256k1 } from '@baf-wallet/interfaces';
 import Torus from '@toruslabs/torus.js';
 import NodeDetailsManager from '@toruslabs/fetch-node-details';
 import * as fetch from 'node-fetch';
@@ -29,6 +29,7 @@ export async function getTorusPublicAddress(
   } = await nodeManager.getNodeDetails();
 
   (global as any).fetch = fetch;
+  console.log(torusNodeEndpoints, torusNodePub);
   const torusPublicKey = await torus.getPublicAddress(
     torusNodeEndpoints,
     torusNodePub,

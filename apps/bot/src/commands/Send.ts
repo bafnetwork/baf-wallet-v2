@@ -2,11 +2,13 @@ import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
 import { transactions } from 'near-api-js';
-import {
-  NearGenerator,
-  NearCreateUrlOpts,
-} from '@baf-wallet/redirect-generator';
+import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
+import {
+  Chain,
+  GenericTxParams,
+  GenericTxSupportedActions,
+} from '@baf-wallet/interfaces';
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
@@ -54,13 +56,39 @@ export default class SendMoney extends Command {
       recipient = params[2];
     }
 
+    // Recipient should look like <@86890631690977280>
+    let recipientParsed: string;
     try {
-      const tx: NearCreateUrlOpts = {
-        actions: [transactions.transfer(amount)],
-        receiverAccountId: recipient,
+      recipientParsed = recipient.split('<@')[1].split('>')[0];
+    } catch (e) {
+      await super.respond(
+        message.channel,
+        '❌ invalid user ❌: the user must be tagged!'
+      );
+      return;
+    }
+
+    const recipientUser = this.client.users.resolve(recipientParsed);
+    const recipientUserReadable = `${recipientUser.username}#${recipientUser.discriminator}`;
+
+    try {
+      const tx: GenericTxParams = {
+        recipientUserId: recipientParsed,
+        recipientUserIdReadable: recipientUserReadable,
+        actions: [
+          {
+            type: GenericTxSupportedActions.TRANSFER,
+            amount: amount.toString(),
+          },
+        ],
+        oauthProvider: 'discord',
       };
-      const linkGenerator = new NearGenerator(environment.BASE_WALLET_URL);
-      await super.respond(message.channel, linkGenerator.createURL(tx));
+      const link = createApproveRedirectURL(
+        Chain.NEAR,
+        environment.BASE_WALLET_URL,
+        tx
+      );
+      await super.respond(message.channel, link);
     } catch (err) {
       console.error(err);
       await super.respond(

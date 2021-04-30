@@ -17,6 +17,5 @@
 </script>
 
 <span>
-  {getStrFormatted()}&nbsp;
-  {bal.chain}
+  {`${getStrFormatted()} ${bal.chain}`}
 </span>

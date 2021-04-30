@@ -5,8 +5,12 @@ import {
   secp256k1,
   ed25519,
   ExplorerLink,
+  GenericTxParams,
+  GenericTxSupportedActions,
+  GenericTxAction,
+  GenericTxActionTransfer,
 } from '@baf-wallet/interfaces';
-import { Pair } from '@baf-wallet/utils';
+import { Pair, getEnumValues } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/multi-chain';
 import { Buffer } from 'buffer';
 import BN from 'bn.js';
@@ -26,7 +30,9 @@ import {
   Action as NearNativeAction,
   SignedTransaction,
   Transaction,
+  signTransaction,
 } from 'near-api-js/lib/transaction';
+import { getBafContract } from '@baf-wallet/baf-contract';
 
 export type NearTxInterface = TxInterface<
   Transaction,
@@ -36,9 +42,7 @@ export type NearTxInterface = TxInterface<
   NearSendOpts,
   NearSendResult
 >;
-export enum NearSupportedActionTypes {
-  TRANSFER = 'transfer',
-}
+export type NearSupportedActionTypes = GenericTxSupportedActions;
 interface NearActionParam {
   // used to type check the parameter input
   discriminator: NearSupportedActionTypes;
@@ -47,10 +51,7 @@ export interface NearTransferParam extends NearActionParam {
   // a string number value in Yocto
   amount: string;
 }
-export interface NearAction {
-  type: NearSupportedActionTypes;
-  params: NearTransferParam | NearActionParam;
-}
+export type NearAction = GenericTxAction;
 export interface NearBuildTxParams {
   actions: NearAction[];
   senderPk: PublicKey<ed25519 | secp256k1>;
@@ -64,22 +65,36 @@ export function nearTx(innerSdk: NearState): NearTxInterface {
     build: buildNearTx(innerSdk),
     sign: signNearTx,
     send: sendNearTx(innerSdk),
+    buildParamsFromGenericTx: buildParamsFromGenericTx(innerSdk),
   };
 }
 
 function buildNativeAction(action: NearAction): NearNativeAction {
   switch (action.type) {
-    case NearSupportedActionTypes.TRANSFER:
-      if (action.params.discriminator !== NearSupportedActionTypes.TRANSFER) {
-        throw 'the input parameters do not match the call';
-      }
+    case GenericTxSupportedActions.TRANSFER:
       return transactions.transfer(
-        new BN((action.params as NearTransferParam).amount)
+        new BN((action as GenericTxActionTransfer).amount, 10)
       );
     default:
       throw `Action of type ${action.type} is unsupported`;
   }
 }
+
+export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
+  txParams: GenericTxParams,
+  recipientPk: PublicKey<secp256k1>,
+  _senderPk: PublicKey<secp256k1>,
+  senderPk: PublicKey<ed25519>
+): Promise<NearBuildTxParams> => {
+  const recipientAccountID = await getBafContract().getAccountId(recipientPk);
+  const nearTransferParams: NearBuildTxParams = {
+    actions: txParams.actions,
+    senderPk: senderPk,
+    senderAccountID: innerSdk.nearMasterAccount.accountId,
+    recipientAccountID,
+  };
+  return nearTransferParams;
+};
 
 export const buildNearTx = (innerSdk: NearState) => async ({
   actions,
@@ -89,7 +104,8 @@ export const buildNearTx = (innerSdk: NearState) => async ({
 }: NearBuildTxParams): Promise<Transaction> => {
   const nearSenderPk = nearConverter.pkFromUnified(senderPk);
   const accessKey = await innerSdk.rpcProvider.query(
-    `access_key/${senderAccountID}/${nearSenderPk.toString()}`
+    `access_key/${senderAccountID}/${nearSenderPk.toString()}`,
+    ''
   );
 
   const nonce = ++accessKey.nonce;
@@ -115,8 +131,9 @@ export async function signNearTx<Curve>(
   const serializedTx = utils.serialize.serialize(transactions.SCHEMA, tx);
   const serializedTxHash = new Uint8Array(sha256(Buffer.from(serializedTx)));
   const signature = nearKeyPair.sign(serializedTxHash);
+  // const [_, signedTx] = await signTransaction(tx, )
   return new transactions.SignedTransaction({
-    tx,
+    transaction: tx,
     signature: new transactions.Signature({
       keyType: tx.publicKey.keyType,
       data: signature.signature,
@@ -125,7 +142,7 @@ export async function signNearTx<Curve>(
 }
 
 export const sendNearTx = (innerSdk: NearState) => async (
-  tx: Transaction | SignedTransaction
+  tx: SignedTransaction
 ): Promise<Pair<NearSendResult, ExplorerLink>> => {
   const serialized = tx.encode();
   const result = await innerSdk.rpcProvider.sendJsonRpc('broadcast_tx_commit', [
