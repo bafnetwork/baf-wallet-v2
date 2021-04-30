@@ -30,6 +30,7 @@
   let explorerUrl: string;
   let error: string;
   let attemptedApprove = false;
+  let txSuccess = false;
 
   async function initGenericTx() {
     txParams = deserializeTxParams(params.txParams);
@@ -64,14 +65,14 @@
       throw 'You must be logged in to send a tx';
     }
     if (isGenericTx) {
-      await initGeneriTx();
+      await initGenericTx();
     } else {
       await initChainSpecificTx();
     }
   }
 
   async function onApprove() {
-    attemptedApprove = true
+    attemptedApprove = true;
     isLoading = true;
     try {
       const signed = await $ChainStores[Chain.NEAR].tx.sign(
@@ -81,6 +82,7 @@
       BN.prototype.toString = undefined;
       const ret = await $ChainStores[Chain.NEAR].tx.send(signed);
       explorerUrl = ret.snd;
+      txSuccess = true;
     } catch (e) {
       error = e;
     }
@@ -91,23 +93,24 @@
 {#await init()}
   Loading...
 {:then signer}
-  <Card>
-    {#each actions as action, i}
-      {#if action.type === GenericTxSupportedActions.TRANSFER}
-        <p>
-          Action #{i + 1}: Transfering <AmountFormatter
-            bal={{ chain, balance: action.amount }}
-          />
-          to {recipientUser}
-        </p>
-      {:else}
-        An error occured, an unsupported action type was passed in!
-      {/if}
-    {/each}
-    <Button onClick={() => onApprove()}>Approve</Button>
-    <Button>Decline</Button>
-  </Card>
-  <!-- {/if} -->
+  {#if !txSuccess}
+    <Card>
+      {#each actions as action, i}
+        {#if action.type === GenericTxSupportedActions.TRANSFER}
+          <p>
+            Action #{i + 1}: Transfering <AmountFormatter
+              bal={{ chain, balance: action.amount }}
+            />
+            to {recipientUser}
+          </p>
+        {:else}
+          An error occured, an unsupported action type was passed in!
+        {/if}
+      {/each}
+      <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      <Button>Decline</Button>
+    </Card>
+  {/if}
 {:catch e}
   {#if e.toString() === 'not-logged-in'}
     Please login to approve or reject this transactiocofoundingn
@@ -119,6 +122,7 @@
 <div class="flex flex-row justify-center py-4">
   {#if attemptedApprove}
     {#if isLoading}
+      <p>Beep bop beep boop, trying to send your transaction</p>
       <svg
         width="105"
         height="105"

@@ -27,3 +27,8 @@ a {
     color: rgb(0, 80, 160);
   }
 }
+
+.disabled {
+  filter: brightness(50%);
+  cursor: not-allowed;
+}
