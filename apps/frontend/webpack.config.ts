@@ -167,7 +167,7 @@ const config: Configuration = {
     }),
     new NodePolyfillPlugin({}),
     new Webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
   ],
   devtool: isProduction && !sourceMapsInProduction ? false : 'source-map',
