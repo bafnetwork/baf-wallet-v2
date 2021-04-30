@@ -23,13 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - run: |
-          # TODO: use node image to make life easier
           sudo apt-get -y install nodejs npm
           npm i
           npm run client-gen
           npx nx run api:build:test
           node scripts/create-dist-api-package-json.js
-        
+          echo 'npm start' > dist/apps/api/Procfile
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
           repository: bafnetwork/baf-wallet-deploy-api
