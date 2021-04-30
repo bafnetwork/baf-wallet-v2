@@ -5,7 +5,10 @@
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1Marker } from '@baf-wallet/interfaces';
-  import { AccountStore, storeTorusAccessToken } from '../state/accounts.svelte';
+  import {
+    AccountStore,
+    storeTorusAccessToken,
+  } from '../state/accounts.svelte';
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
