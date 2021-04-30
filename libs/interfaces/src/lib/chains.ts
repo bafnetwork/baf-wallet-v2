@@ -150,7 +150,7 @@ export interface Converter<PK, SK, KP> {
     unifiedKeyPair: KP,
     curveMaker: Curve
   ) => KeyPair<Curve>;
-  // TODO: add more methods for converting shit
+  // add more methods for converting shit as necessary
 }
 
 export type InferChainInterface<T> = T extends ChainInterface<
