@@ -1,57 +1,70 @@
-import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { formatKey, NearAccount } from '@baf-wallet/multi-chain';
+import {
+  ed25519,
+  Encoding,
+  PublicKey,
+  secp256k1,
+} from '@baf-wallet/interfaces';
 import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
-import { ChainUtil } from '@baf-wallet/multi-chain';
 import { getBafContract } from '@baf-wallet/baf-contract';
+import {
+  createUserVerifyMessage,
+  encodeBytes,
+  formatBytes,
+  pkToString,
+} from '@baf-wallet/utils';
+import { verifySignature } from '@baf-wallet/multi-chain';
+import { getNearChain } from '../chains/singletons';
+
+export interface NearAccountInfo {
+  near_id: string | null;
+}
 
 // Check the found public key verifies the signature produced by (nonce + userId)
 export async function createNearAccount(
-  secpPK: PublicKey,
-  edPK: PublicKey,
+  secpPK: PublicKey<secp256k1>,
+  edPK: PublicKey<ed25519>,
   userId: string,
   nonce: string,
   secpSig: string,
   rustEncodedSecpSig: string,
   edSig: string,
-  accountID: string,
-  curve = CryptoCurves.secp256k1
+  accountID: string
 ) {
-  const msg = ChainUtil.createUserVerifyMessage(userId, nonce);
+  const msg = createUserVerifyMessage(userId, nonce);
   const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
 
   if (!sigsValid) {
     throw 'Proof that the sender owns this public key must provided';
   }
 
-  if (curve !== CryptoCurves.secp256k1) {
-    throw 'Only secp256k1 curves are currently supported';
-  }
+  const near = await getNearChain();
 
-  const near = await NearAccount.get();
+  const nearAccount = near.accounts;
+  await nearAccount.create({
+    accountID,
+    newAccountPk: edPK,
+  });
 
   const bafContract = await getBafContract();
   await bafContract.setAccountInfo(
     secpPK,
     userId,
-    rustEncodedSecpSig,
+    encodeBytes(rustEncodedSecpSig, Encoding.HEX),
     accountID
   );
-
-  await near.accountCreator.createAccount(
-    accountID,
-    NearPublicKey.fromString(formatKey(edPK, KeyFormats.BS58))
-  );
 }
 
-export async function getAccountNonceFromSecpPK(
-  secpPK: PublicKey
+export async function getAccountNonce(
+  pk: PublicKey<secp256k1>
 ): Promise<string> {
-  return await getBafContract().getAccountNonce(secpPK);
+  return await getBafContract().getAccountNonce(pk);
 }
 
-export async function getAccountInfoFromSecpPK(secpPK: PublicKey) {
+export async function getAccountInfoFromSecpPK(
+  pk: PublicKey<secp256k1>
+): Promise<NearAccountInfo> {
   return {
-    near_id: await getBafContract().getAccountId(secpPK),
+    near_id: await getBafContract().getAccountId(pk),
   };
 }
 
@@ -59,11 +72,11 @@ function verifyBothSigs(
   msg: string,
   secpSig: string,
   edSig: string,
-  secpPubkey: PublicKey,
-  edPubkey: PublicKey
+  secpPubkey: PublicKey<secp256k1>,
+  edPubkey: PublicKey<ed25519>
 ): boolean {
   return (
-    ChainUtil.verifySignedSecp256k1(secpPubkey, msg, secpSig) &&
-    ChainUtil.verifySignedEd25519(edPubkey, msg, edSig)
+    verifySignature(secpPubkey, msg, encodeBytes(secpSig, Encoding.HEX)) &&
+    verifySignature(edPubkey, msg, encodeBytes(edSig, Encoding.HEX))
   );
 }

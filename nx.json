@@ -25,6 +25,9 @@
     "interfaces": { "tags": [] },
     "trust-wallet-assets": { "tags": [] },
     "frontend": { "tags": [] },
+    "near": { "tags": [] },
+    "utils": { "tags": [] },
+    "torus": { "tags": [] },
     "baf-contract": { "tags": [] }
   }
 }

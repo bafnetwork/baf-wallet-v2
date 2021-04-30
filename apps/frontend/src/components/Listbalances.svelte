@@ -1,22 +1,24 @@
 <script lang="ts">
-  import { ChainBalance, ChainName } from '@baf-wallet/interfaces';
+  import { Chain, ChainBalance } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from './base/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
   import { AccountStore } from '../state/accounts.svelte';
-  import { getAccountBalance } from '@baf-wallet/multi-chain';
+  import { ChainStores } from '../state/chains.svelte';
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
 
   async function initBalances(): Promise<
     { chainInfo: ChainInfo; bal: ChainBalance }[]
   > {
-    const balanceProms: Promise<ChainBalance>[] = Object.keys($AccountStore.chainInfos).map(
-      async (chain: ChainName) => {
-        const chainInfo = $AccountStore.chainInfos[chain]
+    const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
+      async (chain: Chain) => {
+        const chainInfo = $ChainStores[chain];
         return {
           chain,
-          balance: await getAccountBalance(chain, chainInfo.account),
+          balance: await chainInfo.accounts
+            .getGenericMasterAccount()
+            .getBalance(),
         } as ChainBalance;
       }
     );

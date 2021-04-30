@@ -1,23 +1,25 @@
-import { Account, Contract } from 'near-api-js';
+import { Account, Contract, Near } from 'near-api-js';
 import ContractConfig from '../../config.json';
+import { ec as EC } from 'elliptic';
 import {
-  AccountId,
   PublicKey,
   RustEncodedSecpSig,
+  secp256k1,
 } from '@baf-wallet/interfaces';
-import { formatKeyArray } from '@baf-wallet/multi-chain';
+import { NearAccountID } from '@baf-wallet/near';
+import { pkToArray, pkToString } from '@baf-wallet/utils';
 
 interface BafContract {
-  getAccountId: (secp_pk: PublicKey) => Promise<AccountId>;
-  getAccountNonce: (secp_pk: PublicKey) => Promise<string>;
+  getAccountId: (pk: PublicKey<secp256k1>) => Promise<NearAccountID | null>;
+  getAccountNonce: (secp_pk: PublicKey<secp256k1>) => Promise<string>;
   setAccountInfo: (
-    secp_pk: PublicKey,
+    secp_pk: PublicKey<secp256k1>,
     user_id: string,
     secp_sig_s: RustEncodedSecpSig,
-    new_account_id: AccountId
+    new_account_id: NearAccountID
   ) => Promise<void>;
   deleteAccountInfo: (
-    secp_pk: PublicKey,
+    secp_pk: PublicKey<secp256k1>,
     user_id: string,
     secp_sig_s: RustEncodedSecpSig
   ) => Promise<void>;
@@ -25,7 +27,7 @@ interface BafContract {
 
 let bafContract: BafContract;
 
-export async function setBafContract(account): Promise<BafContract> {
+export async function setBafContract(account: Account): Promise<BafContract> {
   bafContract = await buildBafContract(account);
   return bafContract;
 }
@@ -41,30 +43,36 @@ async function buildBafContract(account: Account): Promise<BafContract> {
     changeMethods: ['set_account_info', 'delete_account_info'],
   });
   return {
-    getAccountId: (secp_pk: PublicKey) =>
-      (contract as any).get_account_id({
-        secp_pk: formatKeyArray(secp_pk),
-      }) as Promise<AccountId>,
-    getAccountNonce: (secp_pk: PublicKey) =>
+    getAccountId: async (pk) => {
+      const ret = await (contract as any).get_account_id({
+        secp_pk: pkToArray(pk),
+      });
+      if (!ret || ret === '') return null;
+      else return ret as NearAccountID;
+    },
+    getAccountNonce: (pk) =>
       (contract as any).get_account_nonce({
-        secp_pk: formatKeyArray(secp_pk),
+        secp_pk: pkToArray(pk),
       }) as Promise<string>,
-    setAccountInfo: (secp_pk, user_id, secp_sig_s, new_account_id) =>
+    setAccountInfo: (pk, user_id, secp_sig_s, new_account_id) =>
       (contract as any).set_account_info({
         user_id,
-        secp_pk: formatKeyArray(secp_pk),
-        secp_sig_s: [...Buffer.from(secp_sig_s, 'hex')],
+        secp_pk: pkToArray(pk),
+        secp_sig_s: [...secp_sig_s],
         new_account_id,
       }),
-    deleteAccountInfo: (secp_pk, user_id, secp_sig_s) =>
+    deleteAccountInfo: (pk, user_id, secp_sig_s) =>
       (contract as any).delete_account_info({
         user_id,
-        secp_pk: formatKeyArray(secp_pk),
-        secp_sig_s: [...Buffer.from(secp_sig_s, 'hex')],
+        secp_pk: pkToArray(pk),
+        secp_sig_s: [...secp_sig_s],
       }),
   };
 }
 
-export function encodeSecpSigBafContract(sig): string {
-  return sig.r.toString('hex', 64) + sig.s.toString('hex', 64);
+export function encodeSecpSigBafContract(sig: EC.Signature): Buffer {
+  return Buffer.from(
+    `${sig.r.toString('hex', 64)}${sig.s.toString('hex', 64)}`,
+    'hex'
+  );
 }

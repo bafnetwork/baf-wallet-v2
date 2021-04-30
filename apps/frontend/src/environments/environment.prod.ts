@@ -1,8 +1,8 @@
-import { Envs } from '@baf-wallet/interfaces';
+import { Env } from '@baf-wallet/interfaces';
 
 export const environment = {
   production: true,
-  env: Envs.PROD,
+  env: Env.PROD,
   // TODO: update
   basePathApi: 'http://localhost:3333',
 };

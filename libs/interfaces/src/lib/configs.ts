@@ -1,4 +1,4 @@
-export enum Envs {
+export enum Env {
   DEV,
   TEST,
   PROD,

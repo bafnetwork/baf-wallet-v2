@@ -2,55 +2,42 @@
   import Button from './base/Button.svelte';
   import Card from './base/Card.svelte';
   import Icon from './base/Icon.svelte';
-  import DirectWebSdk from '@toruslabs/torus-direct-web-sdk';
-  import { AccountStore, storeOauthState } from '../state/accounts.svelte';
-  import { buildKeyStateFromSecpSK, SiteKeyStore } from '../state/keys.svelte';
-  import { keyFromString, secp256k1 } from '@baf-wallet/multi-chain';
-  import { KeyFormats } from '@baf-wallet/interfaces';
+  import { initTorusKeySource } from '@baf-wallet/torus/web';
+  import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
+  import { secp256k1Marker }  from '@baf-wallet/interfaces';
+  import { AccountStore } from '../state/accounts.svelte';
+  import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
+  import { skFromString } from '@baf-wallet/utils';
 
-  async function initTorus(): Promise<DirectWebSdk> {
-    const torus = new DirectWebSdk({
-      baseUrl: `${constants.baseUrl}/serviceworker`,
-      network: 'testnet', // details for test net, TODO: ropsten
-      proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183',
+  async function torusPostLoginHook(userInfo: TorusLoginResponse) {
+    await apiClient.revokeToken({
+      revokeTokenParams: { token: userInfo.userInfo.accessToken },
     });
-    await torus.init();
-    return torus;
-  }
 
-  async function discordLogin() {
-    const torus = await initTorus();
+    const secpSk = skFromString(userInfo.privateKey, secp256k1Marker);
 
-    const token = localStorage.getItem('access-token:discord');
-    if (token) {
-      await apiClient.revokeToken({
-        revokeTokenParams: { token },
-      });
-    }
+    SiteKeyStore.set(buildKeyStateFromSecpSk(secpSk));
 
-    const userInfo = await torus.triggerLogin({
-      typeOfLogin: 'discord',
-      verifier: constants.torus.discord.verifier,
-      clientId: constants.torus.discord.clientId,
-    });
-    localStorage.setItem('access-token:discord', userInfo.userInfo.accessToken);
-    storeOauthState({
-      name: userInfo.userInfo.name,
-      email: userInfo.userInfo.email,
-      verifierId: userInfo.userInfo.verifierId,
-    });
-    SiteKeyStore.set(
-      buildKeyStateFromSecpSK(
-        keyFromString(userInfo.privateKey, KeyFormats.HEX)
-      )
-    );
     AccountStore.update((state) => {
       return {
         ...state,
         loggedIn: true,
       };
+    });
+  }
+
+  async function discordLogin() {
+    await initTorusKeySource({
+      sdkArgs: {
+        baseUrl: `${constants.baseUrl}/serviceworker`,
+        network: constants.torus.network, // details for test net
+      },
+      oauthProvider: 'discord',
+      torusVerifierName: constants.torus.discord.verifier,
+      oauthClientID: constants.torus.discord.clientId,
+      postLoginHook: torusPostLoginHook
     });
   }
 </script>

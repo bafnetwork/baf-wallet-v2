@@ -12,21 +12,27 @@ import {
 import {
   createNearAccount,
   getAccountInfoFromSecpPK,
-  getAccountNonceFromSecpPK,
+  getAccountNonce,
+  NearAccountInfo,
 } from '../service/near';
-import { CryptoCurves, KeyFormats, PublicKey } from '@baf-wallet/interfaces';
-import { getPublicAddress } from './common';
+import {
+  ed25519Marker,
+  Encoding,
+  PublicKey,
+  secp256k1Marker,
+} from '@baf-wallet/interfaces';
+import { getTorusPublicAddress } from '@baf-wallet/torus';
 import { constants } from '../config/constants';
 import { hexString } from './common';
-import { keyFromString } from '@baf-wallet/multi-chain';
+import { pkFromString } from '@baf-wallet/utils';
 
 interface CreateNearAccountParams {
   userID: string;
   nonce: hexString;
-  secpSig: hexString;
+  secpSigHex: hexString;
   secpSig_s: hexString;
   edPubkey: hexString;
-  edSig: hexString;
+  edSigHex: hexString;
   accountID: string;
 }
 
@@ -37,35 +43,36 @@ export class NearController extends Controller {
   public async createNearAccount(
     @Body() requestBody: CreateNearAccountParams
   ): Promise<void> {
-    const secpPubkey = await getPublicAddress(
+    const secpPubkey = await getTorusPublicAddress(
       requestBody.userID,
-      constants.torus.verifierName
+      'discord'
     );
 
     await createNearAccount(
       secpPubkey,
-      keyFromString(requestBody.edPubkey, KeyFormats.HEX),
+      pkFromString(requestBody.edPubkey, ed25519Marker, Encoding.HEX),
       requestBody.userID,
       requestBody.nonce,
-      requestBody.secpSig,
+      requestBody.secpSigHex,
       requestBody.secpSig_s,
-      requestBody.edSig,
-      requestBody.accountID,
-      CryptoCurves.secp256k1
+      requestBody.edSigHex,
+      requestBody.accountID
     );
   }
 
   @SuccessResponse('200')
   @Get('account/{secpPubkeyB58}/nonce')
   public async getAccountNonce(@Path() secpPubkeyB58: string): Promise<string> {
-    const pk = keyFromString(secpPubkeyB58, KeyFormats.BS58);
-    return await getAccountNonceFromSecpPK(pk);
+    const pk = pkFromString(secpPubkeyB58, secp256k1Marker, Encoding.BS58);
+    return await getAccountNonce(pk);
   }
 
   @SuccessResponse('200')
   @Get('account/{secpPubkeyB58}/id')
-  public async getAccountInfo(@Path() secpPubkeyB58: string) {
-    const pk = keyFromString(secpPubkeyB58, KeyFormats.BS58);
+  public async getAccountInfo(
+    @Path() secpPubkeyB58: string
+  ): Promise<NearAccountInfo> {
+    const pk = pkFromString(secpPubkeyB58, secp256k1Marker, Encoding.BS58);
     return await getAccountInfoFromSecpPK(pk);
   }
 }
