@@ -1,15 +1,12 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { Chain } from '@baf-wallet/interfaces';
+  import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
   import Button from './base/Button.svelte';
-  import Input from './base/Input.svelte';
-  import InputNumeric from './base/InputNumeric.svelte';
   import TxModal from './TxModal.svelte';
   import SendNearFormPart from './near/SendNearFormPart.svelte';
-  import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
-  import { constants } from '../config/constants';
+  import { AllBuildTxParams } from '@baf-wallet/multi-chain'
 
-  let createTX: () => Promise<any>; //ChainTransaction
+  let createTX: () => Promise<CreateTxReturn<AllBuildTxParams>>; //ChainTransaction
   export let postSubmitHook: () => void | undefined;
   export let onCancel: () => void | undefined;
   export let chain: Chain;

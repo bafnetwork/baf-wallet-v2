@@ -6,3 +6,8 @@ export interface KeyState {
   secpSK: SecretKey<secp256k1>;
   edSK: SecretKey<ed25519>;
 }
+
+export interface CreateTxReturn<TXParams> {
+  txParams: TXParams;
+  recipientUser: string;
+}

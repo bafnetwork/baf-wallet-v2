@@ -8,9 +8,9 @@
   import Listbalances from '../components/Listbalances.svelte';
   import History from '../components/History.svelte';
   import Button from '../components/base/Button.svelte';
-  import InitNearAccount from '../components/InitNearAccount.svelte';
+  import InitNearAccount from '../components/near/InitNearAccount.svelte';
   import { saveAs } from 'file-saver';
-  import DeleteNearAccount from '../components/DeleteNearAccount.svelte';
+  import DeleteNearAccount from '../components/near/DeleteNearAccount.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
 

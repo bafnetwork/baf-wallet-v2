@@ -4,12 +4,12 @@
     getBafContract,
     bafContractConstants,
   } from '@baf-wallet/baf-contract';
-  import Button from './base/Button.svelte';
-  import { reinitApp } from '../config/init.svelte';
-  import { AccountStore } from '../state/accounts.svelte';
-  import { SiteKeyStore } from '../state/keys.svelte';
-  import { apiClient } from '../config/api';
-  import { ChainStores, checkChainInit } from '../state/chains.svelte';
+  import Button from '../base/Button.svelte';
+  import { reinitApp } from '../../config/init.svelte';
+  import { AccountStore } from '../../state/accounts.svelte';
+  import { SiteKeyStore } from '../../state/keys.svelte';
+  import { apiClient } from '../../config/api';
+  import { ChainStores, checkChainInit } from '../../state/chains.svelte';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/multi-chain';
