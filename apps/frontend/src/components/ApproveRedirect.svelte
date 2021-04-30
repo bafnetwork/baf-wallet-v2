@@ -120,7 +120,6 @@
     The following error occured: {e && console.error(e)}
   {/if}
 {/await}
-<!-- TODO: factor out -->
 <div class="flex flex-row justify-center py-4">
   {#if attemptedApprove}
     {#if isLoading}
