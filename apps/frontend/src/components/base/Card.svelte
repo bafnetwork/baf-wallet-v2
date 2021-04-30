@@ -1,11 +1,18 @@
 <script lang="ts">
-    export let classOverride: string | undefined;
-    export let classExtra: string | string[] = ""
-
-    const extraClasses = Array.isArray(classExtra) ? classExtra.join(" ") : classExtra;
-    const classes = classOverride !== undefined ? classOverride : `p-4 bg-blueGray-100 rounded-md shadow-md ${extraClasses}`
+    export let style: string
 </script>
 
-<div class={classes}>
-    <slot></slot>
+<div {style}>
+  <slot />
 </div>
+
+<style>
+  div {
+    background-color: var(--secondary-color);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+  }
+</style>

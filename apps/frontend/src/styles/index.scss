@@ -4,6 +4,11 @@ body {
   width: 100%;
   height: 100%;
   --danger-color: red;
+  --tertiary-color: #F78764;
+  --secondary-accent-color: #F4D35E;
+  --primary-accent-color: #DA4167;
+  --secondary-color: #EBEBD3;
+  --primary-color: #083D77;
 }
 
 body {
@@ -13,6 +18,7 @@ body {
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  background-color: white;
 }
 
 a {

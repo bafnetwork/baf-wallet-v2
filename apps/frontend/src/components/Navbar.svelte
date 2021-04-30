@@ -2,12 +2,9 @@
   import { link } from 'svelte-spa-router';
   import Button from './base/Button.svelte';
   import { AccountStore, logout } from '../state/accounts.svelte';
-
 </script>
 
-<div
-  class="sticky top-0 z-30 grid grid-cols-12 gap-2 p-4 shadow-md bg-cyan-600 h-min"
->
+<div class="container">
   {#if $AccountStore.loggedIn}
     <a
       class="col-span-1 col-start-10 text-lg text-center text-white"
@@ -22,14 +19,26 @@
     <!-- TODO: different color -->
     <Button
       onClick={logout}
-      classExtra="col-start-12 col-span-1 logout" color="white">Logout</Button
+      classExtra="col-start-12 col-span-1 logout"
+      color="white">Logout</Button
     >
-    {:else}
+  {:else}
     <a href="/login" use:link>Login</a>
   {/if}
 </div>
-<style>
+
+<style >
   .logout {
     background-color: var(--danger-color);
   }
+
+  .container {
+    background-color: var(--primary-color);
+    padding: 1rem;
+  }
+
+  a {
+    color: var(--secondary-color);
+  }
+
 </style>

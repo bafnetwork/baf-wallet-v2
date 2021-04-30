@@ -3,10 +3,21 @@
   import Footer from './Footer.svelte';
 </script>
 
-<div class="container min-w-full mx-auto">
+<div class="container">
   <Navbar />
-  <div class="flex flex-col py-6 auto-rows-min">
-    <slot />
-  </div>
-  <div class="absolute bottom-0 min-w-full"><Footer /></div>
+  <slot />
+  <Footer />
 </div>
+
+<style>
+  .container {
+    display: grid;
+    gap: 20px;
+    grid-template-rows: min-content 1fr min-content;
+    grid-template-areas:
+      'nav'
+      'content'
+      'footer';
+    min-height: 100%;
+  }
+</style>

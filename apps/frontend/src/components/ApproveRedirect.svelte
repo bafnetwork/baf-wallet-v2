@@ -120,7 +120,7 @@
     The following error occured: {e && console.error(e)}
   {/if}
 {/await}
-<div class="flex flex-row justify-center py-4">
+<div>
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
