@@ -46,7 +46,7 @@
   }
 </script>
 
-<div class="container z-6 p-4 m-4">
+<div>
   <form
     action=""
     on:submit={(e) => {

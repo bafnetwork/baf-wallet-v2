@@ -43,14 +43,14 @@
   }
 </script>
 
-<div class="container px-2 mx-auto sm">
-  <table class="w-full table-fixed">
+<div>
+  <table>
     <thead>
       <tr>
-        <th class="w-8" />
-        <th class="w-auto">Asset</th>
-        <th class="w-auto">Balance</th>
-        <th class="w-auto">Actions</th>
+        <th />
+        <th>Asset</th>
+        <th>Balance</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>

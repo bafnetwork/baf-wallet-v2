@@ -43,6 +43,6 @@
   }
 </script>
 
-<div class="ml-6 p-6">
+<div>
   <Button onClick={deleteAccount}>Delete Near Account</Button>
 </div>

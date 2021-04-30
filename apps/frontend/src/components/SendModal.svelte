@@ -10,8 +10,8 @@
   export let chain: Chain;
 </script>
 
-<Card classExtra="w-1/4 flex flex-col relative">
+<Card>
   <XButton onClick={close} />
-  <h1 class="pb-5 text-3xl">Send {chain}</h1>
+  <h1>Send {chain}</h1>
   <SendForm postSubmitHook={close} {chain} onCancel={close} />
 </Card>

@@ -51,14 +51,13 @@
 </script>
 
 <Layout>
-  <Card classExtra="flex flex-col container mx-auto">
+  <Card>
     {#if initNearAccount}
-      <h1 class="pb-6 text-4xl text-center">Account</h1>
+      <h1>Account</h1>
       <div
         bind:this={displayNameContainer}
-        class="flex flex-row items-center justify-center pb-6"
       >
-        <div class="ml-3">
+        <div>
           <!-- <Dropdown
           bind:selected={displayName}
           items={Object.keys(accounts.byDisplayName).map((name) => {
@@ -71,7 +70,7 @@
         /> -->
         </div>
       </div>
-      <div class="flex flex-row justify-around">
+      <div>
         <button
           on:click={() => (viewMode = 'assets')}
           class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${

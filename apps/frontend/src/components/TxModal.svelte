@@ -10,7 +10,7 @@
   export let chain: Chain, txParams: any, recipientUser: string;
 </script>
 
-<Card classExtra="w-1/2 flex flex-col relative">
+<Card>
   <XButton onClick={close} />
   <ApproveRedirect
     {txParams}
