@@ -1,15 +1,8 @@
 <script lang="ts">
   import { link } from 'svelte-spa-router';
-  import { getContext } from 'svelte';
   import Button from './base/Button.svelte';
-  import SendModal from './SendModal.svelte';
   import { AccountStore, logout } from '../state/accounts.svelte';
 
-  const { open } = getContext('modal');
-
-  function openSendModal() {
-    open(SendModal);
-  }
 </script>
 
 <div
@@ -25,11 +18,6 @@
       class="col-span-1 col-start-11 text-lg text-center text-white"
       href="/apps"
       use:link>Apps</a
-    >
-    <Button
-      onClick={openSendModal}
-      color="white"
-      classExtra="col-start-12 col-span-1">Send</Button
     >
     <!-- TODO: different color -->
     <Button

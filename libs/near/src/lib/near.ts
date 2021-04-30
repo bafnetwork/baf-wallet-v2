@@ -30,7 +30,12 @@ import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
-export { NearBuildTxParams, NearAction, NearSupportedActionTypes } from './tx';
+export type {
+  NearTransaction,
+  NearBuildTxParams,
+  NearAction,
+  NearSupportedActionTypes,
+} from './tx';
 export type WrappedNearChainInterface = InferWrapChainInterface<NearChainInterface>;
 
 export type NearChainInterface = ChainInterface<

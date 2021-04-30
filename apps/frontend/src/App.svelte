@@ -5,7 +5,7 @@
   import Router from 'svelte-spa-router';
   import Login from './pages/Login.svelte';
   import Account from './pages/Account.svelte';
-  import ApproveRedirect from './pages/ApproveRedirect.svelte';
+  import ApproveRedirect from './components/ApproveRedirect.svelte';
   import NotFound404 from './pages/NotFound404.svelte';
   import { AccountStore } from './state/accounts.svelte';
   import { initApp } from './config/init.svelte';
