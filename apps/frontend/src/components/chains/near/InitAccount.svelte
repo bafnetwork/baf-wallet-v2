@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Input from '../base/Input.svelte';
-  import Button from '../base/Button.svelte';
-  import { reinitApp } from '../../config/init.svelte';
-  import { apiClient } from '../../config/api';
-  import { SiteKeyStore } from '../../state/keys.svelte';
-  import { AccountStore } from '../../state/accounts.svelte';
+  import Input from '../../base/Input.svelte';
+  import Button from '../../base/Button.svelte';
+  import { reinitApp } from '../../../config/init.svelte';
+  import { apiClient } from '../../../config/api';
+  import { SiteKeyStore } from '../../../state/keys.svelte';
+  import { AccountStore } from '../../../state/accounts.svelte';
   import { Encoding } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';

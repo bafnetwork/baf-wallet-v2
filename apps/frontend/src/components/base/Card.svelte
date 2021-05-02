@@ -1,14 +1,17 @@
 <script lang="ts">
+import { StyleType } from "../../interfaces";
+
+
     export let style: string
+    export let styleType: StyleType = 'primary'
 </script>
 
-<div {style}>
+<div {style} class={styleType}>
   <slot />
 </div>
 
 <style>
   div {
-    background-color: var(--secondary-color);
     padding: 1.5rem;
     border-radius: 0.5rem;
     display: grid;

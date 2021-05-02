@@ -53,7 +53,7 @@
   }
 </script>
 
-<Card >
+<Card styleType="secondary">
   <h4>Sign in with a social provider</h4>
   <Button onClick={discordLogin} styleType='primary'>
     <Icon iconName="Discord" />

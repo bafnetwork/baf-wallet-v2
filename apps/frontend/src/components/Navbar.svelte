@@ -8,10 +8,10 @@
   {#if true}
     <!-- $AccountStore.loggedIn} -->
     <a href="/" use:link>Account</a>
-    <a href="/" use:link>Chains</a>
+    <a href="/settings" use:link>Account Settings</a>
     <Button
       onClick={logout}
-      style="color: white; background-color: var(--danger-color)">Logout</Button
+      styleType='danger'>Logout</Button
     >
   {:else}
     <a href="/login" use:link>Login</a>

@@ -6,7 +6,7 @@ body {
   --danger-color: red;
   --tertiary-color: #f78764;
   --secondary-accent-color: #f4d35e;
-  --primary-accent-color: #da4167;
+  --primary-accent-color: #f8e8ec;
   --secondary-color: #ebebd3;
   --primary-color: #083d77;
 }
@@ -42,6 +42,7 @@ a {
 /************* Style Types ********************/
 .primary {
   background-color: var(--primary-color);
+  color: var(--primary-accent-color);
 }
 
 .secondary {
@@ -50,4 +51,5 @@ a {
 
 .danger {
   background-color: var(--danger-color);
+  color: white;
 }

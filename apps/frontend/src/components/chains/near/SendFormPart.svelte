@@ -2,11 +2,11 @@
   import { Chain, GenericTxSupportedActions, CreateTxReturn } from '@baf-wallet/interfaces';
   import { NearBuildTxParams } from '@baf-wallet/near';
 
-  import { ChainStores, checkChainInit } from '../../state/chains.svelte';
-  import { SiteKeyStore } from '../../state/keys.svelte';
+  import { ChainStores, checkChainInit } from '../../../state/chains.svelte';
+  import { SiteKeyStore } from '../../../state/keys.svelte';
 
-  import Input from '../base/Input.svelte';
-  import InputNumeric from '../base/InputNumeric.svelte';
+  import Input from '../../base/Input.svelte';
+  import InputNumeric from '../../base/InputNumeric.svelte';
   let recipientAccountID: string, amount: number;
   export const createTX = async (): Promise<
     CreateTxReturn<NearBuildTxParams>
