@@ -32,7 +32,7 @@ const sourceMapsInProduction = false;
 
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
-import Webpack from 'webpack';
+import Webpack, { NormalModuleReplacementPlugin } from 'webpack';
 import WebpackDev from 'webpack-dev-server';
 import SveltePreprocess from 'svelte-preprocess';
 import Autoprefixer from 'autoprefixer';
@@ -48,6 +48,19 @@ const mode = process.env.NODE_ENV ?? 'development';
 const isProduction = mode === 'production';
 const isDevelopment = !isProduction;
 
+function getEnvPath() {
+  switch(process.env.NODE_ENV) {
+    case 'test':
+      return 'src/environments/environment.test'
+    case 'production':
+      return 'src/environments/environment.prod'
+    case 'development':
+    default:
+      return 'src/environments/environment'
+  }
+    
+}
+
 const config: Configuration = {
   mode: isProduction ? 'production' : 'development',
   entry: {
@@ -57,6 +70,7 @@ const config: Configuration = {
     alias: {
       // Note: Later in this config file, we'll automatically add paths from `tsconfig.compilerOptions.paths`
       svelte: path.resolve('../../node_modules', 'svelte'),
+      [path.resolve(__dirname, 'src/environments/environment')]: path.resolve(__dirname, getEnvPath())
     },
     extensions: ['.mjs', '.js', '.ts', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main'],
