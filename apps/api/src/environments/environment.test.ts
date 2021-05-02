@@ -3,10 +3,10 @@ import { config as dotenvConfig } from 'dotenv';
 
 export function initDotEnv() {
   if (!process.env.NON_LOCAL)
-    dotenvConfig({ path: './apps/api/src/environments/.env.dev' });
+    dotenvConfig({ path: './apps/api/src/environments/.env.test' });
 }
 
 export const environment = {
-  env: Env.DEV,
+  env: Env.TEST,
   production: false,
 };
