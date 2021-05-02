@@ -9,7 +9,9 @@ initDotEnv();
 export const constants = {
   chainParams: {
     near: {
-      keyPair: keyPairFromSk<ed25519>(skFromString(process.env.NEAR_SK, ed25519Marker, Encoding.BS58)),
+      keyPair: keyPairFromSk<ed25519>(
+        skFromString(process.env.NEAR_SK, ed25519Marker, Encoding.BS58)
+      ),
       networkID: getNearNetworkID(environment.env),
       masterAccountID: process.env.NEAR_MASTER_ACCOUNT_ID,
     } as NearInitParams,

@@ -6,6 +6,6 @@ fs.writeFileSync(
   JSON.stringify({
     main: 'main.js',
     scripts: { start: 'node main.js' },
-    dependencies: package.dependencies
+    dependencies: package.dependencies,
   })
 );
