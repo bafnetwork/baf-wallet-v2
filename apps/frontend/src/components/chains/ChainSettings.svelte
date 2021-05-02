@@ -9,7 +9,7 @@
 
   const chains = getEnumValues(Chain);
   const ChainDeleteAccountComponent = (chain: Chain) =>
-    () => import(`./${chain}/DeleteComponent.svelte`);
+    () => import(`./${chain}/DeleteAccount.svelte`);
   const ChainInitAccountComponent = (chain: Chain) =>
     () => import(`./${chain}/InitAccount.svelte`);
 </script>
@@ -20,7 +20,6 @@
     Delete your {chain} initialized account: <Lazy
       component={ChainDeleteAccountComponent(chain)}
     />
-    {ChainDeleteAccountComponent(chain)}
   {:else}
     Initialize your {chain} account: <Lazy
       component={ChainInitAccountComponent(chain)}
