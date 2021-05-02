@@ -4,11 +4,11 @@ body {
   width: 100%;
   height: 100%;
   --danger-color: red;
-  --tertiary-color: #F78764;
-  --secondary-accent-color: #F4D35E;
-  --primary-accent-color: #DA4167;
-  --secondary-color: #EBEBD3;
-  --primary-color: #083D77;
+  --tertiary-color: #f78764;
+  --secondary-accent-color: #f4d35e;
+  --primary-accent-color: #da4167;
+  --secondary-color: #ebebd3;
+  --primary-color: #083d77;
 }
 
 body {
@@ -37,4 +37,17 @@ a {
 .disabled {
   filter: brightness(50%);
   cursor: not-allowed;
+}
+
+/************* Style Types ********************/
+.primary {
+  background-color: var(--primary-color);
+}
+
+.secondary {
+  background-color: var(--secondary-color);
+}
+
+.danger {
+  background-color: var(--danger-color);
 }

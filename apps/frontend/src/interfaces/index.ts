@@ -21,3 +21,5 @@ export enum TOKEN {
   Near = 'near',
   Eth = 'eth',
 }
+
+export type StyleType = 'primary' | 'secondary' | 'danger';

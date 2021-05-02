@@ -1,10 +1,13 @@
 <script lang="ts">
-    export let onClick: () => void;
-    export let type = "button"
-    export let style
+  import { StyleType } from '../../interfaces';
+
+  export let onClick: () => void;
+  export let type = 'button';
+  export let style;
+  export let styleType: StyleType = 'primary';
 </script>
 
-<button {type} on:click={onClick} {style}>
+<button {type} on:click={onClick} {style} class={styleType}>
   <slot />
 </button>
 

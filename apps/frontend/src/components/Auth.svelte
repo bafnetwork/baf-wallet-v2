@@ -42,7 +42,7 @@
 
 <Card >
   <h4>Sign in with a social provider</h4>
-  <Button onClick={discordLogin} style="background-color: var(--primary-color)">
+  <Button onClick={discordLogin} styleType='primary'>
     <Icon iconName="Discord" />
   </Button>
 </Card>
