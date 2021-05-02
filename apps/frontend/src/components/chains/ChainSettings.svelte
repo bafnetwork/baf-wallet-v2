@@ -5,7 +5,6 @@
   import { Chain } from '@baf-wallet/interfaces';
   import Lazy from '@baf-wallet/base-components/Lazy.svelte';
   import { ChainStores, checkChainInit } from '../../state/chains.svelte';
-  import { SvelteComponent } from 'svelte';
 
   const chains = getEnumValues(Chain);
   const ChainDeleteAccountComponent = (chain: Chain) =>
