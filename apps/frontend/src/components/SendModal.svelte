@@ -10,8 +10,15 @@
   export let chain: Chain;
 </script>
 
-<Card>
-  <XButton onClick={close} />
-  <h1>Send {chain}</h1>
-  <SendForm postSubmitHook={close} {chain} onCancel={close} />
-</Card>
+<div class="wrapper">
+  <Card styleType="secondary">
+    <XButton onClick={close} />
+    <h1>Send {chain}</h1>
+    <SendForm postSubmitHook={close} {chain} onCancel={close} />
+  </Card>
+</div>
+<style>
+  .wrapper {
+    max-width: 300px;
+  }
+</style>

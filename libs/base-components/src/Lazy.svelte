@@ -3,6 +3,7 @@
 
   export let component;
   export let delayMs = 500;
+  export let selfBind
 
   let loadedComponent = null;
   let timeout;
@@ -28,8 +29,7 @@
 </script>
 
 {#if loadedComponent !== null}
-  {JSON.stringify(loadedComponent)}
-  <svelte:component this={loadedComponent} {...props} />
+  <svelte:component this={loadedComponent} {...props} bind:this={selfBind} />
 {:else if showFallback}
   fallback
   <slot />

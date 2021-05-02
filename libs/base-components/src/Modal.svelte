@@ -65,7 +65,7 @@
     }
   }
 
-  $: visibilityClasses = Component ? '' : 'hidden invisible opacity-0';
+  $: visibilityClasses = Component ? '' : 'hidden';
 
   setContext('modal', { open, close });
 </script>
@@ -73,13 +73,35 @@
 <div
   bind:this={overlay}
   on:click={handleClick}
-  class={`z-40 absolute top-0 left-0 w-screen h-screen bg-gray-900 bg-opacity-50 ${visibilityClasses}`}
+  class={`wrapper ${visibilityClasses}`}
 >
   <div
     bind:this={container}
-    class={`z-40 container flex flex-col items-center justify-center h-full m-auto ${visibilityClasses}`}
+    class={`body-wrapper ${visibilityClasses}`}
   >
     <svelte:component this={Component} />
   </div>
 </div>
 <slot />
+
+<style>
+  .hidden {
+    display: none!important;
+  }
+
+  .wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    background-color: rgb(0, 0, 0, 0.2);
+  }
+
+  .body-wrapper {
+  }
+
+</style>

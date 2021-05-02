@@ -40,7 +40,6 @@
     const icon = jazzicon(40, hashdisplayName(displayName));
     displayNameContainer.prepend(icon);
   })();
-
 </script>
 
 <Layout>
@@ -55,21 +54,7 @@
     </p>
   {:else}
     <h1>Account</h1>
-    <div bind:this={displayNameContainer}>
-      <div>
-        <!-- <Dropdown
-          bind:selected={displayName}
-          items={Object.keys(accounts.byDisplayName).map((name) => {
-            return {
-              label: `${name} / ${pubkey.slice(0, 4)}...${pubkey.slice(-4)}`,
-              value: name,
-              meta: accounts.byDisplayName[name],
-            };
-          })}
-        /> -->
-      </div>
-    </div>
-    <div>
+    <!-- <div>
       <button
         on:click={() => (viewMode = 'assets')}
         class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${
@@ -82,27 +67,11 @@
           viewMode === 'assets' ? 'hover:bg-blueGray-200' : 'z-10 bg-white'
         }`}>History</button
       >
-    </div>
+    </div> -->
     {#if viewMode === 'assets'}
-      <div
-        class="container z-10 pb-4 mx-auto transition duration-150 ease-in-out bg-white rounded-md"
-      >
-        <Listbalances />
-      </div>
+      <Listbalances />
     {:else}
-      <div
-        class="z-10 pb-4 transition duration-150 ease-in-out bg-white rounded-md"
-      >
-        <History />
-      </div>
+      <History />
     {/if}
   {/if}
-
 </Layout>
-
-<style>
-  .danger-zone {
-    border: 1px var(--danger-color) solid;
-    border-radius: 2rem;
-  }
-</style>

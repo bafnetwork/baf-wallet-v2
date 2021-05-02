@@ -5,13 +5,20 @@
   export let required: boolean;
 </script>
 
-<label class="block">
-  <span class="text-gray-700">{label}</span>
+<label class="">
+  <span class="">{label}</span>
   <input
     type="number"
-    class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-cyan-300 focus:ring focus:ring-cyan-200 focus:ring-opacity-50"
+    class=""
     {placeholder}
     bind:value
     {required}
   />
 </label>
+
+<style>
+  label {
+    display: block;
+    padding: 1rem;
+  }
+</style>

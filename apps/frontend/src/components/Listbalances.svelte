@@ -10,7 +10,7 @@
   const { open } = getContext('modal');
 
   function openSendModal(chain: Chain) {
-    open(SendModal, {chain});
+    open(SendModal, { chain });
   }
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
@@ -43,47 +43,42 @@
   }
 </script>
 
-<div>
-  <table>
-    <thead>
-      <tr>
-        <th />
-        <th>Asset</th>
-        <th>Balance</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#await initBalances() then chains}
-        {#each chains as chain, i}
-          <tr>
-            <td class="mr-2">
-              <img
-                class="object-scale-down mx-2"
-                src={getChainLogoUrl(chain.bal.chain)}
-                alt={`${chain.bal.chain}.png`}
-              />
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              {`$${chain.chainInfo.symbol}`}
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              <AmountFormatter bal={chain.bal} />
-            </td>
-            <td class='text-center'>
-              <Button
-                onClick={() => openSendModal(chain.bal.chain)}
-                color="blue"
-                classExtra="col-start-12 col-span-1">Transfer</Button
-              >
-            </td>
-          </tr>
-        {/each}
-      {:catch error}
-        <span
-          >An error occurred when attempting to fetch asset data: {error}</span
-        >
-      {/await}
-    </tbody>
-  </table>
+<div class="wrapper">
+  <th />
+  <th>Asset</th>
+  <th>Balance</th>
+  <th>Actions</th>
+  {#await initBalances() then chains}
+    {#each chains as chain, i}
+      <img
+        src={getChainLogoUrl(chain.bal.chain)}
+        alt={`${chain.bal.chain}.png`}
+      />
+      <div>
+        {`${chain.chainInfo.symbol}`}
+      </div>
+      <div>
+        <AmountFormatter bal={chain.bal} />
+      </div>
+      <Button onClick={() => openSendModal(chain.bal.chain)} color="blue"
+        >Transfer</Button
+      >
+    {/each}
+  {:catch error}
+    <span>An error occurred when attempting to fetch asset data: {error}</span>
+  {/await}
 </div>
+
+<style>
+  /* your styles go here */
+  .wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 2rem 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+  img {
+    width: 100%;
+  }
+</style>

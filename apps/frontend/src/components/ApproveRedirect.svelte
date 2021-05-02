@@ -59,7 +59,9 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw new Error("The transaction must be either in the url or passed in through the component's state");
+      throw new Error(
+        "The transaction must be either in the url or passed in through the component's state"
+      );
     } else if (!isGenericTx && txInUrl) {
       throw new Error('Unimplemented');
     }
@@ -130,7 +132,7 @@
     {:else}
       <p>Success!</p>
       <SuccessIcon />
-      <span class="text-center"
+      <span
         >Explorer: <a
           target="_blank"
           rel="noopener noreferrer"

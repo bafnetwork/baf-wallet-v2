@@ -10,12 +10,14 @@
   export let onCancel: () => void | undefined;
   export let chain: Chain;
 
+  let chainSendFormPart
   const { open } = getContext('modal');
 
   const ChainSendFormPart = (chain: Chain) => () =>
-    import(`./${chain}/SendFormPart.svelte`);
+    import(`./chains/${chain}/SendFormPart.svelte`);
 
   const handleSubmit = async (v: any) => {
+    createTX = chainSendFormPart.get_createTX();
     console.log(`submit: ${v}`);
     if (postSubmitHook !== undefined) {
       postSubmitHook();
@@ -37,11 +39,12 @@
 </script>
 
 <form on:submit={handleSubmit}>
-  <Lazy component={ChainSendFormPart(chain)} />
+  <!-- TODO: bind createTX somehow!! -->
+  <Lazy component={ChainSendFormPart(chain)} bind:selfBind={chainSendFormPart} />
   <!-- <SendNearFormPart bind:createTX /> -->
   <div class="flex flex-row justify-around pt-3">
     {#if onCancel !== undefined}
-      <Button onClick={onCancel}>Cancel</Button>
+      <Button onClick={onCancel} styleType="danger">Cancel</Button>
     {/if}
     <Button type="submit">Submit</Button>
   </div>
