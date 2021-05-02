@@ -11,7 +11,7 @@
       // TODO: for we can use whatever standard there may be for the following
       // We could end up using a library like the folliwing https://www.npmjs.com/package/ethereum-libraries-token
       default:
-        throw 'Unsupported token';
+        throw new Error('Unsupported token');
     }
   }
 </script>
