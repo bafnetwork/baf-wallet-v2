@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Card from '../components/base/Card.svelte';
-  import Button from '../components/base/Button.svelte';
-  import AmountFormatter from '../components/base/AmountFormatter.svelte';
-  import SuccessIcon from './base/svg/SuccessIcon.svelte';
-  import ErrorIcon from './base/svg/ErrorIcon.svelte';
-  import Loader from './base/Loader.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
+  import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
+  import Loader from '@baf-wallet/base-components/Loader.svelte';
 
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Layout from '../components/Layout.svelte';
   import ChainSettings from '../components/chains/ChainSettings.svelte';
-  import Button from '../components/base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { saveAs } from 'file-saver';
   import { packKey, SiteKeyStore } from '../state/keys.svelte';
 

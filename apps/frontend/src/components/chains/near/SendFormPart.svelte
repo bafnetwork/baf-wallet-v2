@@ -5,8 +5,8 @@
   import { ChainStores, checkChainInit } from '../../../state/chains.svelte';
   import { SiteKeyStore } from '../../../state/keys.svelte';
 
-  import Input from '../../base/Input.svelte';
-  import InputNumeric from '../../base/InputNumeric.svelte';
+  import Input from '@baf-wallet/base-components/Input.svelte';
+  import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
   let recipientAccountID: string, amount: number;
   export const createTX = async (): Promise<
     CreateTxReturn<NearBuildTxParams>

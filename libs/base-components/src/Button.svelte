@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StyleType } from '../../interfaces';
+  import { StyleType } from '@baf-wallet/interfaces';
 
   export let onClick: () => void;
   export let type = 'button';

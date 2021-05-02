@@ -1,6 +1,5 @@
 <script lang="ts">
-import { StyleType } from "../../interfaces";
-
+  import { StyleType } from '@baf-wallet/interfaces';
 
     export let style: string
     export let styleType: StyleType = 'primary'

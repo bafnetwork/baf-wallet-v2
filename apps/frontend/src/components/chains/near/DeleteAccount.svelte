@@ -4,7 +4,7 @@
     getBafContract,
     bafContractConstants,
   } from '@baf-wallet/baf-contract';
-  import Button from '../../base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { reinitApp } from '../../../config/init.svelte';
   import { AccountStore } from '../../../state/accounts.svelte';
   import { SiteKeyStore } from '../../../state/keys.svelte';

@@ -2,12 +2,12 @@
   import { link } from 'svelte-spa-router';
   import { packKey, SiteKeyStore } from '../state/keys.svelte';
   import jazzicon from 'jazzicon';
-  import Dropdown from '../components/base/Dropdown.svelte';
-  import Card from '../components/base/Card.svelte';
+  import Dropdown from '@baf-wallet/base-components/Dropdown.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
   import Layout from '../components/Layout.svelte';
   import Listbalances from '../components/Listbalances.svelte';
   import History from '../components/History.svelte';
-  import Button from '../components/base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
   import { Chain, Encoding } from '@baf-wallet/interfaces';
   import { getEnumValues } from '@baf-wallet/utils';

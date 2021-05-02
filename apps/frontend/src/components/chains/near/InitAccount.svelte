@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Input from '../../base/Input.svelte';
-  import Button from '../../base/Button.svelte';
+  import Input from '@baf-wallet/base-components/Input.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { reinitApp } from '../../../config/init.svelte';
   import { apiClient } from '../../../config/api';
   import { SiteKeyStore } from '../../../state/keys.svelte';

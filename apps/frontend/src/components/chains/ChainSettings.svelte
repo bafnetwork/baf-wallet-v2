@@ -3,7 +3,7 @@
   // import DeleteNearAccount from './near/DeleteAccount.svelte';
   import { getEnumValues } from '@baf-wallet/utils';
   import { Chain } from '@baf-wallet/interfaces';
-  import Lazy from '../base/Lazy.svelte';
+  import Lazy from '@baf-wallet/base-components/Lazy.svelte';
   import { ChainStores, checkChainInit } from '../../state/chains.svelte';
   import { SvelteComponent } from 'svelte';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Card from './base/Card.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
   import SendForm from './SendForm.svelte';
-  import XButton from './base/XButton.svelte';
+  import XButton from '@baf-wallet/base-components/XButton.svelte';
 
   import { getContext } from 'svelte';
   import { Chain } from '@baf-wallet/interfaces';

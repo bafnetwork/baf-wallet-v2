@@ -1,3 +1,4 @@
+import { Chain } from './chains';
 import { ed25519, PublicKey, secp256k1, SecretKey } from './crypto';
 
 export interface KeyState {
@@ -11,3 +12,10 @@ export interface CreateTxReturn<TXParams> {
   txParams: TXParams;
   recipientUser: string;
 }
+
+export interface FrontendBalance {
+  tok: Chain;
+  balance: string | number;
+}
+
+export type StyleType = 'primary' | 'secondary' | 'danger';

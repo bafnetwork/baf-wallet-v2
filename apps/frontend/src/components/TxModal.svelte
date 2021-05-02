@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Card from './base/Card.svelte';
-  import XButton from './base/XButton.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import XButton from '@baf-wallet/base-components/XButton.svelte';
   import ApproveRedirect from './ApproveRedirect.svelte';
 
   import { getContext } from 'svelte';

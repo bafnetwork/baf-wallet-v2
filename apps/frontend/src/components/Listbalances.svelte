@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Chain, ChainBalance } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
-  import AmountFormatter from './base/AmountFormatter.svelte';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
   import { ChainStores } from '../state/chains.svelte';
-  import Button from './base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');

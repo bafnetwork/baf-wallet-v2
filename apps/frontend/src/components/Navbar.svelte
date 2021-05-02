@@ -1,6 +1,6 @@
 <script lang="ts">
   import { link } from 'svelte-spa-router';
-  import Button from './base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { AccountStore, logout } from '../state/accounts.svelte';
 </script>
 

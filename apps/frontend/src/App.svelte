@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Buffer } from 'buffer';
   (window as any).Buffer = Buffer;
-  import Modal from './components/base/Modal.svelte';
+  import Modal from '@baf-wallet/base-components/Modal.svelte';
   import Router from 'svelte-spa-router';
   import Login from './pages/Login.svelte';
   import Account from './pages/Account.svelte';

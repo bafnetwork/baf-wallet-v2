@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Button from './base/Button.svelte';
-  import Card from './base/Card.svelte';
-  import Icon from './base/Icon.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Icon from '@baf-wallet/base-components/Icon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1Marker } from '@baf-wallet/interfaces';

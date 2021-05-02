@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
-  import Button from './base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import TxModal from './TxModal.svelte';
   import SendNearFormPart from './chains/near/SendFormPart.svelte';
 
