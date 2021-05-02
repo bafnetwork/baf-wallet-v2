@@ -14,6 +14,7 @@
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
   import { skFromString } from '@baf-wallet/utils';
+  import { reinitApp } from '../config/init.svelte';
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
     const accessToken = userInfo.userInfo.accessToken;
@@ -37,6 +38,7 @@
         loggedIn: true,
       };
     });
+    reinitApp();
   }
 
   async function discordLogin() {
