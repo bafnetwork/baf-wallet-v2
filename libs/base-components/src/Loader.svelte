@@ -3,7 +3,7 @@
   height="105"
   viewBox="0 0 105 105"
   xmlns="http://www.w3.org/2000/svg"
-  class="fill-current text-lightBlue-900"
+  class=""
 >
   <circle cx="12.5" cy="12.5" r="12.5">
     <animate

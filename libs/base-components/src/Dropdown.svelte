@@ -13,7 +13,7 @@
 </script>
 
 
-<select bind:value={selected} class="block w-full mt-1 rounded-md">
+<select bind:value={selected} class="">
     {#each options as option (option.key)}
         <option value={option.item.value}>{option.item.label}</option>
     {/each}

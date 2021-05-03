@@ -43,7 +43,6 @@
 </script>
 
 <form on:submit={handleSubmit}>
-  <!-- TODO: bind createTX somehow!! -->
   <Lazy
     component={ChainSendFormPart(chain)}
     chainInterface={$ChainStores[chain]}
@@ -51,8 +50,7 @@
     secpPK={$SiteKeyStore.secpPK}
     bind:selfBind={chainSendFormPart}
   />
-  <!-- <SendNearFormPart bind:createTX /> -->
-  <div class="flex flex-row justify-around pt-3">
+  <div class="">
     {#if onCancel !== undefined}
       <Button onClick={onCancel} styleType="danger">Cancel</Button>
     {/if}

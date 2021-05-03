@@ -54,20 +54,6 @@
     </p>
   {:else}
     <h1>Account</h1>
-    <!-- <div>
-      <button
-        on:click={() => (viewMode = 'assets')}
-        class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${
-          viewMode === 'assets' ? 'z-10 bg-white' : 'hover:bg-blueGray-200'
-        }`}>Assets</button
-      >
-      <button
-        on:click={() => (viewMode = 'history')}
-        class={`appearance-none transition duration-150 ease-in-out text-xl flex-grow text-center p-2 rounded-md ${
-          viewMode === 'assets' ? 'hover:bg-blueGray-200' : 'z-10 bg-white'
-        }`}>History</button
-      >
-    </div> -->
     {#if viewMode === 'assets'}
       <Listbalances />
     {:else}
