@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext, createEventDispatcher } from 'svelte';
-  
+
   export function bind(Component, props = {}) {
     return function ModalComponent(options) {
       return new Component({
@@ -75,10 +75,7 @@
   on:click={handleClick}
   class={`wrapper ${visibilityClasses}`}
 >
-  <div
-    bind:this={container}
-    class={`body-wrapper ${visibilityClasses}`}
-  >
+  <div bind:this={container} class={`body-wrapper ${visibilityClasses}`}>
     <svelte:component this={Component} />
   </div>
 </div>
@@ -86,7 +83,7 @@
 
 <style>
   .hidden {
-    display: none!important;
+    display: none !important;
   }
 
   .wrapper {
@@ -103,5 +100,4 @@
 
   .body-wrapper {
   }
-
 </style>

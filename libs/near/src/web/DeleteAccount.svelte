@@ -5,11 +5,6 @@
     bafContractConstants,
   } from '@baf-wallet/baf-contract';
   import Button from '@baf-wallet/base-components/Button.svelte';
-  // import { reinitApp } from '../../../config/init.svelte';
-  // import { AccountStore } from '../../../state/accounts.svelte';
-  // import { SiteKeyStore } from '../../../state/keys.svelte';
-  // import { apiClient } from '../../../config/api';
-  // import { ChainStores, checkChainInit } from '../../../state/chains.svelte';
   import {
     AccountState,
     Chain,
