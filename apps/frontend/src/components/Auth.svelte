@@ -15,6 +15,14 @@
   import { constants } from '../config/constants';
   import { skFromString } from '@baf-wallet/utils';
   import { reinitApp } from '../config/init.svelte';
+  import Spinner from 'svelte-spinner';
+  let size = 50;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
+
+  let isLoading = false;
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
     const accessToken = userInfo.userInfo.accessToken;
@@ -42,6 +50,7 @@
   }
 
   async function discordLogin() {
+    isLoading = true;
     await initTorusKeySource({
       sdkArgs: {
         baseUrl: `${constants.baseUrl}/serviceworker`,
@@ -50,6 +59,7 @@
       oauthProvider: 'discord',
       postLoginHook: torusPostLoginHook,
     });
+    isLoading = false;
   }
 </script>
 
@@ -59,5 +69,14 @@
     <Button classExtra="w-12" onClick={discordLogin}>
       <Icon iconName="Discord" />
     </Button>
+    {#if isLoading}
+      <Spinner 
+        size="{size}"
+        speed="{speed}"
+        color="{color}"
+        thickness="{thickness}"
+        gap="{gap}"
+      />
+    {/if}
   </div>
 </Card>
