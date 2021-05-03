@@ -5,7 +5,16 @@
   import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';
   import { DefaultApi } from '@baf-wallet/api-client';
+  import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
+  let size = 40;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
 
+  let isLoading = false;
   let newAccountId: string;
 
   export let apiClient: DefaultApi;
@@ -14,6 +23,7 @@
   export let cb: () => void = () => {}
 
   async function initNearAccount() {
+    isLoading = true;
     const nonce = await apiClient.getAccountNonce({
       secpPubkeyB58: keyState.secpPK.format(Encoding.BS58),
     });
@@ -43,8 +53,10 @@
         secpSigHex: formatBytes(secpSig, Encoding.HEX),
       },
     });
+    
     alert('Success');
     cb();
+    isLoading = false;
   }
 </script>
 
@@ -62,5 +74,15 @@
       bind:value={newAccountId}
     />
     <Button type="submit">Initialize Account with Near</Button>
+    {#if isLoading}
+      <p>Beep bop beep boop, creating your account</p>
+      <Spinner 
+        size="{size}"
+        speed="{speed}"
+        color="{color}"
+        thickness="{thickness}"
+        gap="{gap}"
+      /> 
+    {/if}
   </form>
 </div>

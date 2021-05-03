@@ -15,6 +15,16 @@
   import { signMsg } from '@baf-wallet/crypto';
   import { WrappedNearChainInterface } from '@baf-wallet/near';
   import { DefaultApi } from '@baf-wallet/api-client';
+  import Spinner from 'svelte-spinner';
+
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
+  let size = 25;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
+
+  let isLoading = false;
 
   export let keyState: KeyState;
   export let accountState: AccountState;
@@ -27,6 +37,7 @@
       alert('Cannot delete an unitialized account');
       return;
     }
+    isLoading = true;
     const userId = accountState.oauthInfo.verifierId;
 
     const nonce = await apiClient.getAccountNonce({
@@ -37,6 +48,7 @@
       createUserVerifyMessage(userId, nonce),
       true
     );
+
     await getBafContract().deleteAccountInfo(
       keyState.secpPK,
       userId,
@@ -46,11 +58,18 @@
     await chainInterface
       .getInner()
       .nearMasterAccount.deleteAccount(bafContractConstants.beneficiaryId);
+    isLoading = false;
     alert('Your account was deleted');
     cb();
   }
 </script>
 
 <div>
-  <Button onClick={deleteAccount}>Delete Near Account</Button>
+  {#if isLoading}
+    <p>Beep bop beep boop, deleting your account</p>
+    <!-- <Loader /> -->
+    <Spinner {size} {speed} {color} {thickness} {gap} />
+  {:else}
+    <Button onClick={deleteAccount}>Delete Near Account</Button>
+  {/if}
 </div>
