@@ -29,6 +29,7 @@ async function init() {
     'http://localhost:8080',
     'https://baf-wallet.netlify.app',
     'https://baf-wallet-v2-git-deploy-work-baf-wallet.vercel.app',
+    'https://baf-wallet-v2.vercel.app'
   ];
   const corsOptions = {
     origin: function (origin, callback) {
