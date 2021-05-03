@@ -40,7 +40,9 @@ export function nearAccounts(
       method = 'helper',
     }: NearCreateAccountParams): Promise<NearAccount> => {
       if (method === 'local' && !initialBalance) {
-        throw new Error('An initial balance must be specified when using a local account creator');
+        throw new Error(
+          'An initial balance must be specified when using a local account creator'
+        );
       }
       const masterAccount = await near.account(near.config.masterAccount);
       const accountCreator: AccountCreator =

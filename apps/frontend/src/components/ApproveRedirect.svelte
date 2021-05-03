@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '../components/base/Card.svelte';
-  import Button from '../components/base/Button.svelte';
-  import AmountFormatter from '../components/base/AmountFormatter.svelte';
-  import SuccessIcon from './base/svg/SuccessIcon.svelte';
-  import ErrorIcon from './base/svg/ErrorIcon.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
+  import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
   import Spinner from 'svelte-spinner';
   
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
@@ -66,7 +66,9 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw new Error("The transaction must be either in the url or passed in through the component's state");
+      throw new Error(
+        "The transaction must be either in the url or passed in through the component's state"
+      );
     } else if (!isGenericTx && txInUrl) {
       throw new Error('Unimplemented');
     }
@@ -103,7 +105,7 @@
   Loading...
 {:then signer}
   {#if !txSuccess}
-    <Card>
+    <Card styleType="primary">
       {#each actions as action, i}
         {#if action.type === GenericTxSupportedActions.TRANSFER}
           <p>
@@ -116,8 +118,8 @@
           An error occured, an unsupported action type was passed in!
         {/if}
       {/each}
-      <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
-      <Button>Decline</Button>
+      <Button styleType="secondary" onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      <Button styleType="danger">Decline</Button>
     </Card>
   {/if}
 {:catch e}
@@ -127,7 +129,7 @@
     The following error occured: {e && console.error(e)}
   {/if}
 {/await}
-<div class="flex flex-row justify-center py-4">
+<div>
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
@@ -143,7 +145,7 @@
     {:else}
       <p>Success!</p>
       <SuccessIcon />
-      <span class="text-center"
+      <span
         >Explorer: <a
           target="_blank"
           rel="noopener noreferrer"

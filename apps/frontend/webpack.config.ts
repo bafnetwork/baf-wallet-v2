@@ -49,16 +49,15 @@ const isProduction = mode === 'production';
 const isDevelopment = !isProduction;
 
 function getEnvPath() {
-  switch(process.env.NODE_ENV) {
+  switch (process.env.NODE_ENV) {
     case 'test':
-      return 'src/environments/environment.test'
+      return 'src/environments/environment.test';
     case 'production':
-      return 'src/environments/environment.prod'
+      return 'src/environments/environment.prod';
     case 'development':
     default:
-      return 'src/environments/environment'
+      return 'src/environments/environment';
   }
-    
 }
 
 const config: Configuration = {
@@ -70,7 +69,10 @@ const config: Configuration = {
     alias: {
       // Note: Later in this config file, we'll automatically add paths from `tsconfig.compilerOptions.paths`
       svelte: path.resolve('../../node_modules', 'svelte'),
-      [path.resolve(__dirname, 'src/environments/environment')]: path.resolve(__dirname, getEnvPath())
+      [path.resolve(__dirname, 'src/environments/environment')]: path.resolve(
+        __dirname,
+        getEnvPath()
+      ),
     },
     extensions: ['.mjs', '.js', '.ts', '.svelte'],
     mainFields: ['svelte', 'browser', 'module', 'main'],

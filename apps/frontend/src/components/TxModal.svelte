@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Card from './base/Card.svelte';
-  import XButton from './base/XButton.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import XButton from '@baf-wallet/base-components/XButton.svelte';
   import ApproveRedirect from './ApproveRedirect.svelte';
 
   import { getContext } from 'svelte';
@@ -10,7 +10,7 @@
   export let chain: Chain, txParams: any, recipientUser: string;
 </script>
 
-<Card classExtra="w-1/2 flex flex-col relative">
+<Card>
   <XButton onClick={close} />
   <ApproveRedirect
     {txParams}

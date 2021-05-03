@@ -4,17 +4,19 @@
     getBafContract,
     bafContractConstants,
   } from '@baf-wallet/baf-contract';
-  import Button from '../base/Button.svelte';
-  import { reinitApp } from '../../config/init.svelte';
-  import { AccountStore } from '../../state/accounts.svelte';
-  import { SiteKeyStore } from '../../state/keys.svelte';
-  import { apiClient } from '../../config/api';
-  import { ChainStores, checkChainInit } from '../../state/chains.svelte';
-  import { Chain, Encoding } from '@baf-wallet/interfaces';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import {
+    AccountState,
+    Chain,
+    Encoding,
+    KeyState,
+  } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';
+  import { WrappedNearChainInterface } from '@baf-wallet/near';
+  import { DefaultApi } from '@baf-wallet/api-client';
   import Spinner from 'svelte-spinner';
-  
+
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 25;
   let speed = 750;
@@ -24,49 +26,49 @@
 
   let isLoading = false;
 
+  export let keyState: KeyState;
+  export let accountState: AccountState;
+  export let cb: () => void = () => {};
+  export let apiClient: DefaultApi;
+  export let chainInterface: WrappedNearChainInterface;
+
   async function deleteAccount() {
-    isLoading = true;
-    if (!checkChainInit($ChainStores, Chain.NEAR)) {
+    if (!chainInterface) {
       alert('Cannot delete an unitialized account');
       return;
     }
-    const userId = $AccountStore.oauthInfo.verifierId;
+    isLoading = true;
+    const userId = accountState.oauthInfo.verifierId;
 
     const nonce = await apiClient.getAccountNonce({
-      secpPubkeyB58: $SiteKeyStore.secpPK.format(Encoding.BS58),
+      secpPubkeyB58: keyState.secpPK.format(Encoding.BS58),
     });
     const secpSigBafContractEncoded = signMsg(
-      $SiteKeyStore.secpSK,
+      keyState.secpSK,
       createUserVerifyMessage(userId, nonce),
       true
     );
 
     await getBafContract().deleteAccountInfo(
-      $SiteKeyStore.secpPK,
+      keyState.secpPK,
       userId,
       secpSigBafContractEncoded
     );
     // Deleteing the account must come after whiping it from the contract
-    await $ChainStores[Chain.NEAR]
+    await chainInterface
       .getInner()
       .nearMasterAccount.deleteAccount(bafContractConstants.beneficiaryId);
     isLoading = false;
     alert('Your account was deleted');
-    reinitApp();
+    cb();
   }
 </script>
 
-<div class="ml-6 p-6">
+<div>
   {#if isLoading}
     <p>Beep bop beep boop, deleting your account</p>
     <!-- <Loader /> -->
-    <Spinner 
-      size="{size}"
-      speed="{speed}"
-      color="{color}"
-      thickness="{thickness}"
-      gap="{gap}"
-    />
+    <Spinner {size} {speed} {color} {thickness} {gap} />
   {:else}
     <Button onClick={deleteAccount}>Delete Near Account</Button>
   {/if}

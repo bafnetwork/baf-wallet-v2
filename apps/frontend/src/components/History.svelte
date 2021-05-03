@@ -8,8 +8,8 @@
     onDestroy(unsub);
 </script>
 
-<div class="container mx-auto sm">
-    <table class="w-full table-auto">
+<div>
+    <table>
         <thead>
             <tr>
                 <th>Date</th>
@@ -20,9 +20,9 @@
         <tbody>
             <tr>
                 {#each history as item}
-                    <td class="text-center border">{item.confirmed.toLocaleString()}</td>
-                    <td class="text-center border">{item.recipient}</td>
-                    <td class="text-center border">{item.data ?? "--"}</td>
+                    <td>{item.confirmed.toLocaleString()}</td>
+                    <td>{item.recipient}</td>
+                    <td>{item.data ?? "--"}</td>
                 {/each}
             </tr>
         </tbody>

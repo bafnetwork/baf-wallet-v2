@@ -1,12 +1,33 @@
 <script lang="ts">
   import Navbar from './Navbar.svelte';
   import Footer from './Footer.svelte';
+
+  export let classes = "default"
 </script>
 
-<div class="container min-w-full mx-auto">
+<div class="container">
   <Navbar />
-  <div class="flex flex-col py-6 auto-rows-min">
+  <div class={classes}>
     <slot />
   </div>
-  <div class="absolute bottom-0 min-w-full"><Footer /></div>
+  <Footer />
 </div>
+
+<style>
+  .container {
+    display: grid;
+    gap: 20px;
+    grid-template-rows: min-content 1fr min-content;
+    grid-template-areas:
+      'nav'
+      'content'
+      'footer';
+    min-height: 100%;
+  }
+
+  .default {
+    display: grid;
+    justify-content: center;
+    align-content: baseline;
+  }
+</style>
