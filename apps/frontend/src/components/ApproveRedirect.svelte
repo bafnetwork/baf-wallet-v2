@@ -4,7 +4,14 @@
   import AmountFormatter from '../components/base/AmountFormatter.svelte';
   import SuccessIcon from './base/svg/SuccessIcon.svelte';
   import ErrorIcon from './base/svg/ErrorIcon.svelte';
-  import Loader from './base/Loader.svelte';
+  import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
+  let size = 25;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
 
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
@@ -124,7 +131,13 @@
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
-      <Loader />
+      <Spinner 
+        size="{size}"
+        speed="{speed}"
+        color="{color}"
+        thickness="{thickness}"
+        gap="{gap}"
+      />
     {:else if error}
       <ErrorIcon />
     {:else}
