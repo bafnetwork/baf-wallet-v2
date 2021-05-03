@@ -18,4 +18,22 @@ export interface FrontendBalance {
   balance: string | number;
 }
 
+/***** Styling interfaces */
 export type StyleType = 'primary' | 'secondary' | 'danger';
+
+/***** Frontend account interfaces */
+export interface Account {
+  displayName: string;
+  pubkey: string;
+}
+
+export interface OAuthState {
+  verifierId: string;
+  name: string;
+  email: string;
+}
+
+export interface AccountState {
+  loggedIn: boolean;
+  oauthInfo?: OAuthState;
+}

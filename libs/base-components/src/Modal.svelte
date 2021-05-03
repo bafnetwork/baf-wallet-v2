@@ -48,7 +48,7 @@
   function close(cb?: () => void) {
     Component = null;
     callbacks = {};
-    if (cb) {
+    if (cb && typeof cb === 'function') {
       cb();
     }
   }

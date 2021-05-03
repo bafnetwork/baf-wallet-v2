@@ -98,7 +98,7 @@
   Loading...
 {:then signer}
   {#if !txSuccess}
-    <Card>
+    <Card styleType="primary">
       {#each actions as action, i}
         {#if action.type === GenericTxSupportedActions.TRANSFER}
           <p>
@@ -111,8 +111,8 @@
           An error occured, an unsupported action type was passed in!
         {/if}
       {/each}
-      <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
-      <Button>Decline</Button>
+      <Button styleType="secondary" onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      <Button styleType="danger">Decline</Button>
     </Card>
   {/if}
 {:catch e}

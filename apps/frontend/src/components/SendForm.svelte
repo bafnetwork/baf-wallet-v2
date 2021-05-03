@@ -4,21 +4,24 @@
   import Button from '@baf-wallet/base-components/Button.svelte';
   import Lazy from '@baf-wallet/base-components/Lazy.svelte';
   import TxModal from './TxModal.svelte';
+  import { ChainStores } from '../state/chains.svelte';
+  import { SiteKeyStore } from '../state/keys.svelte';
 
   let createTX: <T>() => Promise<CreateTxReturn<T>>;
   export let postSubmitHook: () => void | undefined;
   export let onCancel: () => void | undefined;
   export let chain: Chain;
 
-  let chainSendFormPart
+  let chainSendFormPart;
   const { open } = getContext('modal');
 
   const ChainSendFormPart = (chain: Chain) => () =>
     import(`./chains/${chain}/SendFormPart.svelte`);
 
-  const handleSubmit = async (v: any) => {
-    createTX = chainSendFormPart.get_createTX();
-    console.log(`submit: ${v}`);
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    console.log(chainSendFormPart);
+    createTX = chainSendFormPart.createTX;
     if (postSubmitHook !== undefined) {
       postSubmitHook();
     }
@@ -40,7 +43,13 @@
 
 <form on:submit={handleSubmit}>
   <!-- TODO: bind createTX somehow!! -->
-  <Lazy component={ChainSendFormPart(chain)} bind:selfBind={chainSendFormPart} />
+  <Lazy
+    component={ChainSendFormPart(chain)}
+    chainInterface={$ChainStores[chain]}
+    edPK={$SiteKeyStore.edPK}
+    secpPK={$SiteKeyStore.secpPK}
+    bind:selfBind={chainSendFormPart}
+  />
   <!-- <SendNearFormPart bind:createTX /> -->
   <div class="flex flex-row justify-around pt-3">
     {#if onCancel !== undefined}
