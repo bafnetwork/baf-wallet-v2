@@ -7,7 +7,7 @@
 
 <label class="">
   <span class="">{label}</span>
-  <input type="number" class="" {placeholder} bind:value {required} />
+  <input type="number" step="any" class="" {placeholder} bind:value {required} />
 </label>
 
 <style>
