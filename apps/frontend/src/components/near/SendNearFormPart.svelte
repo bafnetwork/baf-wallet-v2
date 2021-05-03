@@ -12,7 +12,7 @@
     CreateTxReturn<NearBuildTxParams>
   > => {
     if (!checkChainInit($ChainStores, Chain.NEAR)) {
-      throw 'You must have an initialized account with NEAR';
+      throw new Error('You must have an initialized account with NEAR');
     }
     const txParams: NearBuildTxParams = {
       actions: [
