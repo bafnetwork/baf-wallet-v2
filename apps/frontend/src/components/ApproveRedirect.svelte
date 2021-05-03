@@ -4,9 +4,9 @@
   import AmountFormatter from '../components/base/AmountFormatter.svelte';
   import SuccessIcon from './base/svg/SuccessIcon.svelte';
   import ErrorIcon from './base/svg/ErrorIcon.svelte';
-  import Loader from './base/Loader.svelte';
-  // import { Circle } from 'svelte-loading-spinners';
   import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 25;
   let speed = 750;
   let color = '#A82124';

@@ -16,6 +16,8 @@
   import { skFromString } from '@baf-wallet/utils';
   import { reinitApp } from '../config/init.svelte';
   import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 50;
   let speed = 750;
   let color = '#A82124';

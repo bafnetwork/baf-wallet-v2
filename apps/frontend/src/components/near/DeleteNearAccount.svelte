@@ -14,6 +14,8 @@
   import { createUserVerifyMessage } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';
   import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 25;
   let speed = 750;
   let color = '#A82124';
