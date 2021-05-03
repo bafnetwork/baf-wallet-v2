@@ -4,7 +4,7 @@ import { RegisterRoutes } from '../build/routes';
 import { constants } from './app/config/constants';
 import * as cors from 'cors';
 import { setBafContract } from '@baf-wallet/baf-contract';
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, Env } from '@baf-wallet/interfaces';
 import { getNearChain, initChains } from './app/chains/singletons';
 
 const app = express();
@@ -25,10 +25,23 @@ async function init() {
     })
   );
   app.use(bodyParser.json());
-  const whitelist = ['http://localhost:8080'];
+  const whitelist = [
+    'http://localhost:8080',
+    'https://baf-wallet.netlify.app',
+    'https://baf-wallet-v2-git-deploy-work-baf-wallet.vercel.app',
+  ];
   const corsOptions = {
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else if (
+        // If the env is TEST or DEV, check against the following REGEX string to
+        // allow for frontend Vercel branch deploys to be testable
+        (constants.env === Env.TEST || constants.env === Env.DEV) &&
+        /^https:\/\/baf\-wallet\-v2\-git\-.{1,100}\-baf\-wallet\.vercel\.app$/.test(
+          origin
+        )
+      ) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -39,7 +52,7 @@ async function init() {
 
   RegisterRoutes(app);
 
-  const port = process.env.port || 3333;
+  const port = process.env.PORT || 3333;
   const server = app.listen(port, () => {
     console.log(`Listening at http://localhost:${port}/`);
   });

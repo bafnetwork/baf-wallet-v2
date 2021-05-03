@@ -36,6 +36,10 @@
     });
   }
 
+  export function storeTorusAccessToken(accessToken: string) {
+    window.localStorage.setItem('accessToken', accessToken)
+  }
+
   export async function initAccount(): Promise<{
     accountState: AccountState;
     chainsState: ChainsState | null;

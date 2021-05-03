@@ -2,13 +2,11 @@
   import {
     Chain,
     ChainInterface,
-    ed25519,
     Encoding,
     InferWrapChainInterface,
     KeyPair,
     KeyState,
     PublicKey,
-    secp256k1,
     SecretKey,
   } from '@baf-wallet/interfaces';
   import {
