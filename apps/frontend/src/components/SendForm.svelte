@@ -15,6 +15,7 @@
   let chainSendFormPart;
   const { open } = getContext('modal');
 
+  // TODO: clean up imports, see https://github.com/bafnetwork/baf-wallet-v2/issues/54
   const ChainSendFormPart = (chain: Chain) => () =>
     import(`../../../../libs/${chain}/src/web/SendFormPart.svelte`);
 

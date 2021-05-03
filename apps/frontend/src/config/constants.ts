@@ -2,7 +2,7 @@ import { Env } from '@baf-wallet/interfaces';
 import { environment } from '../environments/environment';
 import { TORUS_NETWORK_TYPE } from '@toruslabs/torus-direct-web-sdk';
 
-console.log(environment)
+console.log(environment);
 export const constants = {
   env: environment.env,
   baseUrl: environment.baseUrl,
