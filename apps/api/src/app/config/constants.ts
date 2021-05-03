@@ -7,6 +7,7 @@ import { environment, initDotEnv } from '../../environments/environment';
 initDotEnv();
 
 export const constants = {
+  env: environment.env,
   chainParams: {
     near: {
       keyPair: keyPairFromSk<ed25519>(
