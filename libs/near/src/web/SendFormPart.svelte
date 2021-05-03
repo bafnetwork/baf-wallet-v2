@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { Chain, GenericTxSupportedActions, CreateTxReturn } from '@baf-wallet/interfaces';
-  import { NearBuildTxParams } from '@baf-wallet/near';
-
-  import { ChainStores, checkChainInit } from '../../../state/chains.svelte';
-  import { SiteKeyStore } from '../../../state/keys.svelte';
+  import { Chain, GenericTxSupportedActions, CreateTxReturn, ed25519, PublicKey } from '@baf-wallet/interfaces';
+  import { NearBuildTxParams, WrappedNearChainInterface } from '@baf-wallet/near';
 
   import Input from '@baf-wallet/base-components/Input.svelte';
   import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
   let recipientAccountID: string, amount: number;
+  export let chainInterface: WrappedNearChainInterface
+  export let edPK: PublicKey<ed25519>
+
   export const createTX = async (): Promise<
     CreateTxReturn<NearBuildTxParams>
   > => {
-    if (!checkChainInit($ChainStores, Chain.NEAR)) {
+    if (!chainInterface || !edPK) {
       throw new Error('You must have an initialized account with NEAR');
     }
     const txParams: NearBuildTxParams = {
@@ -21,8 +21,8 @@
           amount: amount.toString(),
         },
       ],
-      senderPk: $SiteKeyStore.edPK,
-      senderAccountID: $ChainStores[Chain.NEAR].getInner().nearMasterAccount
+      senderPk: edPK,
+      senderAccountID: chainInterface.getInner().nearMasterAccount
         .accountId,
       recipientAccountID,
     };

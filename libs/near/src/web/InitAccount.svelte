@@ -1,32 +1,34 @@
 <script lang="ts">
   import Input from '@baf-wallet/base-components/Input.svelte';
   import Button from '@baf-wallet/base-components/Button.svelte';
-  import { reinitApp } from '../../../config/init.svelte';
-  import { apiClient } from '../../../config/api';
-  import { SiteKeyStore } from '../../../state/keys.svelte';
-  import { AccountStore } from '../../../state/accounts.svelte';
-  import { Encoding } from '@baf-wallet/interfaces';
+  import { Encoding, KeyState, AccountState } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';
+  import { DefaultApi } from '@baf-wallet/api-client';
 
   let newAccountId: string;
 
+  export let apiClient: DefaultApi;
+  export let keyState: KeyState;
+  export let accountState: AccountState;
+  export let cb: () => void = () => {}
+
   async function initNearAccount() {
     const nonce = await apiClient.getAccountNonce({
-      secpPubkeyB58: $SiteKeyStore.secpPK.format(Encoding.BS58),
+      secpPubkeyB58: keyState.secpPK.format(Encoding.BS58),
     });
-    const userId = $AccountStore.oauthInfo.verifierId;
+    const userId = accountState.oauthInfo.verifierId;
     const edSig = signMsg(
-      $SiteKeyStore.edSK,
+      keyState.edSK,
       createUserVerifyMessage(userId, nonce)
     );
     const secpSigBafEncoded = signMsg(
-      $SiteKeyStore.secpSK,
+      keyState.secpSK,
       createUserVerifyMessage(userId, nonce),
       true
     );
     const secpSig = signMsg(
-      $SiteKeyStore.secpSK,
+      keyState.secpSK,
       createUserVerifyMessage(userId, nonce)
     );
 
@@ -34,7 +36,7 @@
       createNearAccountParams: {
         userID: userId,
         nonce,
-        edPubkey: $SiteKeyStore.edPK.format(Encoding.HEX),
+        edPubkey: keyState.edPK.format(Encoding.HEX),
         accountID: newAccountId,
         secpSigS: formatBytes(secpSigBafEncoded, Encoding.HEX),
         edSigHex: formatBytes(edSig, Encoding.HEX),
@@ -42,7 +44,7 @@
       },
     });
     alert('Success');
-    reinitApp();
+    cb();
   }
 </script>
 

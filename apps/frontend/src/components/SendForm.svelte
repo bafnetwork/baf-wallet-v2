@@ -16,7 +16,7 @@
   const { open } = getContext('modal');
 
   const ChainSendFormPart = (chain: Chain) => () =>
-    import(`./chains/${chain}/SendFormPart.svelte`);
+    import(`../../../../libs/${chain}/src/web/SendFormPart.svelte`);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();

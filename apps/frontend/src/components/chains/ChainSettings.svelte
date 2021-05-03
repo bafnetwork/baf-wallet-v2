@@ -1,6 +1,4 @@
 <script lang="ts">
-  // import InitNearAccount from './near/InitAccount.svelte';
-  // import DeleteNearAccount from './near/DeleteAccount.svelte';
   import { getEnumValues } from '@baf-wallet/utils';
   import { Chain } from '@baf-wallet/interfaces';
   import Lazy from '@baf-wallet/base-components/Lazy.svelte';
@@ -12,9 +10,10 @@
 
   const chains = getEnumValues(Chain);
   const ChainDeleteAccountComponent = (chain: Chain) => () =>
-    import(`./${chain}/DeleteAccount.svelte`);
+    import(`../../../../../libs/${chain}/src/web/DeleteAccount.svelte`);
+
   const ChainInitAccountComponent = (chain: Chain) => () =>
-    import(`./${chain}/InitAccount.svelte`);
+    import(`../../../../../libs/${chain}/src/web/InitAccount.svelte`);
 </script>
 
 {#each chains as chain}
