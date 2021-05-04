@@ -7,5 +7,5 @@ export const settings: BotSettings = {
       type: 'PLAYING',
     },
   },
-  prefix: '$',
+  prefix: '%',
 };
