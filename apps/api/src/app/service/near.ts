@@ -5,10 +5,7 @@ import {
   secp256k1,
 } from '@baf-wallet/interfaces';
 import { getBafContract } from '@baf-wallet/baf-contract';
-import {
-  createUserVerifyMessage,
-  encodeBytes,
-} from '@baf-wallet/utils';
+import { createUserVerifyMessage, encodeBytes } from '@baf-wallet/utils';
 import { verifySignature } from '@baf-wallet/crypto';
 import { getNearChain } from '../chains/singletons';
 import { BafError } from '@baf-wallet/errors';
