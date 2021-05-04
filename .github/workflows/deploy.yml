@@ -21,11 +21,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@deploy-work
+      - uses: actions/checkout@main
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
-          npm run client-gen
+          npm run client-genn
           npx nx run api:build:test
           node scripts/create-dist-api-package-json.js
           echo 'npm start' > dist/apps/api/Procfile
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@deploy-work
+      - uses: actions/checkout@main
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
