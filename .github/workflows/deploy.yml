@@ -47,7 +47,7 @@ jobs:
           npm i
           npx nx run bot:build:test
           node scripts/create-dist-bot-package-json.js
-          echo 'npm start' > dist/apps/bot/Procfile
+          echo 'worker: npm start' > dist/apps/bot/Procfile
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
           repository: bafnetwork/baf-wallet-deploy-bot
