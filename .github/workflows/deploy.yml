@@ -21,7 +21,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@deploy-work
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@deploy-work
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
