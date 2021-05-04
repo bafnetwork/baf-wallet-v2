@@ -1,13 +1,18 @@
-import { Env } from '@baf-wallet/interfaces';
+import { ed25519, ed25519Marker, Encoding, Env } from '@baf-wallet/interfaces';
+import { keyPairFromSk } from '@baf-wallet/crypto';
 import { NearInitParams, getNearNetworkID } from '@baf-wallet/near';
+import { skFromString } from '@baf-wallet/utils';
 import { environment, initDotEnv } from '../../environments/environment';
 
 initDotEnv();
 
 export const constants = {
+  env: environment.env,
   chainParams: {
     near: {
-      keyPath: process.env.NEAR_KEYPATH,
+      keyPair: keyPairFromSk<ed25519>(
+        skFromString(process.env.NEAR_SK, ed25519Marker, Encoding.BS58)
+      ),
       networkID: getNearNetworkID(environment.env),
       masterAccountID: process.env.NEAR_MASTER_ACCOUNT_ID,
     } as NearInitParams,

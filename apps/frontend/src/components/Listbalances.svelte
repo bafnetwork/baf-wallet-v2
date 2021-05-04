@@ -1,16 +1,16 @@
 <script lang="ts">
   import { Chain, ChainBalance } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
-  import AmountFormatter from './base/AmountFormatter.svelte';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
   import { ChainStores } from '../state/chains.svelte';
-  import Button from './base/Button.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');
 
   function openSendModal(chain: Chain) {
-    open(SendModal, {chain});
+    open(SendModal, { chain });
   }
 
   const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
@@ -43,47 +43,42 @@
   }
 </script>
 
-<div class="container px-2 mx-auto sm">
-  <table class="w-full table-fixed">
-    <thead>
-      <tr>
-        <th class="w-8" />
-        <th class="w-auto">Asset</th>
-        <th class="w-auto">Balance</th>
-        <th class="w-auto">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#await initBalances() then chains}
-        {#each chains as chain, i}
-          <tr>
-            <td class="mr-2">
-              <img
-                class="object-scale-down mx-2"
-                src={getChainLogoUrl(chain.bal.chain)}
-                alt={`${chain.bal.chain}.png`}
-              />
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              {`$${chain.chainInfo.symbol}`}
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              <AmountFormatter bal={chain.bal} />
-            </td>
-            <td class='text-center'>
-              <Button
-                onClick={() => openSendModal(chain.bal.chain)}
-                color="blue"
-                classExtra="col-start-12 col-span-1">Transfer</Button
-              >
-            </td>
-          </tr>
-        {/each}
-      {:catch error}
-        <span
-          >An error occurred when attempting to fetch asset data: {error}</span
-        >
-      {/await}
-    </tbody>
-  </table>
+<div class="wrapper">
+  <th />
+  <th>Asset</th>
+  <th>Balance</th>
+  <th>Actions</th>
+  {#await initBalances() then chains}
+    {#each chains as chain, i}
+      <img
+        src={getChainLogoUrl(chain.bal.chain)}
+        alt={`${chain.bal.chain}.png`}
+      />
+      <div>
+        {`${chain.chainInfo.symbol}`}
+      </div>
+      <div>
+        <AmountFormatter bal={chain.bal} />
+      </div>
+      <Button onClick={() => openSendModal(chain.bal.chain)} color="blue"
+        >Transfer</Button
+      >
+    {/each}
+  {:catch error}
+    <span>An error occurred when attempting to fetch asset data: {error}</span>
+  {/await}
 </div>
+
+<style>
+  /* your styles go here */
+  .wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 2rem 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+  img {
+    width: 100%;
+  }
+</style>

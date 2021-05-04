@@ -1,19 +1,41 @@
 <script lang="ts">
-  import Button from './base/Button.svelte';
-  import Card from './base/Card.svelte';
-  import Icon from './base/Icon.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Icon from '@baf-wallet/base-components/Icon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
-  import { secp256k1Marker }  from '@baf-wallet/interfaces';
-  import { AccountStore } from '../state/accounts.svelte';
+  import { secp256k1Marker } from '@baf-wallet/interfaces';
+  import {
+    AccountStore,
+    storeOauthState,
+    storeTorusAccessToken,
+  } from '../state/accounts.svelte';
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
   import { skFromString } from '@baf-wallet/utils';
+  import { reinitApp } from '../config/init.svelte';
+  import Spinner from 'svelte-spinner';
+
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
+  let size = 50;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
+
+  let isLoading = false;
 
   async function torusPostLoginHook(userInfo: TorusLoginResponse) {
+    const accessToken = userInfo.userInfo.accessToken;
+    storeOauthState({
+      verifierId: userInfo.userInfo.verifierId,
+      name: userInfo.userInfo.name,
+      email: userInfo.userInfo.email,
+    });
+    storeTorusAccessToken(accessToken);
     await apiClient.revokeToken({
-      revokeTokenParams: { token: userInfo.userInfo.accessToken },
+      revokeTokenParams: { token: accessToken },
     });
 
     const secpSk = skFromString(userInfo.privateKey, secp256k1Marker);
@@ -26,27 +48,32 @@
         loggedIn: true,
       };
     });
+    reinitApp();
   }
 
   async function discordLogin() {
+    isLoading = true;
     await initTorusKeySource({
       sdkArgs: {
         baseUrl: `${constants.baseUrl}/serviceworker`,
         network: constants.torus.network, // details for test net
       },
       oauthProvider: 'discord',
-      torusVerifierName: constants.torus.discord.verifier,
-      oauthClientID: constants.torus.discord.clientId,
-      postLoginHook: torusPostLoginHook
+      postLoginHook: torusPostLoginHook,
     });
+    isLoading = false;
   }
 </script>
 
-<Card classExtra="w-1/2 object-center flex flex-col items-center">
-  <h1 class="pb-4 text-xl">Sign in with a social provider</h1>
-  <div class="social-is">
-    <Button classExtra="w-12" onClick={discordLogin}>
-      <Icon iconName="Discord" />
-    </Button>
-  </div>
+<Card styleType="secondary">
+  <h4>Sign in with a social provider</h4>
+  <Button onClick={discordLogin} styleType="primary">
+    <Icon iconName="Discord" />
+  </Button>
+  {#if isLoading}
+    <Spinner {size} {speed} {color} {thickness} {gap} />
+  {/if}
 </Card>
+
+<style>
+</style>

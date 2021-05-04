@@ -1,10 +1,17 @@
 <script lang="ts">
-  import Card from '../components/base/Card.svelte';
-  import Button from '../components/base/Button.svelte';
-  import AmountFormatter from '../components/base/AmountFormatter.svelte';
-  import SuccessIcon from './base/svg/SuccessIcon.svelte';
-  import ErrorIcon from './base/svg/ErrorIcon.svelte';
-  import Loader from './base/Loader.svelte';
+  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Button from '@baf-wallet/base-components/Button.svelte';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
+  import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
+  import Spinner from 'svelte-spinner';
+  
+  //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
+  let size = 25;
+  let speed = 750;
+  let color = '#A82124';
+  let thickness = 2.0;
+  let gap = 40;
 
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
@@ -59,12 +66,14 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw "The transaction must be either in the url or passed in through the component's state";
+      throw new Error(
+        "The transaction must be either in the url or passed in through the component's state"
+      );
     } else if (!isGenericTx && txInUrl) {
-      throw 'Unimplemented';
+      throw new Error('Unimplemented');
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw 'You must be logged in to send a tx';
+      throw new Error('You must be logged in to send a tx');
     }
     if (isGenericTx) {
       await initGenericTx();
@@ -96,7 +105,7 @@
   Loading...
 {:then signer}
   {#if !txSuccess}
-    <Card>
+    <Card styleType="primary">
       {#each actions as action, i}
         {#if action.type === GenericTxSupportedActions.TRANSFER}
           <p>
@@ -109,8 +118,8 @@
           An error occured, an unsupported action type was passed in!
         {/if}
       {/each}
-      <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
-      <Button>Decline</Button>
+      <Button styleType="secondary" onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      <Button styleType="danger">Decline</Button>
     </Card>
   {/if}
 {:catch e}
@@ -120,17 +129,23 @@
     The following error occured: {e && console.error(e)}
   {/if}
 {/await}
-<div class="flex flex-row justify-center py-4">
+<div>
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
-      <Loader />
+      <Spinner 
+        size="{size}"
+        speed="{speed}"
+        color="{color}"
+        thickness="{thickness}"
+        gap="{gap}"
+      />
     {:else if error}
       <ErrorIcon />
     {:else}
       <p>Success!</p>
       <SuccessIcon />
-      <span class="text-center"
+      <span
         >Explorer: <a
           target="_blank"
           rel="noopener noreferrer"
