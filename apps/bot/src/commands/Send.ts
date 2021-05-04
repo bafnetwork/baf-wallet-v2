@@ -88,7 +88,8 @@ export default class SendMoney extends Command {
         environment.BASE_WALLET_URL,
         tx
       );
-      await super.respond(message.channel, link);
+
+      await message.author.send(link);
     } catch (err) {
       console.error(err);
       await super.respond(
