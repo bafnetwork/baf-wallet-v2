@@ -45,7 +45,7 @@ jobs:
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
-          npx nx run bot:build
+          npx nx run bot:build:test
           node scripts/create-dist-bot-package-json.js
           echo 'npm start' > dist/apps/bot/Procfile
       - uses: seanmiddleditch/gha-publish-to-git@master
