@@ -25,7 +25,7 @@ jobs:
       - run: |
           sudo apt-get -y install nodejs npm
           npm i
-          npm run client-genn
+          npm run client-gen
           npx nx run api:build:test
           node scripts/create-dist-api-package-json.js
           echo 'npm start' > dist/apps/api/Procfile
