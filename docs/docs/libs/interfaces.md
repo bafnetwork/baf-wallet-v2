@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# Purpose
+# Interfaces
+
+## Purpose
 
 In order to stay sane and productive when integrating many blockchains into a single project, we need to be able to decouple each integration from core wallet functionality as much as possible. Every chain worth integrating has its own SDK, which we should use in order to avoid re-inventing wheels. However, a separate SDK for each chain means separate types and interfaces for public keys, secret keys, key pairs, RPC calls, transactions, transaction signing, transaction sending, accounts, account metadata, and more, not to mention the fact that they are often object-orented and thus *stateful*, each in their own particular way. To not isolate all of this from our core functionality would quickly result in an epidemic of fugly code that's incredibly difficult to work with spreading across the BAF Wallet codebase.
 
 In order to do this, we need some well-chosen unifying types and interfaces that abstract over the specific chain implementations - this is the purpose of `@baf-wallet/interfaces`. 
-
-# Interfaces
 
 ## `ChainInterface`
 
@@ -84,5 +84,9 @@ export interface WrappedChainInterface<
 as you can see, `WrappedChainInterface` is exactly the same as `ChainInterface`, but the functions have already been called for you, all using a single instance of `Inner`. Then we also provide a function in `@baf-wallet/multi-chain` that takes does exactly this.
 
 ## `KeySource`
+
+TODO
+
+## "Infer" types
 
 TODO
