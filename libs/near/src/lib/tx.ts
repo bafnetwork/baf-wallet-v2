@@ -9,6 +9,8 @@ import {
   GenericTxSupportedActions,
   GenericTxAction,
   GenericTxActionTransfer,
+  GenericTxActionTransferContractToken,
+  Chain,
 } from '@baf-wallet/interfaces';
 import { Pair, getEnumValues } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/crypto';
@@ -33,6 +35,7 @@ import {
   signTransaction,
 } from 'near-api-js/lib/transaction';
 import { getBafContract } from '@baf-wallet/baf-contract';
+import { BafError } from '@baf-wallet/errors';
 
 export type NearTxInterface = TxInterface<
   Transaction,
@@ -44,14 +47,7 @@ export type NearTxInterface = TxInterface<
 >;
 export type NearSupportedActionTypes = GenericTxSupportedActions;
 export type NearTransaction = Transaction;
-interface NearActionParam {
-  // used to type check the parameter input
-  discriminator: NearSupportedActionTypes;
-}
-export interface NearTransferParam extends NearActionParam {
-  // a string number value in Yocto
-  amount: string;
-}
+
 export type NearAction = GenericTxAction;
 export interface NearBuildTxParams {
   actions: NearAction[];
@@ -71,16 +67,54 @@ export function nearTx(innerSdk: NearState): NearTxInterface {
   };
 }
 
-function buildNativeAction(action: NearAction): NearNativeAction {
-  switch (action.type) {
+function buildNativeAction(
+  receiverId: string,
+  action: NearAction
+): NearNativeAction {
+  const actionType = action.type;
+  switch (actionType) {
     case GenericTxSupportedActions.TRANSFER:
       return transactions.transfer(
         new BN((action as GenericTxActionTransfer).amount, 10)
       );
+    case GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN:
+      const params = action as GenericTxActionTransferContractToken;
+      return transactions.functionCall(
+        'ft_transfer',
+        {
+          receiver_id: receiverId,
+          amount: new BN(params.amount),
+          memo: params.memo,
+        },
+        new BN(10), // Maximum gas fee
+        new BN(0) // A deposit associated with this action
+      );
     default:
-      throw `Action of type ${action.type} is unsupported`;
+      throw `Action of type ${actionType} is unsupported`;
   }
 }
+
+const checkAllContractActions = (actions: NearAction[]) => {
+  if (!actions.every(isContractCall)) {
+    return false;
+  }
+  if (actions.length === 0) {
+    return true;
+  }
+
+  const contract = (actions[0] as GenericTxActionTransferContractToken).contractAddress;
+  for (let i = 1; i < actions.length; i++) {
+    if (
+      (actions[i] as GenericTxActionTransferContractToken).contractAddress !== contract
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isContractCall = (action: NearAction) =>
+  action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN;
 
 export const extractGenericActionsFromTx = (
   txParams: NearBuildTxParams
@@ -95,13 +129,13 @@ export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
   senderPk: PublicKey<ed25519>
 ): Promise<NearBuildTxParams> => {
   const recipientAccountID = await getBafContract().getAccountId(recipientPk);
-  const nearTransferParams: NearBuildTxParams = {
+  const nearTxParams: NearBuildTxParams = {
     actions: txParams.actions,
     senderPk: senderPk,
     senderAccountID: innerSdk.nearMasterAccount.accountId,
     recipientAccountID,
   };
-  return nearTransferParams;
+  return nearTxParams;
 };
 
 export const buildNearTx = (innerSdk: NearState) => async ({
@@ -110,6 +144,9 @@ export const buildNearTx = (innerSdk: NearState) => async ({
   senderAccountID,
   recipientAccountID,
 }: NearBuildTxParams): Promise<Transaction> => {
+  if (actions.some(isContractCall) && !checkAllContractActions(actions)) {
+    throw BafError.NonuniformTxActionRecipients(Chain.NEAR);
+  }
   const nearSenderPk = nearConverter.pkFromUnified(senderPk);
   const accessKey = await innerSdk.rpcProvider.query(
     `access_key/${senderAccountID}/${nearSenderPk.toString()}`,
@@ -118,12 +155,19 @@ export const buildNearTx = (innerSdk: NearState) => async ({
 
   const nonce = ++accessKey.nonce;
   const recentBlockHash = utils.serialize.base_decode(accessKey.block_hash);
-  const nativeActions = actions.map(buildNativeAction);
+  const nativeActions = actions.map((action) =>
+    buildNativeAction(recipientAccountID, action)
+  );
+
+  const transactionRecipient =
+    actions.some(isContractCall) && actions.length > 0
+      ? (actions[0] as GenericTxActionTransferContractToken).contractAddress
+      : recipientAccountID;
 
   return transactions.createTransaction(
     senderAccountID,
     nearSenderPk,
-    recipientAccountID,
+    transactionRecipient,
     nonce,
     nativeActions,
     recentBlockHash

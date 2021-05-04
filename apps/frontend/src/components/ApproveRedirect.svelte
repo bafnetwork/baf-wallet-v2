@@ -59,6 +59,7 @@
     );
     actions = txParams.actions;
     tx = await $ChainStores[Chain.NEAR].tx.build(nearTxParams);
+    console.log('AAAA');
   }
   async function initChainSpecificTx() {
     actions = $ChainStores[chain].tx.extractGenericActionsFromTx(txParams);
@@ -67,12 +68,12 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw BafError.InvalidTransactionApproveRedirect()
+      throw BafError.InvalidTransactionApproveRedirect();
     } else if (!isGenericTx && txInUrl) {
-      throw BafError.Unimplemented()
+      throw BafError.Unimplemented();
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw BafError.UninitChain(chain)
+      throw BafError.UninitChain(chain);
     }
     if (isGenericTx) {
       await initGenericTx();
@@ -112,6 +113,11 @@
               bal={{ chain, balance: action.amount }}
             />
             to {recipientUser}
+          </p>
+        {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
+          <p>
+            Action #{i + 1}: Transfering {action.amount} to {recipientUser} for contract
+            {action.contractAddress}
           </p>
         {:else}
           An error occured, an unsupported action type was passed in!
