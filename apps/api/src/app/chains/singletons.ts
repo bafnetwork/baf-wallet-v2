@@ -1,5 +1,5 @@
 import { Chain } from '@baf-wallet/interfaces';
-import {BafError} from '@baf-wallet/errors'
+import { BafError } from '@baf-wallet/errors';
 import { getWrappedInterface } from '@baf-wallet/multi-chain';
 import {
   NearChainInterface,

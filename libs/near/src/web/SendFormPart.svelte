@@ -10,12 +10,13 @@
     NearBuildTxParams,
     WrappedNearChainInterface,
   } from '@baf-wallet/near';
+  import {
+    formatAmountToIndivisibleUnit
+  } from '@baf-wallet/multi-chain'
 
   import Input from '@baf-wallet/base-components/Input.svelte';
   import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
-  import { utils } from 'near-api-js';
-  import BN from 'bn.js';
-import { BafError } from '@baf-wallet/errors';
+  import { BafError } from '@baf-wallet/errors';
   let recipientAccountID: string, amountNear: number;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
@@ -24,14 +25,14 @@ import { BafError } from '@baf-wallet/errors';
     CreateTxReturn<NearBuildTxParams>
   > => {
     if (!chainInterface || !edPK) {
-      throw BafError.UninitChain(Chain.NEAR)
+      throw BafError.UninitChain(Chain.NEAR);
     }
-    const amountYoctoNearBN = utils.format.NEAR_NOMINATION.muln(amountNear)
+    const amountYoctoNear = formatAmountToIndivisibleUnit(amountNear, Chain.NEAR);
     const txParams: NearBuildTxParams = {
       actions: [
         {
           type: GenericTxSupportedActions.TRANSFER,
-          amount: amountYoctoNearBN.toString(10),
+          amount: amountYoctoNear,
         },
       ],
       senderPk: edPK,

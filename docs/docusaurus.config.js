@@ -62,8 +62,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/bafnetwork/baf-wallet-v2/tree/main/docs',
+          editUrl: 'https://github.com/bafnetwork/baf-wallet-v2/tree/main/docs',
         },
         blog: {
           showReadingTime: true,

@@ -1,5 +1,6 @@
 import { BafError } from '@baf-wallet/errors';
 import { Env } from '@baf-wallet/interfaces';
+import { utils } from 'near-api-js';
 
 export enum NearNetworkID {
   DEVNET = 'testnet',
@@ -31,4 +32,9 @@ export function getNearNetworkID(env: Env): NearNetworkID {
     default:
       return NearNetworkID.DEVNET;
   }
+}
+
+export function nearToYoctoNear(amount: number): string {
+  const amountYoctoNearBN = utils.format.NEAR_NOMINATION.muln(amount);
+  return amountYoctoNearBN.toString(10);
 }
