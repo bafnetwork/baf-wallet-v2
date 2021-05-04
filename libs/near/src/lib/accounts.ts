@@ -42,7 +42,7 @@ export function nearAccounts(
       method = 'helper',
     }: NearCreateAccountParams): Promise<NearAccount> => {
       if (method === 'local' && !initialBalance) {
-        throw BafError.MissingInitBalance(Chain.NEAR)
+        throw BafError.MissingInitBalance(Chain.NEAR);
       }
       const masterAccount = await near.account(near.config.masterAccount);
       const accountCreator: AccountCreator =

@@ -106,7 +106,7 @@ async function init({
       keyStore: keyStore,
     };
   } else {
-    throw BafError.MissingKeyPair()
+    throw BafError.MissingKeyPair();
   }
 
   const near = await connect(connectConfig);

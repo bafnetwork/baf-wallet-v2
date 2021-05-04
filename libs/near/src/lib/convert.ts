@@ -21,7 +21,7 @@ export const nearConverter: Converter<
     curveMarker: Curve
   ): PublicKey<Curve> {
     if (curveMarker.toString() !== 'ed25519') {
-      throw BafError.UnsupportedKeyCurve('ed25519')
+      throw BafError.UnsupportedKeyCurve('ed25519');
     }
     const data = Buffer.from(pk.data);
     return {
@@ -40,7 +40,7 @@ export const nearConverter: Converter<
   ): KeyPair<Curve> {
     const skFmt = keyPair.toString();
     if (!skFmt.startsWith(curveMarker.toString())) {
-      throw BafError.UnsupportedKeyCurve('ed25519')
+      throw BafError.UnsupportedKeyCurve('ed25519');
     }
 
     const skStr = skFmt.split(':')[1];
