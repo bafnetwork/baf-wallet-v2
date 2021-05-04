@@ -132,5 +132,5 @@
 <!-- TODO:s
  1. Amount formatter,
  2. Return the actual balance for an account
- 3. Have the Transfer actually work
+ 3. Have the Transfer of tokens actually work
 -->
