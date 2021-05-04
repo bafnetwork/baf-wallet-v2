@@ -30,6 +30,7 @@
     "torus": { "tags": [] },
     "baf-contract": { "tags": [] },
     "crypto": { "tags": [] },
-    "base-components": { "tags": [] }
+    "base-components": { "tags": [] },
+    "errors": { "tags": [] }
   }
 }

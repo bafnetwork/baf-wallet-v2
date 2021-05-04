@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {BafError} from '@baf-wallet/errors'
 import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
 import { Chain } from '@baf-wallet/interfaces';
@@ -110,8 +111,6 @@ export async function getChainInfo(chain: Chain): Promise<ChainInfo> {
       );
       return null;
     }
-    throw new Error(
-      `Received invalid info.json: ${err}. See \`ChainInfo\` in trust-wallet-assets/src/lib/index.ts for more information`
-    );
+    throw BafError.InvalidTrustWalletJSON(err)
   }
 }

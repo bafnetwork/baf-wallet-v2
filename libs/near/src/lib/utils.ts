@@ -1,3 +1,4 @@
+import { BafError } from '@baf-wallet/errors';
 import { Env } from '@baf-wallet/interfaces';
 
 export enum NearNetworkID {
@@ -15,7 +16,7 @@ export function stringToNetworkID(str: string): NearNetworkID {
     case NearNetworkID.MAINNET:
       return NearNetworkID.MAINNET;
     default:
-      throw new Error(`Unknown network identifier ${str}`);
+      throw BafError.UnknownNetworkIdent;
   }
 }
 

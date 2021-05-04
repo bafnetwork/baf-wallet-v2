@@ -1,4 +1,5 @@
 import { Chain } from '@baf-wallet/interfaces';
+import {BafError} from '@baf-wallet/errors'
 import { getWrappedInterface } from '@baf-wallet/multi-chain';
 import {
   NearChainInterface,
@@ -17,6 +18,6 @@ export async function initChains() {
 }
 
 export function getNearChain(): WrappedNearChainInterface {
-  if (!init) throw new Error('You must first initialize the chains');
+  if (!init) throw BafError.UninitChain(Chain.NEAR);
   return nearChain;
 }

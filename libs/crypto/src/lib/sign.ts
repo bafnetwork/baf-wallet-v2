@@ -13,6 +13,7 @@ import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
 import { encodeBytes } from '@baf-wallet/utils';
 import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
+import { BafError } from '@baf-wallet/errors';
 
 const ellipticSecp256k1 = new EC('secp256k1');
 
@@ -39,7 +40,7 @@ export function verifySignature<Curve>(
       );
     }
     default:
-      throw new Error(`Unsupported curve ${pk.curve.toString()}`);
+      throw BafError.UnsupportedKeyCurve(pk.curve.toString());
   }
 }
 
@@ -68,6 +69,6 @@ export function signMsg<Curve>(
       );
     }
     default:
-      throw new Error(`Unsupported curve ${sk.curve.toString()}`);
+      throw BafError.UnsupportedKeyCurve(sk.curve.toString());
   }
 }

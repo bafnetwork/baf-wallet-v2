@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Chain, ChainBalance } from '@baf-wallet/interfaces';
+  import { BafError } from '@baf-wallet/errors';
 
   import { formatNearAmount as nearFormat } from 'near-api-js/lib/utils/format';
 
@@ -11,7 +12,7 @@
       // TODO: for we can use whatever standard there may be for the following
       // We could end up using a library like the folliwing https://www.npmjs.com/package/ethereum-libraries-token
       default:
-        throw new Error('Unsupported token');
+        throw BafError.UnsupportedToken(bal.chain);
     }
   }
 </script>

@@ -4,16 +4,14 @@ import {
   PublicKey,
   secp256k1,
 } from '@baf-wallet/interfaces';
-import { PublicKey as NearPublicKey } from 'near-api-js/lib/utils';
 import { getBafContract } from '@baf-wallet/baf-contract';
 import {
   createUserVerifyMessage,
   encodeBytes,
-  formatBytes,
-  pkToString,
 } from '@baf-wallet/utils';
 import { verifySignature } from '@baf-wallet/crypto';
 import { getNearChain } from '../chains/singletons';
+import { BafError } from '@baf-wallet/errors';
 
 export interface NearAccountInfo {
   near_id: string | null;
@@ -31,10 +29,11 @@ export async function createNearAccount(
   accountID: string
 ) {
   const msg = createUserVerifyMessage(userId, nonce);
-  const sigsValid = verifyBothSigs(msg, secpSig, edSig, secpPK, edPK);
-
-  if (!sigsValid) {
-    throw new Error('Proof that the sender owns this public key must provided');
+  if (!verifySignature(secpPK, msg, encodeBytes(secpSig, Encoding.HEX))) {
+    throw BafError.InvalidSignature(secpPK);
+  }
+  if (!verifySignature(edPK, msg, encodeBytes(edSig, Encoding.HEX))) {
+    throw BafError.InvalidSignature(edPK);
   }
 
   const near = await getNearChain();
@@ -66,17 +65,4 @@ export async function getAccountInfoFromSecpPK(
   return {
     near_id: await getBafContract().getAccountId(pk),
   };
-}
-
-function verifyBothSigs(
-  msg: string,
-  secpSig: string,
-  edSig: string,
-  secpPubkey: PublicKey<secp256k1>,
-  edPubkey: PublicKey<ed25519>
-): boolean {
-  return (
-    verifySignature(secpPubkey, msg, encodeBytes(secpSig, Encoding.HEX)) &&
-    verifySignature(edPubkey, msg, encodeBytes(edSig, Encoding.HEX))
-  );
 }

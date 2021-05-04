@@ -4,8 +4,9 @@
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
   import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
+  import { BafError } from '@baf-wallet/errors';
   import Spinner from 'svelte-spinner';
-  
+
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 25;
   let speed = 750;
@@ -66,14 +67,12 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw new Error(
-        "The transaction must be either in the url or passed in through the component's state"
-      );
+      throw BafError.InvalidTransactionApproveRedirect()
     } else if (!isGenericTx && txInUrl) {
-      throw new Error('Unimplemented');
+      throw BafError.Unimplemented()
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw new Error('You must be logged in to send a tx');
+      throw BafError.UninitChain(chain)
     }
     if (isGenericTx) {
       await initGenericTx();
@@ -118,7 +117,10 @@
           An error occured, an unsupported action type was passed in!
         {/if}
       {/each}
-      <Button styleType="secondary" onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      <Button
+        styleType="secondary"
+        onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button
+      >
       <Button styleType="danger">Decline</Button>
     </Card>
   {/if}
@@ -133,13 +135,7 @@
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
-      <Spinner 
-        size="{size}"
-        speed="{speed}"
-        color="{color}"
-        thickness="{thickness}"
-        gap="{gap}"
-      />
+      <Spinner {size} {speed} {color} {thickness} {gap} />
     {:else if error}
       <ErrorIcon />
     {:else}
