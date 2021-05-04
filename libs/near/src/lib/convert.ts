@@ -7,6 +7,7 @@ import {
 import { KeyPair as NearKeyPair, utils as NearUtils } from 'near-api-js';
 import { bufferConverter, encodeBytes, formatBytes } from '@baf-wallet/utils';
 import { Buffer } from 'buffer';
+import { BafError } from '@baf-wallet/errors';
 
 export const nearConverter: Converter<
   NearUtils.PublicKey,
@@ -20,9 +21,7 @@ export const nearConverter: Converter<
     curveMarker: Curve
   ): PublicKey<Curve> {
     if (curveMarker.toString() !== 'ed25519') {
-      throw new Error(
-        'currently this function only supports ! Please specify the correct curve marker'
-      );
+      throw BafError.UnsupportedKeyCurve('ed25519')
     }
     const data = Buffer.from(pk.data);
     return {
@@ -41,9 +40,7 @@ export const nearConverter: Converter<
   ): KeyPair<Curve> {
     const skFmt = keyPair.toString();
     if (!skFmt.startsWith(curveMarker.toString())) {
-      throw new Error(
-        'keyPair is on the wrong curve! Please specify the correct curve in the type argument'
-      );
+      throw BafError.UnsupportedKeyCurve('ed25519')
     }
 
     const skStr = skFmt.split(':')[1];

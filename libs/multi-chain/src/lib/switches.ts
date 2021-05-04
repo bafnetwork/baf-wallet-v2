@@ -1,3 +1,4 @@
+import { BafError } from '@baf-wallet/errors';
 import {
   InferChainInterface,
   Chain,
@@ -24,7 +25,7 @@ export function getChainInterface<T>(chain: Chain): InferChainInterface<T> {
     case Chain.NEAR:
       return nearChainInterface as InferChainInterface<T>;
     default:
-      throw new Error(`Unsupported chain ${chain}`);
+      throw BafError.UnsupportedChain(chain);
   }
 }
 

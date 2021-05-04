@@ -1,4 +1,5 @@
 import { Account, Contract, Near } from 'near-api-js';
+import { BafError } from '@baf-wallet/errors';
 import ContractConfig from '../../config.json';
 import { ec as EC } from 'elliptic';
 import {
@@ -34,9 +35,7 @@ export async function setBafContract(account: Account): Promise<BafContract> {
 
 export function getBafContract(): BafContract {
   if (bafContract) return bafContract;
-  throw new Error(
-    'BAF Contract is not initialized yet, please call setBafContract'
-  );
+  throw BafError.UnintBafContract();
 }
 
 async function buildBafContract(account: Account): Promise<BafContract> {

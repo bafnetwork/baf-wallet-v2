@@ -28,6 +28,7 @@ import { nearConverter } from './convert';
 import { NearNetworkID } from './utils';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
+import { BafError } from '@baf-wallet/errors';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type {
@@ -105,7 +106,7 @@ async function init({
       keyStore: keyStore,
     };
   } else {
-    throw new Error('A key path or key pair must be provided');
+    throw BafError.MissingKeyPair()
   }
 
   const near = await connect(connectConfig);

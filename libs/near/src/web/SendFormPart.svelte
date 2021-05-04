@@ -15,6 +15,7 @@
   import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
   import { utils } from 'near-api-js';
   import BN from 'bn.js';
+import { BafError } from '@baf-wallet/errors';
   let recipientAccountID: string, amountNear: number;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
@@ -23,7 +24,7 @@
     CreateTxReturn<NearBuildTxParams>
   > => {
     if (!chainInterface || !edPK) {
-      throw new Error('You must have an initialized account with NEAR');
+      throw BafError.UninitChain(Chain.NEAR)
     }
     const amountYoctoNearBN = utils.format.NEAR_NOMINATION.muln(amountNear)
     const txParams: NearBuildTxParams = {

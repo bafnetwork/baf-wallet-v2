@@ -1,4 +1,5 @@
 import { Encoding, PublicKey, SecretKey } from '@baf-wallet/interfaces';
+import { BafError } from '@baf-wallet/errors';
 import * as bs58 from 'bs58';
 
 export function formatBytes(buf: Buffer, fmt = Encoding.HEX) {
@@ -8,7 +9,7 @@ export function formatBytes(buf: Buffer, fmt = Encoding.HEX) {
     case Encoding.BS58:
       return bs58.encode(Buffer.from(buf));
     default:
-      throw new Error('Encoding type not supported');
+      throw BafError.UnsupportedEncoding(fmt);
   }
 }
 
@@ -21,7 +22,7 @@ export function encodeBytes(str: string, fmt: Encoding): Buffer {
     case Encoding.UTF8:
       return Buffer.from(str, 'utf8');
     default:
-      throw new Error('Encoding type not supported');
+      throw BafError.UnsupportedEncoding(fmt);
   }
 }
 
