@@ -66,6 +66,7 @@ export interface WrappedChainInterface<
     AccountCreateParams
   >;
   convert: Converter<PK, SK, KP>;
+  getConstants: (env: Env) => ChainConstants;
   getInner: () => Inner;
 }
 
@@ -105,10 +106,11 @@ export interface ChainInterface<
   convert: Converter<PK, SK, KP>;
 }
 
+export interface ChainContractTokenConstant {
+  contractAddress: string;
+}
 export interface ChainConstants {
-  tokens: {
-    contractAddress: string,
-  }[]
+  tokens: ChainContractTokenConstant[];
 }
 
 export interface AccountsInterface<Account, LookupParams, CreateParams> {
@@ -117,8 +119,13 @@ export interface AccountsInterface<Account, LookupParams, CreateParams> {
   getGenericMasterAccount: () => GenericAccount;
 }
 
+export type AccountContractTokenBalFn = (
+  contractAddress: string
+) => Promise<Balance>;
+
 export interface GenericAccount {
   getBalance: () => Promise<Balance>;
+  getContractTokenBalance: AccountContractTokenBalFn;
 }
 
 // bare minimum interface representing direct RPC methods to the chain

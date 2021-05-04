@@ -9,7 +9,6 @@ export function getConstants(env: Env): ChainConstants {
     return {
       tokens: [{
         contractAddress: 'ft.levtester.testnet',
-
       }]
     }
   }

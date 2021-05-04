@@ -40,6 +40,7 @@ export async function wrapChainInterface<T>(
     tx: unwrapped.tx(innerSdk),
     accounts: unwrapped.accounts(innerSdk),
     convert: unwrapped.convert,
+    getConstants: unwrapped.getConstants,
 
     // Note: in the future, some chainInterfaces might want to do stuff in this fn
     getInner: () => innerSdk,

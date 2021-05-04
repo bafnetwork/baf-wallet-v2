@@ -32,7 +32,7 @@ describe('frontend', () => {
             type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
             amount: '10000',
             contractAddress: 'ft.levtester.testnet',
-            memo: 'This is cool'
+            // memo: 'This is cool'
           },
         ],
         oauthProvider: 'discord',

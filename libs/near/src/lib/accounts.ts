@@ -33,6 +33,9 @@ export function nearAccounts(
         getBalance: async () =>
           (await nearState.nearMasterAccount.getAccountBalance())
             .total as Balance,
+        getContractTokenBalance: async () => {
+          return "10"
+        }
       };
     },
     create: async ({
