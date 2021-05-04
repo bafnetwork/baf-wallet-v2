@@ -102,7 +102,7 @@ const getChainLogoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/logo.png`;
 
 export const getTokenLogoUrl = (chain: Chain, tokenName?: string) =>
-  chain === tokenName
+  chain === tokenName || !tokenName
     ? getChainLogoUrl(chain)
     : getNonNativeTokenLogoUrl(chain, tokenName);
 
@@ -113,7 +113,7 @@ export async function getTokenInfo(
   chain: Chain,
   tokenName?: string
 ): Promise<TokenInfo> {
-  const tokenIsChain = chain === tokenName;
+  const tokenIsChain = chain === tokenName || !tokenName;
   const url = tokenIsChain
     ? getChainInfoUrl(chain)
     : getNonNativeTokenInfoUrl(chain, tokenName);

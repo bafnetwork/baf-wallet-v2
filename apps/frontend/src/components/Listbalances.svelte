@@ -19,7 +19,7 @@
   // TODO: merge with chainInfo
   // async function initContractBalances(): Promise<{name: string, bal: Balance}
 
-  async function initChainBalances(): Promise<
+  async function initTokenBalances(): Promise<
     { chainInfo: TokenInfo; bal: Balance }[]
   > {
     const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
@@ -52,10 +52,10 @@
   <th>Asset</th>
   <th>Balance</th>
   <th>Actions</th>
-  {#await initChainBalances() then chains}
+  {#await initTokenBalances() then chains}
     {#each chains as chain, i}
       <img
-        src={getTokenLogoUrl(chain.chainInfo.chain, chain.chainInfo.name)}
+        src={getTokenLogoUrl(chain.chainInfo.chain)}
         alt={`${chain.chainInfo.name}.png`}
       />
       <div>
