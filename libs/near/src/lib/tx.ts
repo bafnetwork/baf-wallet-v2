@@ -83,11 +83,11 @@ function buildNativeAction(
         'ft_transfer',
         {
           receiver_id: receiverId,
-          amount: new BN(params.amount),
+          amount: params.amount,
           memo: params.memo,
         },
-        new BN(10), // Maximum gas fee
-        new BN(0) // A deposit associated with this action
+        new BN(10000000000000), // Maximum gas fee
+        new BN(1) // A deposit associated with this action
       );
     default:
       throw `Action of type ${actionType} is unsupported`;
@@ -102,10 +102,12 @@ const checkAllContractActions = (actions: NearAction[]) => {
     return true;
   }
 
-  const contract = (actions[0] as GenericTxActionTransferContractToken).contractAddress;
+  const contract = (actions[0] as GenericTxActionTransferContractToken)
+    .contractAddress;
   for (let i = 1; i < actions.length; i++) {
     if (
-      (actions[i] as GenericTxActionTransferContractToken).contractAddress !== contract
+      (actions[i] as GenericTxActionTransferContractToken).contractAddress !==
+      contract
     ) {
       return false;
     }

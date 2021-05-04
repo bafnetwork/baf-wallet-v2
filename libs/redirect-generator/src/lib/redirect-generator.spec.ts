@@ -20,18 +20,18 @@ describe('frontend', () => {
     );
     console.log(sendURL);
   });
-  it('Create a url to send 100 yoctoFt.levtester to lev_s#7844', () => {
+  it('Create a url to send 100 yoctoFt.levtester to sladuca#4629', () => {
     const sendURL = createApproveRedirectURL(
       Chain.NEAR,
       'http://localhost:8080',
       {
-        recipientUserId: '473198585890996224',
-        recipientUserIdReadable: 'lev_s#7844',
+        recipientUserId: '216732707449733120',
+        recipientUserIdReadable: 'sladuca#4629',
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
             amount: '10000',
-            address: 'ft.levtester.testnet',
+            contractAddress: 'ft.levtester.testnet',
             memo: 'This is cool'
           },
         ],

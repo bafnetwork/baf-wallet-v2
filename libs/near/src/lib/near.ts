@@ -4,7 +4,6 @@ import {
   Encoding,
   InferWrapChainInterface,
   KeyPair,
-  secp256k1,
 } from '@baf-wallet/interfaces';
 import {
   Account,
@@ -18,6 +17,7 @@ import {
 } from 'near-api-js';
 
 import { NearBuildTxParams, NearSignTxOpts, nearTx } from './tx';
+import { getConstants } from './constants';
 import { nearRpc, NearSendOpts, NearSendResult } from './rpc';
 import {
   NearAccountID,
@@ -68,6 +68,7 @@ export const nearChainInterface: NearChainInterface = {
   tx: nearTx,
   convert: nearConverter,
   rpc: nearRpc,
+  getConstants,
   init,
 };
 

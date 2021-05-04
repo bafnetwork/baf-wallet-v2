@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { Chain, ChainBalance } from '@baf-wallet/interfaces';
-  import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
+  import { Balance, Chain, ChainBalance } from '@baf-wallet/interfaces';
+  import {
+    getTokenLogoUrl,
+    TokenInfo,
+    getTokenInfo,
+  } from '@baf-wallet/trust-wallet-assets';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
-  import trustWalletAssets from '../trust-wallet-assets';
   import { ChainStores } from '../state/chains.svelte';
   import Button from '@baf-wallet/base-components/Button.svelte';
   import { getContext } from 'svelte';
@@ -13,10 +16,11 @@
     open(SendModal, { chain });
   }
 
-  const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
+  // TODO: merge with chainInfo
+  // async function initContractBalances(): Promise<{name: string, bal: Balance}
 
-  async function initBalances(): Promise<
-    { chainInfo: ChainInfo; bal: ChainBalance }[]
+  async function initChainBalances(): Promise<
+    { chainInfo: TokenInfo; bal: Balance }[]
   > {
     const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
       async (chain: Chain) => {
@@ -32,9 +36,9 @@
     const balances: ChainBalance[] = await Promise.all(balanceProms);
     return Promise.all(
       balances.map((bal: ChainBalance) => {
-        return getChainInfo(bal.chain).then((chainInfo) => {
+        return getTokenInfo(bal.chain).then((chainInfo) => {
           return {
-            bal,
+            bal: bal.balance,
             chainInfo,
           };
         });
@@ -48,19 +52,19 @@
   <th>Asset</th>
   <th>Balance</th>
   <th>Actions</th>
-  {#await initBalances() then chains}
+  {#await initChainBalances() then chains}
     {#each chains as chain, i}
       <img
-        src={getChainLogoUrl(chain.bal.chain)}
-        alt={`${chain.bal.chain}.png`}
+        src={getTokenLogoUrl(chain.chainInfo.chain, chain.chainInfo.name)}
+        alt={`${chain.chainInfo.name}.png`}
       />
       <div>
         {`${chain.chainInfo.symbol}`}
       </div>
       <div>
-        <AmountFormatter bal={chain.bal} />
+        <AmountFormatter chain={chain.chainInfo.chain} bal={chain.bal} />
       </div>
-      <Button onClick={() => openSendModal(chain.bal.chain)} color="blue"
+      <Button onClick={() => openSendModal(chain.chainInfo.chain)}
         >Transfer</Button
       >
     {/each}

@@ -6,6 +6,7 @@ import {
   GenericTxParams,
   GenericTxSupportedActions,
 } from './generic-tx';
+import { Env } from './configs';
 
 export enum Chain {
   NEAR = 'near',
@@ -100,7 +101,14 @@ export interface ChainInterface<
     innerSdk: Inner
   ) => AccountsInterface<Account, AccountLookupParams, AccountCreateParams>;
   init: (params: InitParams) => Promise<Inner>;
+  getConstants: (env: Env) => ChainConstants;
   convert: Converter<PK, SK, KP>;
+}
+
+export interface ChainConstants {
+  tokens: {
+    contractAddress: string,
+  }[]
 }
 
 export interface AccountsInterface<Account, LookupParams, CreateParams> {
