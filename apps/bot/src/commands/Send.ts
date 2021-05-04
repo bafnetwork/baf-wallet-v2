@@ -59,7 +59,7 @@ export default class SendMoney extends Command {
     // Recipient should look like <@86890631690977280>
     let recipientParsed: string;
     try {
-      recipientParsed = recipient.split('<@')[1].split('>')[0];
+      recipientParsed = recipient.split('<@!')[1].split('>')[0];
     } catch (e) {
       await super.respond(
         message.channel,
