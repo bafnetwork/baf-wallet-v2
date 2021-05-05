@@ -22,11 +22,13 @@
 
   function openSendModal(
     chain: Chain,
-    tokenName: string,
+    tokenInfo: TokenInfo,
     transferType: SupportedTransferTypes,
-    opts?: any
+    opts?: {
+      contractAddress: string;
+    }
   ) {
-    open(SendModal, { chain, tokenName, transferType, ...(opts || {}) });
+    open(SendModal, { chain, transferType, tokenInfo, ...(opts || {}) });
   }
 
   async function getContractTokenInfo(
@@ -100,16 +102,16 @@
       <div>
         <AmountFormatter
           chain={chain.chain}
-          tokenName={chain.chainTokenInfo.name}
           bal={chain.balance}
           isNativeToken={true}
+          tokenInfo={chain.chainTokenInfo}
         />
       </div>
       <Button
         onClick={() =>
           openSendModal(
             chain.chain,
-            chain.chainTokenInfo.name,
+            chain.chainTokenInfo,
             SupportedTransferTypes.NativeToken
           )}>Transfer</Button
       >
@@ -125,8 +127,7 @@
           <AmountFormatter
             chain={chain.chain}
             bal={contractToken.balance}
-            tokenName={contractToken.tokenInfo.name}
-            decimals={contractToken.tokenInfo.decimals}
+            tokenInfo={contractToken.tokenInfo}
             isNativeToken={false}
           />
         </div>
@@ -134,11 +135,10 @@
           onClick={() =>
             openSendModal(
               chain.chain,
-              contractToken.tokenInfo.name,
+              contractToken.tokenInfo,
               SupportedTransferTypes.ContractToken,
               {
                 contractAddress: contractToken.address,
-                decimals: contractToken.tokenInfo.decimals,
               }
             )}>Transfer</Button
         >

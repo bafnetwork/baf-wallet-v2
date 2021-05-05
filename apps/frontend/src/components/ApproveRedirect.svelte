@@ -26,6 +26,7 @@
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
+  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   export let params = {} as any;
   export let isGenericTx = true;
@@ -33,6 +34,7 @@
   export let chain: Chain = params ? params.chain : null;
   export let txParams: GenericTxParams | any;
   export let recipientUser: string;
+  export let tokenInfo: TokenInfo;
 
   let tx: any;
   let actions: GenericTxAction[];
@@ -107,12 +109,11 @@
     <Card styleType="primary">
       {#each actions as action, i}
         {#if action.type === GenericTxSupportedActions.TRANSFER}
-          <!-- TODO: tokenName from getChainInfo or smthng -->
           <p>
             Action #{i + 1}: Transfering <AmountFormatter
               bal={action.amount}
               {chain}
-              tokenName={chain}
+              {tokenInfo}
             />
             to {recipientUser}
           </p>
@@ -122,8 +123,7 @@
               bal={action.amount}
               {chain}
               isNativeToken={false}
-              decimals={8}
-              tokenName={action.contractAddress}
+              {tokenInfo}
             /> to {recipientUser} for contract
             {action.contractAddress}
           </p>

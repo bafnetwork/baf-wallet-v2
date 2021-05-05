@@ -12,15 +12,19 @@
   import { ChainStores } from '../state/chains.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { BafError } from '@baf-wallet/errors';
+  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   let createTX: <T>() => Promise<CreateTxReturn<T>>;
   export let postSubmitHook: () => void | undefined;
   export let onCancel: () => void | undefined;
   export let chain: Chain;
   export let transferType: SupportedTransferTypes;
+  export let tokenInfo: TokenInfo;
+
+  // Only a required parameter if the transfer type is for a contract token
   export let contractAddress: string;
-  export let tokenName: string;
-  export let decimals: number;
+  let tokenName: string = tokenInfo.name;
+  let decimals: number = tokenInfo.decimals;
 
   let chainSendFormPart;
   const { open } = getContext('modal');
@@ -49,7 +53,7 @@
 
     const { txParams, recipientUser } = await createTX();
     open(TxModal, {
-      txLink: 'https://explorer.near.org/',
+      tokenInfo,
       chain,
       recipientUser,
       txParams,
