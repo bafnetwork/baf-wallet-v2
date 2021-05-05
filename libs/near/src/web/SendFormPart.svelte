@@ -15,15 +15,15 @@
     formatNativeTokenAmountToIndivisibleUnit,
     formatTokenAmountToIndivisibleUnit,
   } from '@baf-wallet/multi-chain';
-
+  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
   import Input from '@baf-wallet/base-components/Input.svelte';
   import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
   import { BafError } from '@baf-wallet/errors';
+
   let recipientAccountID: string, amountFormatted: number;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
-  export let tokenName: string;
-  export let decimals: number;
+  export let tokenInfo: TokenInfo;
 
   export let isContractToken = false;
   export let contractAddress: string;
@@ -37,7 +37,10 @@
     const action: GenericTxAction = isContractToken
       ? {
           type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
-          amount: formatTokenAmountToIndivisibleUnit(amountFormatted, decimals),
+          amount: formatTokenAmountToIndivisibleUnit(
+            amountFormatted,
+            tokenInfo.decimals
+          ),
           contractAddress: contractAddress,
         }
       : {
@@ -65,7 +68,7 @@
 />
 <InputNumeric
   label="Amount"
-  placeholder={`0 ${tokenName}`}
+  placeholder={`0 ${tokenInfo.name}`}
   bind:value={amountFormatted}
   required={true}
 />

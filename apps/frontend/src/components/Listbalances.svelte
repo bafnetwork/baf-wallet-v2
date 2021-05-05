@@ -35,24 +35,30 @@
     chain: Chain,
     contract: ChainContractTokenConstant,
     getContractTokenBalance: AccountContractTokenBalFn
-  ) {
+  ): Promise<ContractTokenInfo | null> {
     const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
+    const balance = await getContractTokenBalance(contract.contractAddress);
+    if (balance === '0' || !balance) {
+      return null;
+    }
     return {
       tokenInfo,
       address: contract.contractAddress,
-      balance: await getContractTokenBalance(contract.contractAddress),
+      balance,
     };
+  }
+
+  interface ContractTokenInfo {
+    tokenInfo: TokenInfo;
+    address: string;
+    balance: Balance;
   }
 
   interface ChainBalance {
     chain: Chain;
     chainTokenInfo: TokenInfo;
     balance: Balance;
-    contractTokens: {
-      tokenInfo: TokenInfo;
-      address: string;
-      balance: Balance;
-    }[];
+    contractTokens: (ContractTokenInfo | null)[];
   }
 
   async function initChainBalances(): Promise<ChainBalance[]> {
@@ -88,6 +94,7 @@
 <div class="wrapper">
   <th />
   <th>Asset</th>
+  <th>Chain</th>
   <th>Balance</th>
   <th>Actions</th>
   {#await initChainBalances() then chains}
@@ -98,6 +105,9 @@
       />
       <div>
         {`${chain.chainTokenInfo.symbol}`}
+      </div>
+      <div>
+        {chain.chain}
       </div>
       <div>
         <AmountFormatter
@@ -115,13 +125,16 @@
             SupportedTransferTypes.NativeToken
           )}>Transfer</Button
       >
-      {#each chain.contractTokens as contractToken}
+      {#each chain.contractTokens.filter((tok) => tok !== null) as contractToken}
         <img
           src={getTokenLogoUrl(chain.chain, contractToken.address)}
           alt={`${contractToken.tokenInfo.name}.png`}
         />
         <div>
           {`${contractToken.tokenInfo.symbol}`}
+        </div>
+        <div>
+          {chain.chain}
         </div>
         <div>
           <AmountFormatter
@@ -159,7 +172,7 @@
   .wrapper {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 2rem 1fr 1fr 1fr;
+    grid-template-columns: 2rem 1fr 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
   }

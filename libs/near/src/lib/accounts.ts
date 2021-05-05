@@ -5,7 +5,7 @@ import {
   ed25519,
   secp256k1,
 } from '@baf-wallet/interfaces';
-import { Account as NearAccount, Contract } from 'near-api-js';
+import { Account, Account as NearAccount, Contract } from 'near-api-js';
 import {
   AccountCreator,
   UrlAccountCreator,
@@ -17,11 +17,20 @@ import { PublicKey } from '@baf-wallet/interfaces';
 import { NearState } from './near';
 import { nearConverter } from './convert';
 import { BafError } from '@baf-wallet/errors';
+import { createTokenContract } from './utils';
 
 export type NearAccountID = string;
 
-const NEP141ViewMethods = ['ft_balance_of', 'ft_total_supply'];
-const NEP141ChangeMethods = ['ft_transfer', 'ft_transfer_call'];
+const NEP141ViewMethods = [
+  'ft_balance_of',
+  'ft_total_supply',
+  'storage_balance_of',
+];
+const NEP141ChangeMethods = [
+  'ft_transfer',
+  'ft_transfer_call',
+  'storage_deposit',
+];
 
 export function nearAccounts(
   nearState: NearState
@@ -36,14 +45,12 @@ export function nearAccounts(
         getBalance: async () =>
           (await nearState.nearMasterAccount.getAccountBalance())
             .total as Balance,
-        getContractTokenBalance: async (contractName: string) => {
-          const contract = new Contract(
+        getContractTokenBalance: async (contractName: string): Promise<string> => {
+          const contract = createTokenContract(
             nearState.nearMasterAccount,
             contractName,
-            {
-              viewMethods: NEP141ViewMethods,
-              changeMethods: NEP141ChangeMethods,
-            }
+            NEP141ViewMethods,
+            NEP141ChangeMethods
           );
           return await (contract as any).ft_balance_of({
             account_id: nearState.nearMasterAccount.accountId,

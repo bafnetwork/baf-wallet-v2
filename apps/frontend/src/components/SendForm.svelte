@@ -23,8 +23,6 @@
 
   // Only a required parameter if the transfer type is for a contract token
   export let contractAddress: string;
-  let tokenName: string = tokenInfo.name;
-  let decimals: number = tokenInfo.decimals;
 
   let chainSendFormPart;
   const { open } = getContext('modal');
@@ -70,7 +68,7 @@
       chainInterface={$ChainStores[chain]}
       edPK={$SiteKeyStore.edPK}
       secpPK={$SiteKeyStore.secpPK}
-      {tokenName}
+      {tokenInfo}
       bind:selfBind={chainSendFormPart}
     />
   {:else if transferType === SupportedTransferTypes.ContractToken}
@@ -80,9 +78,8 @@
       edPK={$SiteKeyStore.edPK}
       secpPK={$SiteKeyStore.secpPK}
       isContractToken={true}
-      {tokenName}
+      {tokenInfo}
       {contractAddress}
-      {decimals}
       bind:selfBind={chainSendFormPart}
     /><!-- else if content here -->
   {:else}

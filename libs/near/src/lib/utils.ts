@@ -1,12 +1,23 @@
 import { BafError } from '@baf-wallet/errors';
 import { Env } from '@baf-wallet/interfaces';
-import { utils } from 'near-api-js';
+import { Account, Contract, utils } from 'near-api-js';
 
 export enum NearNetworkID {
   DEVNET = 'testnet',
   TESTNET = 'testnet',
   MAINNET = 'mainnet',
 }
+
+export const createTokenContract = (
+  masterAccount: Account,
+  contractName: string,
+  viewMethods: string[],
+  changeMethods: string[]
+) =>
+  new Contract(masterAccount, contractName, {
+    viewMethods,
+    changeMethods,
+  });
 
 export function stringToNetworkID(str: string): NearNetworkID {
   switch (str) {

@@ -9,6 +9,7 @@ import {
   Account,
   connect,
   ConnectConfig,
+  Contract,
   KeyPair as NearKeyPair,
   Near,
   providers,
@@ -29,6 +30,11 @@ import { NearNetworkID } from './utils';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 import { BafError } from '@baf-wallet/errors';
+import {
+  NearCallContractParams,
+  nearContract,
+  NearInitContractParams,
+} from './contract';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type {
@@ -53,7 +59,10 @@ export type NearChainInterface = ChainInterface<
   NearSendResult,
   Account,
   NearAccountID,
-  NearCreateAccountParams
+  NearCreateAccountParams,
+  Contract,
+  NearInitContractParams,
+  NearCallContractParams
 >;
 
 export interface NearState {
@@ -70,6 +79,7 @@ export const nearChainInterface: NearChainInterface = {
   rpc: nearRpc,
   getConstants,
   init,
+  contract: nearContract,
 };
 
 export interface NearInitParams {
