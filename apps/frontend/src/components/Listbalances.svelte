@@ -34,10 +34,9 @@
   async function getContractTokenInfo(
     chain: Chain,
     contract: ChainContractTokenConstant,
-    getContractTokenBalance: AccountContractTokenBalFn
+    balance: Balance
   ): Promise<ContractTokenInfo | null> {
     const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
-    const balance = await getContractTokenBalance(contract.contractAddress);
     if (balance === '0' || !balance) {
       return null;
     }
@@ -73,16 +72,19 @@
             .getGenericMasterAccount()
             .getBalance(),
           contractTokens: await Promise.all(
-            chainInfo
-              .getConstants(constants.env)
-              .tokens.map((contract) =>
-                getContractTokenInfo(
-                  chain,
-                  contract,
-                  chainInfo.accounts.getGenericMasterAccount()
-                    .getContractTokenBalance
-                )
+            chainInfo.getConstants(constants.env).tokens.map(async (contract) =>
+              getContractTokenInfo(
+                chain,
+                contract,
+                await (
+                  await chainInfo
+                    .getInner()
+                    .getFungibleTokenContract(contract.contractAddress)
+                ).ft_balance_of({
+                  account_id: chainInfo.getInner().nearMasterAccount.accountId,
+                })
               )
+            )
           ),
         };
       }

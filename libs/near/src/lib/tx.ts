@@ -18,8 +18,6 @@ import { Buffer } from 'buffer';
 import BN from 'bn.js';
 import {
   KeyPair as NearKeyPair,
-  keyStores,
-  providers,
   transactions,
   utils,
 } from 'near-api-js';
@@ -69,7 +67,8 @@ export function nearTx(innerSdk: NearState): NearTxInterface {
 
 function buildNativeAction(
   receiverId: string,
-  action: NearAction
+  action: NearAction,
+  innerSdk: NearState
 ): NearNativeAction {
   const actionType = action.type;
   switch (actionType) {
@@ -158,7 +157,7 @@ export const buildNearTx = (innerSdk: NearState) => async ({
   const nonce = ++accessKey.nonce;
   const recentBlockHash = utils.serialize.base_decode(accessKey.block_hash);
   const nativeActions = actions.map((action) =>
-    buildNativeAction(recipientAccountID, action)
+    buildNativeAction(recipientAccountID, action, innerSdk)
   );
 
   const transactionRecipient =
