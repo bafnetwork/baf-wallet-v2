@@ -9,7 +9,7 @@ export function formatTokenAmountToIndivisibleUnit(
 ): string {
   const expStr = `${1}${new Array(decimals).fill('0').join('')}`;
   const exp = new BN(expStr);
-  console.log(exp.muln(amount), amount)
+  console.log(exp.muln(amount), amount);
   return exp.muln(amount).toString(10);
 }
 

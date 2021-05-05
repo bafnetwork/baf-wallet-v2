@@ -45,7 +45,9 @@ export function nearAccounts(
         getBalance: async () =>
           (await nearState.nearMasterAccount.getAccountBalance())
             .total as Balance,
-        getContractTokenBalance: async (contractName: string): Promise<string> => {
+        getContractTokenBalance: async (
+          contractName: string
+        ): Promise<string> => {
           const contract = createTokenContract(
             nearState.nearMasterAccount,
             contractName,

@@ -16,11 +16,7 @@ import { Pair, getEnumValues } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/crypto';
 import { Buffer } from 'buffer';
 import BN from 'bn.js';
-import {
-  KeyPair as NearKeyPair,
-  transactions,
-  utils,
-} from 'near-api-js';
+import { KeyPair as NearKeyPair, transactions, utils } from 'near-api-js';
 
 import { NearState } from './near';
 import { NearSendOpts, NearSendResult } from './rpc';
@@ -85,6 +81,7 @@ function buildNativeAction(
           amount: params.amount,
           memo: params.memo,
         },
+        // TODO: maximum gas fees per chain: see https://github.com/bafnetwork/baf-wallet-v2/issues/68
         new BN(10000000000000), // Maximum gas fee
         new BN(1) // A deposit associated with this action
       );

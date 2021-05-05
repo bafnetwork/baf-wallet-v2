@@ -164,11 +164,6 @@
   {/await}
 </div>
 
-<!-- TODO:s
- 1. Amount formatter,
- 2. Return the actual balance for an account
- 3. Have the Transfer of tokens actually work
--->
 <style>
   /* your styles go here */
   .wrapper {

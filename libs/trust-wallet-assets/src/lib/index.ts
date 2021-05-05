@@ -4,8 +4,7 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
 import { Chain } from '@baf-wallet/interfaces';
 
-const baseRawUrl =
-  'https://raw.githubusercontent.com/bafnetwork/assets/master';
+const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -89,14 +88,18 @@ export type DappUrl =
 export const getChainFolderPrefix = (chain: Chain): string =>
   `${baseRawUrl}/blockchains/${chain}`;
 
-const getNonNativeTokenInfoUrl = (chain: Chain, contractAddress: string): string =>
-  `${getChainFolderPrefix(chain)}/${contractAddress}/info.json`;
+const getNonNativeTokenInfoUrl = (
+  chain: Chain,
+  contractAddress: string
+): string => `${getChainFolderPrefix(chain)}/${contractAddress}/info.json`;
 
 const getChainInfoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
 
-const getNonNativeTokenLogoUrl = (chain: Chain, contractAddress: string): string =>
-  `${getChainFolderPrefix(chain)}/${contractAddress}/logo.png`;
+const getNonNativeTokenLogoUrl = (
+  chain: Chain,
+  contractAddress: string
+): string => `${getChainFolderPrefix(chain)}/${contractAddress}/logo.png`;
 
 const getChainLogoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/logo.png`;

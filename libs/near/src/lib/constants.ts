@@ -1,15 +1,17 @@
-import { ChainConstants, Env } from "@baf-wallet/interfaces";
+import { ChainConstants, Env } from '@baf-wallet/interfaces';
 
 export function getConstants(env: Env): ChainConstants {
   if (env === Env.PROD) {
     return {
-      tokens: []
-    }
+      tokens: [],
+    };
   } else {
     return {
-      tokens: [{
-        contractAddress: 'ft.levtester.testnet',
-      }]
-    }
+      tokens: [
+        {
+          contractAddress: 'ft.levtester.testnet',
+        },
+      ],
+    };
   }
 }
