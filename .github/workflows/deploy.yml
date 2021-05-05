@@ -1,25 +1,16 @@
-# This is a basic workflow to help you get started with Actions
-
 name: DeployCI
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push to main, which includes when a PR is merged.
   push:
     branches: [ main, deploy-work ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build-api:
     runs-on: ubuntu-latest
 
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@main
       - run: |
@@ -36,3 +27,22 @@ jobs:
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
           source_folder: dist/apps/api
+  
+  build-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+      - run: |
+          sudo apt-get -y install nodejs npm
+          npm i
+          npx nx run bot:build:test
+          node scripts/create-dist-bot-package-json.js
+          echo 'worker: npm start' > dist/apps/bot/Procfile
+      - uses: seanmiddleditch/gha-publish-to-git@master
+        with:
+          repository: bafnetwork/baf-wallet-deploy-bot
+          branch: main
+          github_token: '${{ secrets.GITHUB_TOKEN  }}'
+          github_pat: '${{ secrets.GH_PAT }}'
+          source_folder: dist/apps/bot

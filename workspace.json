@@ -159,6 +159,17 @@
                   "with": "apps/bot/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "test": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/bot/src/environments/environment.ts",
+                  "with": "apps/bot/src/environments/environment.test.ts"
+                }
+              ]
             }
           }
         },
