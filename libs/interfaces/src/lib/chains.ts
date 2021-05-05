@@ -5,29 +5,12 @@ import {
   GenericTxAction,
   GenericTxParams,
   GenericTxSupportedActions,
-} from './generic-tx';
+} from './tx';
 import { Env } from './configs';
 
 export enum Chain {
   NEAR = 'near',
 }
-// // TODO: have some intelligent way to get the rest
-// export enum Chain {
-//   ETH = 'ethereum',
-//   BTC = 'bitcoin',
-//   NEAR = 'near',
-//   SOLANA = 'solana',
-//   COSMOS = 'cosmos',
-//   CELO = 'celo',
-//   DOT = 'polkadot',
-//   FILECOIN = 'filecoin',
-//   HARMONEY = 'harmony',
-//   ALGORAND = 'algorand',
-//   AVALANCHE = 'avalanche',
-//   MATIC = 'matic',
-//   DOGE = 'doge',
-//   TERRA = 'terra',
-// }
 
 // Or the type with all the supported chain account types
 export type ChainAccount = NearAccount;

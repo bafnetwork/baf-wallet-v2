@@ -59,7 +59,6 @@
     );
     actions = txParams.actions;
     tx = await $ChainStores[Chain.NEAR].tx.build(nearTxParams);
-    console.log('AAAA');
   }
   async function initChainSpecificTx() {
     actions = $ChainStores[chain].tx.extractGenericActionsFromTx(txParams);
@@ -108,15 +107,24 @@
     <Card styleType="primary">
       {#each actions as action, i}
         {#if action.type === GenericTxSupportedActions.TRANSFER}
+          <!-- TODO: tokenName from getChainInfo or smthng -->
           <p>
             Action #{i + 1}: Transfering <AmountFormatter
-              bal={{ chain, balance: action.amount }}
+              bal={action.amount}
+              {chain}
+              tokenName={chain}
             />
             to {recipientUser}
           </p>
         {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
           <p>
-            Action #{i + 1}: Transfering {action.amount} to {recipientUser} for contract
+            Action #{i + 1}: Transfering <AmountFormatter
+              bal={action.amount}
+              {chain}
+              isNativeToken={false}
+              decimals={8}
+              tokenName={action.contractAddress}
+            /> to {recipientUser} for contract
             {action.contractAddress}
           </p>
         {:else}

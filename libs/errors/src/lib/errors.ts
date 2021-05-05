@@ -48,6 +48,8 @@ export namespace BafError {
     emitError(`Encoding for format ${fmt} is unsupported`);
   export const NonuniformTxActionRecipients = (chain: Chain) =>
     emitError(`${chain} only supports one recipient for a set of Tx Actions`);
+  export const MissingContractAddress = () =>
+    emitError(`The contract address must be specified`);
 }
 
 // A wrapper function to emit an error, this would allow us to do things such as easier Sentry logging

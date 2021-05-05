@@ -5,6 +5,7 @@
     ChainBalance,
     AccountContractTokenBalFn,
     ChainContractTokenConstant,
+    SupportedTransferTypes,
   } from '@baf-wallet/interfaces';
   import {
     getTokenLogoUrl,
@@ -19,8 +20,13 @@
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');
 
-  function openSendModal(chain: Chain) {
-    open(SendModal, { chain });
+  function openSendModal(
+    chain: Chain,
+    tokenName: string,
+    transferType: SupportedTransferTypes,
+    opts?: any
+  ) {
+    open(SendModal, { chain, tokenName, transferType, ...(opts || {}) });
   }
 
   async function getContractTokenInfo(
@@ -92,9 +98,21 @@
         {`${chain.chainTokenInfo.symbol}`}
       </div>
       <div>
-        <AmountFormatter chain={chain.chain} bal={chain.balance} />
+        <AmountFormatter
+          chain={chain.chain}
+          tokenName={chain.chainTokenInfo.name}
+          bal={chain.balance}
+          isNativeToken={true}
+        />
       </div>
-      <Button onClick={() => openSendModal(chain.chain)}>Transfer</Button>
+      <Button
+        onClick={() =>
+          openSendModal(
+            chain.chain,
+            chain.chainTokenInfo.name,
+            SupportedTransferTypes.NativeToken
+          )}>Transfer</Button
+      >
       {#each chain.contractTokens as contractToken}
         <img
           src={getTokenLogoUrl(chain.chain, contractToken.address)}
@@ -104,10 +122,26 @@
           {`${contractToken.tokenInfo.symbol}`}
         </div>
         <div>
-          <!-- TODO: amount formatter that can also take an option for number of decimals -->
-          <!-- <AmountFormatter chain={chain.chain} bal={chain.balance} /> -->
+          <AmountFormatter
+            chain={chain.chain}
+            bal={contractToken.balance}
+            tokenName={contractToken.tokenInfo.name}
+            decimals={contractToken.tokenInfo.decimals}
+            isNativeToken={false}
+          />
         </div>
-        <!-- <Button onClick={() => openSendModal(chain.chain)}>Transfer</Button> -->
+        <Button
+          onClick={() =>
+            openSendModal(
+              chain.chain,
+              contractToken.tokenInfo.name,
+              SupportedTransferTypes.ContractToken,
+              {
+                contractAddress: contractToken.address,
+                decimals: contractToken.tokenInfo.decimals,
+              }
+            )}>Transfer</Button
+        >
       {/each}
     {/each}
   {:catch error}
@@ -115,6 +149,11 @@
   {/await}
 </div>
 
+<!-- TODO:s
+ 1. Amount formatter,
+ 2. Return the actual balance for an account
+ 3. Have the Transfer of tokens actually work
+-->
 <style>
   /* your styles go here */
   .wrapper {
@@ -128,9 +167,3 @@
     width: 100%;
   }
 </style>
-
-<!-- TODO:s
- 1. Amount formatter,
- 2. Return the actual balance for an account
- 3. Have the Transfer of tokens actually work
--->
