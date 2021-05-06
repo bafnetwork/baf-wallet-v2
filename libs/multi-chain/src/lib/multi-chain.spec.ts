@@ -38,6 +38,10 @@ const secpPair = keyPairFromSk(skFromSeed(seed, secp256k1Marker));
 
 const MAX_GAS_USAGE_INDIVISIBLE_UNITS = new BN('1000000000000000000000');
 
+const fungibleTokenAddr = {
+  near: 'ft.levtester.testnet',
+};
+
 const configs = {
   near: {
     networkID: getNearNetworkID(Env.TEST),
@@ -51,7 +55,37 @@ const testAccount = async <T>(chain: InferWrappedChainInterface<T>) => {
   await Promise.all(proms);
 };
 
-const testTx = async <T>(chain: InferWrappedChainInterface<T>) => {
+// TODO: factor out helper for txFn w/ action
+// TODO: init w/ storage
+const testTxTransferFungibleToken = async <T>(
+  chain: InferWrappedChainInterface<T>,
+  chainName: Chain
+) => {
+  const genericTx = {
+    actions: [
+      {
+        type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
+        contractAddress: fungibleTokenAddr[chainName],
+        amount: '1',
+      },
+    ],
+  } as GenericTxParams;
+  // Send the tx to Lev's discord account :)
+  const receiver = secpPair.pk;
+  const txParams = await chain.tx.buildParamsFromGenericTx(
+    genericTx,
+    pkFromString(
+      // Lev's BS58 key
+      'RY91cAma5JZRKheLDrBy1BknWvvpjoyz2fPbqDoYYey6TNYdqfUrNrNVnmfiT8RCSWKWxhjiUpwZWbxZmzGxwLK8',
+      secp256k1Marker,
+      Encoding.BS58
+    ),
+    secpPair.pk,
+    edPair.pk
+  );
+};
+
+const testTxTransfer = async <T>(chain: InferWrappedChainInterface<T>) => {
   const genericTx = {
     actions: [
       {
@@ -112,8 +146,14 @@ describe('Test all supported chains', () => {
     done();
   });
 
-  it('Test transactions', async () => {
-    await testTx<WrappedNearChainInterface>(chains[Chain.NEAR]);
+  it('Test transfer', async () => {
+    await testTxTransfer<WrappedNearChainInterface>(chains[Chain.NEAR]);
+  });
+  it('Test transfering a fungible token', async () => {
+    await testTxTransferFungibleToken<WrappedNearChainInterface>(
+      chains[Chain.NEAR],
+      Chain.NEAR
+    );
   });
   it('Test accounts', async () => {
     await testAccount<WrappedNearChainInterface>(chains[Chain.NEAR]);
