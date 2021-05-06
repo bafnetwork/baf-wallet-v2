@@ -17,7 +17,6 @@ import { PublicKey } from '@baf-wallet/interfaces';
 import { NearState } from './near';
 import { nearConverter } from './convert';
 import { BafError } from '@baf-wallet/errors';
-import { createTokenContract } from './utils';
 
 export type NearAccountID = string;
 
@@ -48,11 +47,8 @@ export function nearAccounts(
         getContractTokenBalance: async (
           contractName: string
         ): Promise<string> => {
-          const contract = createTokenContract(
-            nearState.nearMasterAccount,
-            contractName,
-            NEP141ViewMethods,
-            NEP141ChangeMethods
+          const contract = await nearState.getFungibleTokenContract(
+            contractName
           );
           return await (contract as any).ft_balance_of({
             account_id: nearState.nearMasterAccount.accountId,

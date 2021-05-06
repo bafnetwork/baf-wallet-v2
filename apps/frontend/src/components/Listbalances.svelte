@@ -72,19 +72,17 @@
             .getGenericMasterAccount()
             .getBalance(),
           contractTokens: await Promise.all(
-            chainInfo.getConstants(constants.env).tokens.map(async (contract) =>
-              getContractTokenInfo(
-                chain,
-                contract,
-                await (
-                  await chainInfo
-                    .getInner()
-                    .getFungibleTokenContract(contract.contractAddress)
-                ).ft_balance_of({
-                  account_id: chainInfo.getInner().nearMasterAccount.accountId,
-                })
+            chainInfo
+              .getConstants(constants.env)
+              .tokens.map(async (contract) =>
+                getContractTokenInfo(
+                  chain,
+                  contract,
+                  await chainInfo.accounts
+                    .getGenericMasterAccount()
+                    .getContractTokenBalance(contract.contractAddress)
+                )
               )
-            )
           ),
         };
       }
