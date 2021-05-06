@@ -1,68 +1,161 @@
 <script lang="ts">
-  import { Chain, ChainBalance } from '@baf-wallet/interfaces';
-  import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
+  import {
+    Balance,
+    Chain,
+    ChainBalance,
+    AccountContractTokenBalFn,
+    ChainContractTokenConstant,
+    SupportedTransferTypes,
+  } from '@baf-wallet/interfaces';
+  import {
+    getTokenLogoUrl,
+    TokenInfo,
+    getTokenInfo,
+  } from '@baf-wallet/trust-wallet-assets';
+  import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
-  import trustWalletAssets from '../trust-wallet-assets';
   import { ChainStores } from '../state/chains.svelte';
   import Button from '@baf-wallet/base-components/Button.svelte';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');
 
-  function openSendModal(chain: Chain) {
-    open(SendModal, { chain });
+  function openSendModal(
+    chain: Chain,
+    tokenInfo: TokenInfo,
+    transferType: SupportedTransferTypes,
+    opts?: {
+      contractAddress: string;
+    }
+  ) {
+    open(SendModal, { chain, transferType, tokenInfo, ...(opts || {}) });
   }
 
-  const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
+  async function getContractTokenInfo(
+    chain: Chain,
+    contract: ChainContractTokenConstant,
+    balance: Balance
+  ): Promise<ContractTokenInfo | null> {
+    const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
+    if (balance === '0' || !balance) {
+      return null;
+    }
+    return {
+      tokenInfo,
+      address: contract.contractAddress,
+      balance,
+    };
+  }
 
-  async function initBalances(): Promise<
-    { chainInfo: ChainInfo; bal: ChainBalance }[]
-  > {
+  interface ContractTokenInfo {
+    tokenInfo: TokenInfo;
+    address: string;
+    balance: Balance;
+  }
+
+  interface ChainBalance {
+    chain: Chain;
+    chainTokenInfo: TokenInfo;
+    balance: Balance;
+    contractTokens: (ContractTokenInfo | null)[];
+  }
+
+  async function initChainBalances(): Promise<ChainBalance[]> {
     const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
       async (chain: Chain) => {
         const chainInfo = $ChainStores[chain];
+        const chainTokenInfo = await getTokenInfo(chain);
         return {
           chain,
+          chainTokenInfo,
           balance: await chainInfo.accounts
             .getGenericMasterAccount()
             .getBalance(),
-        } as ChainBalance;
+          contractTokens: await Promise.all(
+            chainInfo
+              .getConstants(constants.env)
+              .tokens.map(async (contract) =>
+                getContractTokenInfo(
+                  chain,
+                  contract,
+                  await chainInfo.accounts
+                    .getGenericMasterAccount()
+                    .getContractTokenBalance(contract.contractAddress)
+                )
+              )
+          ),
+        };
       }
     );
-    const balances: ChainBalance[] = await Promise.all(balanceProms);
-    return Promise.all(
-      balances.map((bal: ChainBalance) => {
-        return getChainInfo(bal.chain).then((chainInfo) => {
-          return {
-            bal,
-            chainInfo,
-          };
-        });
-      })
-    );
+    return Promise.all(balanceProms);
   }
 </script>
 
 <div class="wrapper">
   <th />
   <th>Asset</th>
+  <th>Chain</th>
   <th>Balance</th>
   <th>Actions</th>
-  {#await initBalances() then chains}
+  {#await initChainBalances() then chains}
     {#each chains as chain, i}
       <img
-        src={getChainLogoUrl(chain.bal.chain)}
-        alt={`${chain.bal.chain}.png`}
+        src={getTokenLogoUrl(chain.chain)}
+        alt={`${chain.chainTokenInfo.name}.png`}
       />
       <div>
-        {`${chain.chainInfo.symbol}`}
+        {`${chain.chainTokenInfo.symbol}`}
       </div>
       <div>
-        <AmountFormatter bal={chain.bal} />
+        {chain.chain}
       </div>
-      <Button onClick={() => openSendModal(chain.bal.chain)} color="blue"
-        >Transfer</Button
+      <div>
+        <AmountFormatter
+          chain={chain.chain}
+          bal={chain.balance}
+          isNativeToken={true}
+          tokenInfo={chain.chainTokenInfo}
+        />
+      </div>
+      <Button
+        onClick={() =>
+          openSendModal(
+            chain.chain,
+            chain.chainTokenInfo,
+            SupportedTransferTypes.NativeToken
+          )}>Transfer</Button
       >
+      {#each chain.contractTokens.filter((tok) => tok !== null) as contractToken}
+        <img
+          src={getTokenLogoUrl(chain.chain, contractToken.address)}
+          alt={`${contractToken.tokenInfo.name}.png`}
+        />
+        <div>
+          {`${contractToken.tokenInfo.symbol}`}
+        </div>
+        <div>
+          {chain.chain}
+        </div>
+        <div>
+          <AmountFormatter
+            chain={chain.chain}
+            bal={contractToken.balance}
+            tokenInfo={contractToken.tokenInfo}
+            isNativeToken={false}
+          />
+        </div>
+        <Button
+          onClick={() =>
+            openSendModal(
+              chain.chain,
+              contractToken.tokenInfo,
+              SupportedTransferTypes.ContractToken,
+              {
+                contractAddress: contractToken.address,
+              }
+            )}>Transfer</Button
+        >
+      {/each}
     {/each}
   {:catch error}
     <span>An error occurred when attempting to fetch asset data: {error}</span>
@@ -74,7 +167,7 @@
   .wrapper {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 2rem 1fr 1fr 1fr;
+    grid-template-columns: 2rem 1fr 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
   }

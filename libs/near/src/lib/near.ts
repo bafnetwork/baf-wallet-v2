@@ -4,13 +4,13 @@ import {
   Encoding,
   InferWrapChainInterface,
   KeyPair,
-  secp256k1,
 } from '@baf-wallet/interfaces';
 import {
   Account,
   connect,
   ConnectConfig,
   KeyPair as NearKeyPair,
+  Contract as NearNativeContract,
   Near,
   providers,
   transactions,
@@ -18,6 +18,8 @@ import {
 } from 'near-api-js';
 
 import { NearBuildTxParams, NearSignTxOpts, nearTx } from './tx';
+import { getConstants } from './constants';
+import { initContract, NEP141Contract } from './contract';
 import { nearRpc, NearSendOpts, NearSendResult } from './rpc';
 import {
   NearAccountID,
@@ -29,6 +31,11 @@ import { NearNetworkID } from './utils';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 import { BafError } from '@baf-wallet/errors';
+import {
+  nearContract,
+  NearContractMethods,
+  NearInitContractParams,
+} from './contract';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type {
@@ -53,7 +60,10 @@ export type NearChainInterface = ChainInterface<
   NearSendResult,
   Account,
   NearAccountID,
-  NearCreateAccountParams
+  NearCreateAccountParams,
+  NearNativeContract,
+  NearContractMethods,
+  NearInitContractParams
 >;
 
 export interface NearState {
@@ -61,6 +71,7 @@ export interface NearState {
   rpcProvider: providers.JsonRpcProvider;
   networkID: NearNetworkID;
   nearMasterAccount: Account;
+  getFungibleTokenContract: (contractName: string) => Promise<NEP141Contract>;
 }
 
 export const nearChainInterface: NearChainInterface = {
@@ -68,7 +79,9 @@ export const nearChainInterface: NearChainInterface = {
   tx: nearTx,
   convert: nearConverter,
   rpc: nearRpc,
+  getConstants,
   init,
+  contract: nearContract,
 };
 
 export interface NearInitParams {
@@ -111,10 +124,17 @@ async function init({
 
   const near = await connect(connectConfig);
 
+  const nearMasterAccount = await near.account(masterAccountID);
   return {
     near,
     networkID,
     rpcProvider: new providers.JsonRpcProvider(nodeUrl),
-    nearMasterAccount: await near.account(masterAccountID),
+    nearMasterAccount,
+    getFungibleTokenContract: (contractName: string) =>
+      initContract(nearMasterAccount)({
+        contractName,
+        viewMethods: ['ft_balance_of', 'ft_total_supply', 'storage_balance_of'],
+        changeMethods: ['ft_transfer'],
+      }),
   };
 }
