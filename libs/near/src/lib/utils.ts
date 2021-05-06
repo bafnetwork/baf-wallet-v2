@@ -1,6 +1,6 @@
 import { BafError } from '@baf-wallet/errors';
 import { Env } from '@baf-wallet/interfaces';
-import { utils } from 'near-api-js';
+import { Account, Contract, utils } from 'near-api-js';
 
 export enum NearNetworkID {
   DEVNET = 'testnet',

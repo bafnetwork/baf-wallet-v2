@@ -26,6 +26,7 @@
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
+  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   export let params = {} as any;
   export let isGenericTx = true;
@@ -33,6 +34,7 @@
   export let chain: Chain = params ? params.chain : null;
   export let txParams: GenericTxParams | any;
   export let recipientUser: string;
+  export let tokenInfo: TokenInfo;
 
   let tx: any;
   let actions: GenericTxAction[];
@@ -67,12 +69,12 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw BafError.InvalidTransactionApproveRedirect()
+      throw BafError.InvalidTransactionApproveRedirect();
     } else if (!isGenericTx && txInUrl) {
-      throw BafError.Unimplemented()
+      throw BafError.Unimplemented();
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw BafError.UninitChain(chain)
+      throw BafError.UninitChain(chain);
     }
     if (isGenericTx) {
       await initGenericTx();
@@ -109,9 +111,21 @@
         {#if action.type === GenericTxSupportedActions.TRANSFER}
           <p>
             Action #{i + 1}: Transfering <AmountFormatter
-              bal={{ chain, balance: action.amount }}
+              bal={action.amount}
+              {chain}
+              {tokenInfo}
             />
             to {recipientUser}
+          </p>
+        {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
+          <p>
+            Action #{i + 1}: Transfering <AmountFormatter
+              bal={action.amount}
+              {chain}
+              isNativeToken={false}
+              {tokenInfo}
+            /> to {recipientUser} for contract
+            {action.contractAddress}
           </p>
         {:else}
           An error occured, an unsupported action type was passed in!

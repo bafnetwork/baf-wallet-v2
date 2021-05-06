@@ -5,15 +5,17 @@
 
   import { getContext } from 'svelte';
   import { Chain } from '@baf-wallet/interfaces';
+import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
   const { close } = getContext('modal');
 
-  export let chain: Chain, txParams: any, recipientUser: string;
+  export let chain: Chain, txParams: any, recipientUser: string, tokenInfo: TokenInfo;
 </script>
 
 <Card>
   <XButton onClick={close} />
   <ApproveRedirect
     {txParams}
+    {tokenInfo}
     txInUrl={false}
     {recipientUser}
     isGenericTx={false}

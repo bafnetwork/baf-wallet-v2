@@ -5,7 +5,7 @@ import {
   ed25519,
   secp256k1,
 } from '@baf-wallet/interfaces';
-import { Account as NearAccount } from 'near-api-js';
+import { Account, Account as NearAccount, Contract } from 'near-api-js';
 import {
   AccountCreator,
   UrlAccountCreator,
@@ -20,6 +20,17 @@ import { BafError } from '@baf-wallet/errors';
 
 export type NearAccountID = string;
 
+const NEP141ViewMethods = [
+  'ft_balance_of',
+  'ft_total_supply',
+  'storage_balance_of',
+];
+const NEP141ChangeMethods = [
+  'ft_transfer',
+  'ft_transfer_call',
+  'storage_deposit',
+];
+
 export function nearAccounts(
   nearState: NearState
 ): AccountsInterface<NearAccount, NearAccountID, NearCreateAccountParams> {
@@ -33,6 +44,16 @@ export function nearAccounts(
         getBalance: async () =>
           (await nearState.nearMasterAccount.getAccountBalance())
             .total as Balance,
+        getContractTokenBalance: async (
+          contractName: string
+        ): Promise<string> => {
+          const contract = await nearState.getFungibleTokenContract(
+            contractName
+          );
+          return await (contract as any).ft_balance_of({
+            account_id: nearState.nearMasterAccount.accountId,
+          });
+        },
       };
     },
     create: async ({
