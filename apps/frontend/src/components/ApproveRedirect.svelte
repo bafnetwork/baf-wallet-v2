@@ -44,6 +44,13 @@
 
   async function initGenericTx() {
     txParams = deserializeTxParams(params.txParams);
+    if (
+      !txParams.recipientUserId ||
+      !txParams.oauthProvider ||
+      !txParams.recipientUserIdReadable
+    ) {
+      throw BafError.GenericTxRequiresOauthInfo();
+    }
     const recipientPubkey = await getTorusPublicAddress(
       txParams.recipientUserId,
       txParams.oauthProvider
@@ -67,12 +74,12 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw BafError.InvalidTransactionApproveRedirect()
+      throw BafError.InvalidTransactionApproveRedirect();
     } else if (!isGenericTx && txInUrl) {
-      throw BafError.Unimplemented()
+      throw BafError.Unimplemented();
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw BafError.UninitChain(chain)
+      throw BafError.UninitChain(chain);
     }
     if (isGenericTx) {
       await initGenericTx();

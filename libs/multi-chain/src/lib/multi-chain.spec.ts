@@ -2,23 +2,20 @@
   name: 'nodejs',
 };
 
-import { setBafContract } from '@baf-wallet/baf-contract';
+import { getBafContract, setBafContract } from '@baf-wallet/baf-contract';
 import {
   keyPairFromSk,
   pkFromString,
-  skFromRng,
+  signMsg,
   skFromSeed,
-  skFromString,
 } from '@baf-wallet/crypto';
 import {
   Chain,
-  ed25519,
   ed25519Marker,
   Encoding,
   Env,
   GenericTxParams,
   GenericTxSupportedActions,
-  InferWrapChainInterface,
   InferWrappedChainInterface,
   secp256k1Marker,
 } from '@baf-wallet/interfaces';
@@ -29,22 +26,21 @@ import {
   WrappedNearChainInterface,
 } from '@baf-wallet/near';
 import { getWrappedInterface } from './index';
-console.log(process.env.NEAR_MASTER_ACCOUNT_ID);
+import { config as dotenvConfig } from 'dotenv';
+import { createUserVerifyMessage } from '@baf-wallet/utils';
+import BN from 'bn.js';
 
-// TODO: initialize BAF Wallet testing accounts which use the same seed for secp and ed
-const edPair = keyPairFromSk(
-  skFromString(process.env.NEAR_SK, ed25519Marker, Encoding.BS58)
-);
-const seed = new Uint8Array(
-  Buffer.from(
-    'af4391c50ca34de55165ffbfcd9e43a846a37ef97905988b694ba886d23c05d5',
-    'hex'
-  )
-);
+dotenvConfig({ path: './env/.env.unit-test' });
+
+const seed = new Uint8Array(Buffer.from(process.env.HEX_SEED, 'hex'));
+const edPair = keyPairFromSk(skFromSeed(seed, ed25519Marker));
 const secpPair = keyPairFromSk(skFromSeed(seed, secp256k1Marker));
+
+const MAX_GAS_USAGE_INDIVISIBLE_UNITS = new BN('1000000000000000000000');
+
 const configs = {
   near: {
-    networkID: getNearNetworkID(Env.DEV),
+    networkID: getNearNetworkID(Env.TEST),
     masterAccountID: process.env.NEAR_MASTER_ACCOUNT_ID,
     keyPair: edPair,
   } as NearInitParams,
@@ -57,9 +53,6 @@ const testAccount = async <T>(chain: InferWrappedChainInterface<T>) => {
 
 const testTx = async <T>(chain: InferWrappedChainInterface<T>) => {
   const genericTx = {
-    recipientUserId: 'lev#78422',
-    recipientUserIdReadable: 'lev#xxxx',
-    oauthProvider: 'discord',
     actions: [
       {
         type: GenericTxSupportedActions.TRANSFER,
@@ -67,10 +60,12 @@ const testTx = async <T>(chain: InferWrappedChainInterface<T>) => {
       },
     ],
   } as GenericTxParams;
+  // Send the tx to Lev's discord account :)
+  const receiver = secpPair.pk;
   const txParams = await chain.tx.buildParamsFromGenericTx(
     genericTx,
     pkFromString(
-      // My key
+      // Lev's BS58 key
       'RY91cAma5JZRKheLDrBy1BknWvvpjoyz2fPbqDoYYey6TNYdqfUrNrNVnmfiT8RCSWKWxhjiUpwZWbxZmzGxwLK8',
       secp256k1Marker,
       Encoding.BS58
@@ -83,13 +78,8 @@ const testTx = async <T>(chain: InferWrappedChainInterface<T>) => {
   const signed = await chain.tx.sign(tx, edPair);
   await chain.tx.send(signed);
   const currBall = await chain.accounts.getGenericMasterAccount().getBalance();
-  const lastDigitPrior = parseInt(priorBal.slice(-1));
-  const lastDigitCurr = parseInt(currBall.slice(-1));
-  if (lastDigitPrior === 0) {
-    expect(lastDigitCurr).toEqual(9);
-  } else {
-    expect(lastDigitCurr).toEqual(lastDigitPrior - 1);
-  }
+  const diff = new BN(priorBal).sub(new BN(currBall));
+  expect(diff.lt(MAX_GAS_USAGE_INDIVISIBLE_UNITS.addn(1))).toEqual(true);
 };
 
 describe('Test all supported chains', () => {
@@ -105,6 +95,20 @@ describe('Test all supported chains', () => {
       ),
     };
     await setBafContract(chains[Chain.NEAR].getInner().nearMasterAccount);
+    const accountId = chains[Chain.NEAR].getInner().nearMasterAccount.accountId;
+    const bafContractNonce = await getBafContract().getAccountNonce(
+      secpPair.pk
+    );
+    await getBafContract().setAccountInfo(
+      secpPair.pk,
+      accountId,
+      signMsg(
+        secpPair.sk,
+        createUserVerifyMessage(accountId, bafContractNonce),
+        true
+      ),
+      accountId
+    );
     done();
   });
 

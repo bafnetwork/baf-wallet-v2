@@ -5,9 +5,9 @@ export enum GenericTxSupportedActions {
 }
 
 export interface GenericTxParams {
-  recipientUserId: string;
-  recipientUserIdReadable: string;
-  oauthProvider: PLATFORM;
+  recipientUserId?: string;
+  recipientUserIdReadable?: string;
+  oauthProvider?: PLATFORM;
   actions: GenericTxAction[];
 }
 

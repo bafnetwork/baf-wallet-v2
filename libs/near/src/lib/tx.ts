@@ -9,6 +9,7 @@ import {
   GenericTxSupportedActions,
   GenericTxAction,
   GenericTxActionTransfer,
+  Chain,
 } from '@baf-wallet/interfaces';
 import { Pair, getEnumValues } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/crypto';
@@ -33,6 +34,7 @@ import {
   signTransaction,
 } from 'near-api-js/lib/transaction';
 import { getBafContract } from '@baf-wallet/baf-contract';
+import { BafError } from '@baf-wallet/errors';
 
 export type NearTxInterface = TxInterface<
   Transaction,
@@ -95,6 +97,9 @@ export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
   senderPk: PublicKey<ed25519>
 ): Promise<NearBuildTxParams> => {
   const recipientAccountID = await getBafContract().getAccountId(recipientPk);
+  if (!recipientAccountID) {
+    throw BafError.SecpPKNotAssociatedWithAccount(Chain.NEAR);
+  }
   const nearTransferParams: NearBuildTxParams = {
     actions: txParams.actions,
     senderPk: senderPk,

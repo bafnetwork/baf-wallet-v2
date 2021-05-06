@@ -46,6 +46,14 @@ export namespace BafError {
     );
   export const UnsupportedEncoding = (fmt: any) =>
     emitError(`Encoding for format ${fmt} is unsupported`);
+  export const GenericTxRequiresOauthInfo = () =>
+    emitError(
+      `The generic transaction requires the recipient user id, its readable form, and the oauth provider`
+    );
+  export const SecpPKNotAssociatedWithAccount = (chain: Chain) =>
+    emitError(
+      `The provided public key is not associated with an account on ${chain}`
+    );
 }
 
 // A wrapper function to emit an error, this would allow us to do things such as easier Sentry logging
