@@ -26,7 +26,6 @@ import {
   Action as NearNativeAction,
   SignedTransaction,
   Transaction,
-  signTransaction,
 } from 'near-api-js/lib/transaction';
 import { getBafContract } from '@baf-wallet/baf-contract';
 import { BafError } from '@baf-wallet/errors';
@@ -83,7 +82,7 @@ function buildNativeAction(
         },
         // TODO: maximum gas fees per chain: see https://github.com/bafnetwork/baf-wallet-v2/issues/68
         new BN(10000000000000), // Maximum gas fee
-        new BN(1) // A deposit associated with this action
+        new BN(1) // A deposit associated with the ft_transfer action
       );
     default:
       throw `Action of type ${actionType} is unsupported`;

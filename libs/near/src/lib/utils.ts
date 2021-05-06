@@ -8,17 +8,6 @@ export enum NearNetworkID {
   MAINNET = 'mainnet',
 }
 
-export const createTokenContract = (
-  masterAccount: Account,
-  contractName: string,
-  viewMethods: string[],
-  changeMethods: string[]
-) =>
-  new Contract(masterAccount, contractName, {
-    viewMethods,
-    changeMethods,
-  });
-
 export function stringToNetworkID(str: string): NearNetworkID {
   switch (str) {
     case NearNetworkID.DEVNET:
