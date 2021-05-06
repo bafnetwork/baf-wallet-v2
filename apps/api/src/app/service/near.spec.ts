@@ -25,9 +25,7 @@ import { constants } from '../config/constants';
 import { getBafContract, setBafContract } from '@baf-wallet/baf-contract';
 import {
   createUserVerifyMessage,
-  encodeBytes,
   formatBytes,
-  pkToString,
 } from '@baf-wallet/utils';
 import {
   NearChainInterface,
@@ -35,7 +33,6 @@ import {
   WrappedNearChainInterface,
 } from '@baf-wallet/near';
 import { getNearChain, initChains } from '../chains/singletons';
-import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 
 (global as any).window = {
   name: 'nodejs',
@@ -173,7 +170,7 @@ describe('createAccount', () => {
       fail('Should have thrown');
     } catch (e) {
       expect(e).toEqual(
-        'An invalid signature has been provided for 048bae7823327488f14ced4f0c4051701683c33d69820b775efdd3494aecd971eba0bd9f155c69a9d8d4f5f3904f89e7e2e3964930840d7089c25561f3bb6576bc'
+        new Error('An invalid signature has been provided for 048bae7823327488f14ced4f0c4051701683c33d69820b775efdd3494aecd971eba0bd9f155c69a9d8d4f5f3904f89e7e2e3964930840d7089c25561f3bb6576bc')
       );
     }
   });
@@ -204,7 +201,7 @@ describe('createAccount', () => {
       fail('Should have thrown');
     } catch (e) {
       expect(e).toEqual(
-        'An invalid signature has been provided for cefa19930aabad85846f541b33d94bc18e433919dcc672c1e6944109de9a467f'
+        new Error('An invalid signature has been provided for cefa19930aabad85846f541b33d94bc18e433919dcc672c1e6944109de9a467f')
       );
     }
   });

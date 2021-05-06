@@ -13,9 +13,9 @@
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
-  import { skFromString } from '@baf-wallet/utils';
   import { reinitApp } from '../config/init.svelte';
   import Spinner from 'svelte-spinner';
+import { skFromString } from '@baf-wallet/crypto';
 
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 50;
