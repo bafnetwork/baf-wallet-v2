@@ -26,7 +26,7 @@
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
-  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
+  import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   export let params = {} as any;
   export let isGenericTx = true;
@@ -72,6 +72,8 @@
       throw BafError.InvalidTransactionApproveRedirect();
     } else if (!isGenericTx && txInUrl) {
       throw BafError.Unimplemented();
+    } else if (txInUrl) {
+      tokenInfo = await getTokenInfo(chain);
     }
     if (!checkChainInit($ChainStores, chain)) {
       throw BafError.UninitChain(chain);
