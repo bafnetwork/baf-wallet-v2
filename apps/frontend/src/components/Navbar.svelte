@@ -1,35 +1,45 @@
 <script lang="ts">
   import { link } from 'svelte-spa-router';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
+  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+  import IconButton from '@smui/icon-button';
   import { AccountStore, logout } from '../state/accounts.svelte';
+
+  let prominent = false;
+  let dense = false;
+  let secondaryColor = false;
 </script>
 
-<div class="container">
-  {#if true}
-    <!-- $AccountStore.loggedIn} -->
-    <a href="/" use:link>Account</a>
-    <a href="/settings" use:link>Account Settings</a>
-    <Button
-      onClick={logout}
-      styleType='danger'>Logout</Button
-    >
-  {:else}
-    <a href="/login" use:link>Login</a>
-  {/if}
-</div>
+{#if $AccountStore.loggedIn}
+  <TopAppBar
+    variant="static"
+    {prominent}
+    {dense}
+    color={secondaryColor ? 'secondary' : 'primary'}
+  >
+    <Row>
+      <Section align="end" toolbar>
+        <a href="/" use:link>
+          <IconButton class="material-icons" aria-label="Home">home</IconButton>
+        </a>
+        <a href="/settings" use:link>
+          <IconButton class="material-icons" aria-label="Account Page">
+            account_circle
+          </IconButton>
+        </a>
+        <Button color="secondary" on:click={logout} variant="raised"
+          >Logout</Button
+        >
+      </Section>
+    </Row>
+  </TopAppBar>
+{:else}
+  <div />
+{/if}
 
 <style>
-  .container {
-    background-color: var(--primary-color);
-    padding: 1rem;
-    display: grid;
-    justify-content: end;
-    align-items: center;
-    grid-template-columns: repeat(3, min-content);
-    gap: 1rem;
-  }
-
   a {
-    color: var(--secondary-color);
+    color: inherit;
+    text-decoration: none;
   }
 </style>

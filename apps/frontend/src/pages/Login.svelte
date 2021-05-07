@@ -4,16 +4,8 @@
 </script>
 
 <Layout>
-  <div class="wrapper">
-    <h2>Welcome to BAF Wallet</h2>
-    <Auth />
-  </div>
+  <Auth />
 </Layout>
 
 <style>
-  div.wrapper {
-    display: grid;
-    justify-content: center;
-    grid-template-rows: min-content min-content;
-  }
 </style>

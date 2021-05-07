@@ -3,7 +3,7 @@
     getBafContract,
     bafContractConstants,
   } from '@baf-wallet/baf-contract';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
   import {
     AccountState,
     Chain,
@@ -69,6 +69,6 @@
     <!-- <Loader /> -->
     <Spinner {size} {speed} {color} {thickness} {gap} />
   {:else}
-    <Button onClick={deleteAccount}>Delete Near Account</Button>
+    <Button on:click={deleteAccount}>Delete Near Account</Button>
   {/if}
 </div>
