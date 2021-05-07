@@ -1,60 +1,67 @@
+// html,
+// body {
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+//   --danger-color: red;
+//   --tertiary-color: #f78764;
+//   --secondary-accent-color: #f4d35e;
+//   --primary-accent-color: #f8e8ec;
+//   --secondary-color: #ebebd3;
+//   --primary-color: #083d77;
+// }
+
+// body {
+//   color: #333;
+//   margin: 0;
+//   padding: 8px;
+//   box-sizing: border-box;
+//   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+//     Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+//   background-color: white;
+// }
+
+// a {
+//   color: rgb(0, 100, 200);
+//   text-decoration: none;
+
+//   &:hover {
+//     text-decoration: underline;
+//   }
+
+//   &:visited {
+//     color: rgb(0, 80, 160);
+//   }
+// }
+
+// .disabled {
+//   filter: brightness(50%);
+//   cursor: not-allowed;
+// }
+
+/************* Style Types ********************/
+@use '@material/theme/color-palette';
+
+$background: #fff;
+
+@use '@material/theme/index' as theme with (
+  $primary: color-palette.$purple-500,
+  $secondary: color-palette.$teal-700,
+  $surface: #fff,
+  $background: $background,
+  $error: #b00020,
+);
+
 html,
 body {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  --danger-color: red;
-  --tertiary-color: #f78764;
-  --secondary-accent-color: #f4d35e;
-  --primary-accent-color: #f8e8ec;
-  --secondary-color: #ebebd3;
-  --primary-color: #083d77;
-}
-
-body {
-  color: #333;
-  margin: 0;
-  padding: 8px;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  background-color: white;
+  background-color: $background;
+  color: if(theme.contrast-tone($background) == 'dark', #000, #fff);
+  height: 100vh;
 }
 
 a {
-  color: rgb(0, 100, 200);
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:visited {
-    color: rgb(0, 80, 160);
-  }
+  color: color-palette.$blue-500;
 }
-
-.disabled {
-  filter: brightness(50%);
-  cursor: not-allowed;
-}
-
-/************* Style Types ********************/
-.primary {
-  background-color: var(--primary-color);
-  color: var(--primary-accent-color);
-}
-
-.secondary {
-  background-color: var(--secondary-color);
-}
-
-.danger {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-/**************** Forms *******************/
-button {
-  cursor: pointer;
+a:visited {
+  color: color-palette.$blue-800;
 }

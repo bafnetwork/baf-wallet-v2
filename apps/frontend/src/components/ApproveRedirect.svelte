@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Card from '@baf-wallet/base-components/Card.svelte';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Card, { Content, ActionButton, Actions } from '@smui/card';
+  import Button from '@smui/button';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
   import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
@@ -35,6 +35,7 @@
   export let txParams: GenericTxParams | any;
   export let recipientUser: string;
   export let tokenInfo: TokenInfo;
+  export let onCancel = () => window.close();
 
   let tx: any;
   let actions: GenericTxAction[];
@@ -113,36 +114,42 @@
   Loading...
 {:then signer}
   {#if !txSuccess}
-    <Card styleType="primary">
-      {#each actions as action, i}
-        {#if action.type === GenericTxSupportedActions.TRANSFER}
-          <p>
-            Action #{i + 1}: Transfering <AmountFormatter
-              bal={action.amount}
-              {chain}
-              {tokenInfo}
-            />
-            to {recipientUser}
-          </p>
-        {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
-          <p>
-            Action #{i + 1}: Transfering <AmountFormatter
-              bal={action.amount}
-              {chain}
-              isNativeToken={false}
-              {tokenInfo}
-            /> to {recipientUser} for contract
-            {action.contractAddress}
-          </p>
-        {:else}
-          An error occured, an unsupported action type was passed in!
-        {/if}
-      {/each}
-      <Button
-        styleType="secondary"
-        onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button
-      >
-      <Button styleType="danger">Decline</Button>
+    <Card padded>
+      <Content>
+        <h3>Looks like you are trying to...</h3>
+        {#each actions as action, i}
+          {#if action.type === GenericTxSupportedActions.TRANSFER}
+            <p>
+              transfer <AmountFormatter
+                bal={action.amount}
+                {chain}
+                {tokenInfo}
+              />
+              to {recipientUser}
+            </p>
+          {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
+            <p>
+              transfer <AmountFormatter
+                bal={action.amount}
+                {chain}
+                isNativeToken={false}
+                {tokenInfo}
+              /> to {recipientUser} for contract
+              {action.contractAddress}
+            </p>
+          {:else}
+            An error occured, an unsupported action type was passed in!
+          {/if}
+        {/each}
+      </Content>
+      <Actions>
+        <Button
+          variant="raised"
+          on:click={() => (!isLoading ? onApprove() : null)}>Approve</Button
+        >
+        <!-- TODO action -->
+        <Button styleType="danger" on:click={onCancel}>Decline</Button>
+      </Actions>
     </Card>
   {/if}
 {:catch e}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Input from '@baf-wallet/base-components/Input.svelte';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
   import { Encoding, KeyState, AccountState } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';

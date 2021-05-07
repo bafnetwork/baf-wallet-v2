@@ -2,8 +2,6 @@
   import {
     Balance,
     Chain,
-    ChainBalance,
-    AccountContractTokenBalFn,
     ChainContractTokenConstant,
     SupportedTransferTypes,
   } from '@baf-wallet/interfaces';
@@ -15,7 +13,7 @@
   import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import { ChainStores } from '../state/chains.svelte';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');
@@ -93,7 +91,6 @@
 
 <div class="wrapper">
   <th />
-  <th>Asset</th>
   <th>Chain</th>
   <th>Balance</th>
   <th>Actions</th>
@@ -104,10 +101,7 @@
         alt={`${chain.chainTokenInfo.name}.png`}
       />
       <div>
-        {`${chain.chainTokenInfo.symbol}`}
-      </div>
-      <div>
-        {chain.chain}
+        {chain.chainTokenInfo.name}
       </div>
       <div>
         <AmountFormatter
@@ -118,7 +112,7 @@
         />
       </div>
       <Button
-        onClick={() =>
+        on:click={() =>
           openSendModal(
             chain.chain,
             chain.chainTokenInfo,
@@ -131,10 +125,7 @@
           alt={`${contractToken.tokenInfo.name}.png`}
         />
         <div>
-          {`${contractToken.tokenInfo.symbol}`}
-        </div>
-        <div>
-          {chain.chain}
+          {chain.chainTokenInfo.name}
         </div>
         <div>
           <AmountFormatter
@@ -145,7 +136,7 @@
           />
         </div>
         <Button
-          onClick={() =>
+          on:click={() =>
             openSendModal(
               chain.chain,
               contractToken.tokenInfo,
@@ -167,7 +158,7 @@
   .wrapper {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 2rem 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2rem 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
   }

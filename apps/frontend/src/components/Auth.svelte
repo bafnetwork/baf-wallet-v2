@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Button from '@baf-wallet/base-components/Button.svelte';
-  import Card from '@baf-wallet/base-components/Card.svelte';
+  import Button from '@smui/button';
+  import Card from '@smui/card';
   import Icon from '@baf-wallet/base-components/Icon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
@@ -15,7 +15,7 @@
   import { constants } from '../config/constants';
   import { reinitApp } from '../config/init.svelte';
   import Spinner from 'svelte-spinner';
-import { skFromString } from '@baf-wallet/crypto';
+  import { skFromString } from '@baf-wallet/crypto';
 
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 50;
@@ -65,9 +65,10 @@ import { skFromString } from '@baf-wallet/crypto';
   }
 </script>
 
-<Card styleType="secondary">
+<Card padded>
+  <h2>Welcome to BAF Wallet</h2>
   <h4>Sign in with a social provider</h4>
-  <Button onClick={discordLogin} styleType="primary">
+  <Button on:click={discordLogin} variant="raised">
     <Icon iconName="Discord" />
   </Button>
   {#if isLoading}
