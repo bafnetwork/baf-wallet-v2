@@ -2,14 +2,12 @@
   import { getContext } from 'svelte';
   import { form } from 'svelte-forms';
 
-  import { ChainBalance } from '@baf-wallet/interfaces';
-  import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
-  import trustWalletAssets from '../trust-wallet-assets';
+  import { ChainBalance, SupportedTransferTypes } from '@baf-wallet/interfaces';
+  import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
+  import Card, { Content, Actions } from '@smui/card';
+  import Button, { Label } from '@smui/button';
   import SendModal from './SendModal.svelte';
-  import {
-    Chain,
-    CreateTxReturn,
-  } from '@baf-wallet/interfaces';
+  import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
   import Lazy from '@baf-wallet/base-components/Lazy.svelte';
   import TxModal from './TxModal.svelte';
   import { ChainStores } from '../state/chains.svelte';
@@ -27,20 +25,22 @@
 
   let chainSendFormPart;
   const { open } = getContext('modal');
-  let amount : number = 0;
-  let recipientAccountID : string = "";
+  let amount: number = 0;
+  let recipientAccountID: string = '';
 
-  
   const transactionForm = form(
     () => ({
-      recipientAccountID: {value: recipientAccountID, validators: ["required"]},
-      amount: { value: amount, validators: ["required", "min:0"] }
+      recipientAccountID: {
+        value: recipientAccountID,
+        validators: ['required'],
+      },
+      amount: { value: amount, validators: ['required', 'min:0'] },
     }),
     {
       initCheck: false,
       validateOnChange: false,
       stopAtFirstError: false,
-      stopAtFirstFieldError: false
+      stopAtFirstFieldError: false,
     }
   );
 
@@ -76,7 +76,10 @@
     });
 
     function postDetailValid() {
-      return $transactionForm.fields.recipientAccountID.valid && $transactionForm.fields.amount.valid;
+      return (
+        $transactionForm.fields.recipientAccountID.valid &&
+        $transactionForm.fields.amount.valid
+      );
     }
   };
 
@@ -86,15 +89,13 @@
   //     postSubmitHook();
   //   }
   // };
-  
+
   function openSendModal(chain: Chain) {
-    open(SendModal, {chain});
+    open(SendModal, { chain });
   }
 
-  const { getChainInfo } = trustWalletAssets;
-
   async function initBalances(): Promise<
-    { chainInfo: ChainInfo; bal: ChainBalance }[]
+    { chainInfo: TokenInfo; bal: ChainBalance }[]
   > {
     const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
       async (chain: Chain) => {
@@ -111,7 +112,7 @@
     const balances: ChainBalance[] = await Promise.all(balanceProms);
     return Promise.all(
       balances.map((bal: ChainBalance) => {
-        return getChainInfo(bal.chain).then((chainInfo) => {
+        return getTokenInfo(bal.chain).then((chainInfo) => {
           return {
             bal,
             chainInfo,
@@ -121,11 +122,10 @@
     );
   }
 
-  const balances = initBalances().then(result => {
-      return result}
-    );
+  const balances = initBalances().then((result) => {
+    return result;
+  });
   console.log(balances);
-
 </script>
 
 <!-- 
@@ -169,26 +169,39 @@
   {/await}
   
 </form> -->
-{#if transferType === SupportedTransferTypes.NativeToken}
-  <Lazy
-    component={ChainSendFormPart(chain)}
-    chainInterface={$ChainStores[chain]}
-    edPK={$SiteKeyStore.edPK}
-    secpPK={$SiteKeyStore.secpPK}
-    {tokenInfo}
-    bind:selfBind={chainSendFormPart}
-  />
-{:else if transferType === SupportedTransferTypes.ContractToken}
-  <Lazy
-    component={ChainSendFormPart(chain)}
-    chainInterface={$ChainStores[chain]}
-    edPK={$SiteKeyStore.edPK}
-    secpPK={$SiteKeyStore.secpPK}
-    isContractToken={true}
-    {tokenInfo}
-    {contractAddress}
-    bind:selfBind={chainSendFormPart}
-  /><!-- else if content here -->
-{:else}
-  Transfering {transferType} is unsupported
-{/if}
+<form on:submit={handleSubmit}>
+  <Content>
+    <h1>Send {tokenInfo.name}</h1>
+    {#if transferType === SupportedTransferTypes.NativeToken}
+      <Lazy
+        component={ChainSendFormPart(chain)}
+        chainInterface={$ChainStores[chain]}
+        edPK={$SiteKeyStore.edPK}
+        secpPK={$SiteKeyStore.secpPK}
+        {tokenInfo}
+        bind:selfBind={chainSendFormPart}
+      />
+    {:else if transferType === SupportedTransferTypes.ContractToken}
+      <Lazy
+        component={ChainSendFormPart(chain)}
+        chainInterface={$ChainStores[chain]}
+        edPK={$SiteKeyStore.edPK}
+        secpPK={$SiteKeyStore.secpPK}
+        isContractToken={true}
+        {tokenInfo}
+        {contractAddress}
+        bind:selfBind={chainSendFormPart}
+      /><!-- else if content here -->
+    {:else}
+      Transfering {transferType} is unsupported
+    {/if}
+  </Content>
+  <Actions>
+    <Button type="submit" variant="raised">
+      <Label>Send!</Label>
+    </Button>
+    <Button on:click={close}>
+      <Label>Cancel</Label>
+    </Button>
+  </Actions>
+</form>
