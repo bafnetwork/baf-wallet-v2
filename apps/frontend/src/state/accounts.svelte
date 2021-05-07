@@ -2,7 +2,7 @@
   import { writable } from 'svelte/store';
   import { ChainsState, initChains } from './chains.svelte';
   import { clearKeysFromStorage, loadKeys, SiteKeyStore } from './keys.svelte';
-  import { AccountState, OAuthState } from '@baf-wallet/interfaces';
+  import { AccountState, Encoding, OAuthState } from '@baf-wallet/interfaces';
   export const AccountStore = writable<AccountState | null>(null);
   const oauthInfoStoreName = 'oauthInfo';
 

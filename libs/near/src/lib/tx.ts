@@ -126,6 +126,9 @@ export const buildParamsFromGenericTx = (innerSdk: NearState) => async (
   senderPk: PublicKey<ed25519>
 ): Promise<NearBuildTxParams> => {
   const recipientAccountID = await getBafContract().getAccountId(recipientPk);
+  if (!recipientAccountID) {
+    throw BafError.SecpPKNotAssociatedWithAccount(Chain.NEAR);
+  }
   const nearTxParams: NearBuildTxParams = {
     actions: txParams.actions,
     senderPk: senderPk,

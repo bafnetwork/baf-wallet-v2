@@ -46,6 +46,14 @@ export namespace BafError {
     );
   export const UnsupportedEncoding = (fmt: any) =>
     emitError(`Encoding for format ${fmt} is unsupported`);
+  export const GenericTxRequiresOauthInfo = () =>
+    emitError(
+      `The generic transaction requires the recipient user id, its readable form, and the oauth provider`
+    );
+  export const SecpPKNotAssociatedWithAccount = (chain: Chain) =>
+    emitError(
+      `The provided public key is not associated with an account on ${chain}`
+    );
   export const NonuniformTxActionRecipients = (chain: Chain) =>
     emitError(`${chain} only supports one recipient for a set of Tx Actions`);
   export const MissingContractAddress = () =>

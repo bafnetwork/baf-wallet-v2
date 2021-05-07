@@ -8,7 +8,7 @@ import {
   secp256k1,
 } from '@baf-wallet/interfaces';
 import { NearAccountID } from '@baf-wallet/near';
-import { pkToArray, pkToString } from '@baf-wallet/utils';
+import { pkToArray } from '@baf-wallet/crypto';
 
 interface BafContract {
   getAccountId: (pk: PublicKey<secp256k1>) => Promise<NearAccountID | null>;
@@ -69,11 +69,4 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_sig_s: [...secp_sig_s],
       }),
   };
-}
-
-export function encodeSecpSigBafContract(sig: EC.Signature): Buffer {
-  return Buffer.from(
-    `${sig.r.toString('hex', 64)}${sig.s.toString('hex', 64)}`,
-    'hex'
-  );
 }

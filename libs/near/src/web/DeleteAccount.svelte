@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    encodeSecpSigBafContract,
     getBafContract,
     bafContractConstants,
   } from '@baf-wallet/baf-contract';

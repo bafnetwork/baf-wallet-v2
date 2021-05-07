@@ -46,6 +46,13 @@
 
   async function initGenericTx() {
     txParams = deserializeTxParams(params.txParams);
+    if (
+      !txParams.recipientUserId ||
+      !txParams.oauthProvider ||
+      !txParams.recipientUserIdReadable
+    ) {
+      throw BafError.GenericTxRequiresOauthInfo();
+    }
     const recipientPubkey = await getTorusPublicAddress(
       txParams.recipientUserId,
       txParams.oauthProvider
