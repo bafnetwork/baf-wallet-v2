@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { form } from 'svelte-forms';
+  import { form as svelteForms } from 'svelte-forms';
 
   import { ChainBalance, SupportedTransferTypes } from '@baf-wallet/interfaces';
   import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
@@ -28,7 +28,7 @@
   let amount: number = 0;
   let recipientAccountID: string = '';
 
-  const transactionForm = form(
+  const transactionForm = svelteForms(
     () => ({
       recipientAccountID: {
         value: recipientAccountID,
@@ -169,6 +169,7 @@
   {/await}
   
 </form> -->
+
 <form on:submit={handleSubmit}>
   <Content>
     <h1>Send {tokenInfo.name}</h1>
