@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '@smui/button';
   import Card from '@smui/card';
-  import Icon from '@baf-wallet/base-components/Icon.svelte';
+  import OAuthIcon from '@baf-wallet/base-components/OAuthIcon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1Marker } from '@baf-wallet/interfaces';
@@ -69,7 +69,7 @@
   <h2>Welcome to BAF Wallet</h2>
   <h4>Sign in with a social provider</h4>
   <Button on:click={discordLogin} variant="raised">
-    <Icon iconName="Discord" />
+    <OAuthIcon iconName="Discord" />
   </Button>
   {#if isLoading}
     <Spinner {size} {speed} {color} {thickness} {gap} />

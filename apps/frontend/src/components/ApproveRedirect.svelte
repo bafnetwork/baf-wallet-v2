@@ -1,9 +1,8 @@
 <script lang="ts">
   import Card, { Content, ActionButton, Actions } from '@smui/card';
   import Button from '@smui/button';
+  import { Icon} from '@smui/common';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
-  import SuccessIcon from '@baf-wallet/base-components/svg/SuccessIcon.svelte';
-  import ErrorIcon from '@baf-wallet/base-components/svg/ErrorIcon.svelte';
   import { BafError } from '@baf-wallet/errors';
   import Spinner from 'svelte-spinner';
 
@@ -165,10 +164,10 @@
       <p>Beep bop beep boop, trying to send your transaction</p>
       <Spinner {size} {speed} {color} {thickness} {gap} />
     {:else if error}
-      <ErrorIcon />
+      <Icon class="material-icons">error</Icon>
     {:else}
       <p>Success!</p>
-      <SuccessIcon />
+      <Icon class="material-icons">check</Icon>
       <span
         >Explorer: <a
           target="_blank"
