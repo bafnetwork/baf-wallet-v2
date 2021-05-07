@@ -7,13 +7,16 @@
 
   import Input from '../base/Input.svelte';
   import InputNumeric from '../base/InputNumeric.svelte';
+
   let recipientAccountID: string, amount: number;
+
   export const createTX = async (): Promise<
     CreateTxReturn<NearBuildTxParams>
   > => {
     if (!checkChainInit($ChainStores, Chain.NEAR)) {
       throw new Error('You must have an initialized account with NEAR');
     }
+
     const txParams: NearBuildTxParams = {
       actions: [
         {
@@ -26,6 +29,7 @@
         .accountId,
       recipientAccountID,
     };
+
     return { txParams, recipientUser: recipientAccountID };
   };
 </script>
@@ -37,7 +41,7 @@
   required={true}
 />
 <InputNumeric
-  label="Sending to"
+  label="Sending amount"
   placeholder="0 Near"
   bind:value={amount}
   required={true}

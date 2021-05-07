@@ -3,6 +3,8 @@
   export let placeholder: string
   export let value: number;
   export let required: boolean;
+  export let min: number;
+  export let max: number;
 </script>
 
 <label class="block">
@@ -13,5 +15,7 @@
     {placeholder}
     bind:value
     {required}
+    {min}
+    {max}
   />
 </label>

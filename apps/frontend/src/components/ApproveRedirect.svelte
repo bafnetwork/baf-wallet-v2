@@ -6,12 +6,16 @@
   import ErrorIcon from './base/svg/ErrorIcon.svelte';
   import Spinner from 'svelte-spinner';
   
+  import { getContext } from 'svelte';
+  
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 25;
   let speed = 750;
   let color = '#A82124';
   let thickness = 2.0;
   let gap = 40;
+
+  let errno = 0;
 
   import { SiteKeyStore } from '../state/keys.svelte';
   import { ChainStores, checkChainInit } from '../state/chains.svelte';
@@ -105,7 +109,9 @@
   {#if !txSuccess}
     <Card>
       {#each actions as action, i}
-        {#if action.type === GenericTxSupportedActions.TRANSFER}
+        {#if action.type === GenericTxSupportedActions.TRANSFER && Number(action.amount) < 0}
+          Cannot have negative amount: {action.amount}
+        {:else if action.type === GenericTxSupportedActions.TRANSFER}
           <p>
             Action #{i + 1}: Transfering <AmountFormatter
               bal={{ chain, balance: action.amount }}
@@ -116,7 +122,9 @@
           An error occured, an unsupported action type was passed in!
         {/if}
       {/each}
-      <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      {#if errno !== 1}
+        <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
+      {/if}
       <Button>Decline</Button>
     </Card>
   {/if}
