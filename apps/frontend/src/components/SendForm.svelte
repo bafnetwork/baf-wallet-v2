@@ -1,24 +1,31 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import { form } from 'svelte-forms';
-  import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
-  import Button from './base/Button.svelte';
-  import TxModal from './TxModal.svelte';
-  import SendNearFormPart from './near/SendNearFormPart.svelte';
-  import { NearBuildTxParams } from '@baf-wallet/near';
 
   import { ChainBalance } from '@baf-wallet/interfaces';
   import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
-  import { ChainStores } from '../state/chains.svelte';
   import trustWalletAssets from '../trust-wallet-assets';
   import SendModal from './SendModal.svelte';
-import { transfer } from 'near-api-js/lib/transaction';
+  import {
+    Chain,
+    CreateTxReturn,
+  } from '@baf-wallet/interfaces';
+  import Lazy from '@baf-wallet/base-components/Lazy.svelte';
+  import TxModal from './TxModal.svelte';
+  import { ChainStores } from '../state/chains.svelte';
+  import { SiteKeyStore } from '../state/keys.svelte';
+  import { BafError } from '@baf-wallet/errors';
 
-  let createTX: <T>() => Promise<CreateTxReturn<T>>; 
+  let createTX: <T>() => Promise<CreateTxReturn<T>>;
   export let postSubmitHook: () => void | undefined;
-  export let onCancel: () => void | undefined;
   export let chain: Chain;
+  export let transferType: SupportedTransferTypes;
+  export let tokenInfo: TokenInfo;
 
+  // Only a required parameter if the transfer type is for a contract token
+  export let contractAddress: string;
+
+  let chainSendFormPart;
   const { open } = getContext('modal');
   let amount : number = 0;
   let recipientAccountID : string = "";
@@ -37,21 +44,31 @@ import { transfer } from 'near-api-js/lib/transaction';
     }
   );
 
-  const handleSubmit = async (v: any) => {
-    console.log(`submit: ${v}`);
+  if (
+    transferType === SupportedTransferTypes.ContractToken &&
+    !contractAddress
+  ) {
+    throw BafError.MissingContractAddress();
+  }
 
+  // TODO: clean up imports, see https://github.com/bafnetwork/baf-wallet-v2/issues/54
+  const ChainSendFormPart = (chain: Chain) => () =>
+    import(`../../../../libs/${chain}/src/web/SendFormPart.svelte`);
+
+  export const handleSubmit = async (e: Event) => {
+    e.preventDefault();
     if (!postDetailValid()) return;
-    
+    console.log(chainSendFormPart);
+    createTX = chainSendFormPart.createTX;
     if (postSubmitHook !== undefined) {
       postSubmitHook();
     }
 
     let isComplete = false;
 
-    let { txParams, recipientUser } = await createTX()
-
+    const { txParams, recipientUser } = await createTX();
     open(TxModal, {
-      txLink: 'https://explorer.near.org/',
+      tokenInfo,
       chain,
       recipientUser,
       txParams,
@@ -111,8 +128,7 @@ import { transfer } from 'near-api-js/lib/transaction';
 
 </script>
 
-
-<!-- svelte-ignore component-name-lowercase -->
+<!-- 
 <form on:submit|preventDefault={handleSubmit}>
   {#await initBalances() then chains}
     {#each chains as chain, i}
@@ -134,13 +150,13 @@ import { transfer } from 'near-api-js/lib/transaction';
           <Button onClick={onCancel}>Cancel</Button>
         {/if}
         <Button type="submit">Submit</Button>
-        <!-- {#if amount < 0}
+        {#if amount < 0}
           <p> Cannot have a negative value</p>
         {:else if amount > Number(chain.bal.balance)}
           <p> Cannot send more than balance</p>
         {:else}
           <Button type="submit">Submit</Button>
-        {/if}  -->
+        {/if}
       </div>
       {:else}
         Please enter a valid chain through which to send funds
@@ -152,4 +168,27 @@ import { transfer } from 'near-api-js/lib/transaction';
     >
   {/await}
   
-</form>
+</form> -->
+{#if transferType === SupportedTransferTypes.NativeToken}
+  <Lazy
+    component={ChainSendFormPart(chain)}
+    chainInterface={$ChainStores[chain]}
+    edPK={$SiteKeyStore.edPK}
+    secpPK={$SiteKeyStore.secpPK}
+    {tokenInfo}
+    bind:selfBind={chainSendFormPart}
+  />
+{:else if transferType === SupportedTransferTypes.ContractToken}
+  <Lazy
+    component={ChainSendFormPart(chain)}
+    chainInterface={$ChainStores[chain]}
+    edPK={$SiteKeyStore.edPK}
+    secpPK={$SiteKeyStore.secpPK}
+    isContractToken={true}
+    {tokenInfo}
+    {contractAddress}
+    bind:selfBind={chainSendFormPart}
+  /><!-- else if content here -->
+{:else}
+  Transfering {transferType} is unsupported
+{/if}

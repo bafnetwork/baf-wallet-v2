@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '../components/base/Card.svelte';
-  import Button from '../components/base/Button.svelte';
-  import AmountFormatter from '../components/base/AmountFormatter.svelte';
-  import SuccessIcon from './base/svg/SuccessIcon.svelte';
-  import ErrorIcon from './base/svg/ErrorIcon.svelte';
+  import Card, { Content, ActionButton, Actions } from '@smui/card';
+  import Button from '@smui/button';
+  import { Icon} from '@smui/common';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import { BafError } from '@baf-wallet/errors';
   import Spinner from 'svelte-spinner';
   
   import { getContext } from 'svelte';
@@ -29,6 +29,7 @@
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
+  import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   export let params = {} as any;
   export let isGenericTx = true;
@@ -36,6 +37,8 @@
   export let chain: Chain = params ? params.chain : null;
   export let txParams: GenericTxParams | any;
   export let recipientUser: string;
+  export let tokenInfo: TokenInfo;
+  export let onCancel = () => window.close();
 
   let tx: any;
   let actions: GenericTxAction[];
@@ -47,6 +50,13 @@
 
   async function initGenericTx() {
     txParams = deserializeTxParams(params.txParams);
+    if (
+      !txParams.recipientUserId ||
+      !txParams.oauthProvider ||
+      !txParams.recipientUserIdReadable
+    ) {
+      throw BafError.GenericTxRequiresOauthInfo();
+    }
     const recipientPubkey = await getTorusPublicAddress(
       txParams.recipientUserId,
       txParams.oauthProvider
@@ -70,12 +80,14 @@
 
   async function init() {
     if (!txInUrl && !txParams) {
-      throw new Error("The transaction must be either in the url or passed in through the component's state");
+      throw BafError.InvalidTransactionApproveRedirect();
     } else if (!isGenericTx && txInUrl) {
-      throw new Error('Unimplemented');
+      throw BafError.Unimplemented();
+    } else if (txInUrl) {
+      tokenInfo = await getTokenInfo(chain);
     }
     if (!checkChainInit($ChainStores, chain)) {
-      throw new Error('You must be logged in to send a tx');
+      throw BafError.UninitChain(chain);
     }
     if (isGenericTx) {
       await initGenericTx();
@@ -107,25 +119,42 @@
   Loading...
 {:then signer}
   {#if !txSuccess}
-    <Card>
-      {#each actions as action, i}
-        {#if action.type === GenericTxSupportedActions.TRANSFER && Number(action.amount) < 0}
-          Cannot have negative amount: {action.amount}
-        {:else if action.type === GenericTxSupportedActions.TRANSFER}
-          <p>
-            Action #{i + 1}: Transfering <AmountFormatter
-              bal={{ chain, balance: action.amount }}
-            />
-            to {recipientUser}
-          </p>
-        {:else}
-          An error occured, an unsupported action type was passed in!
-        {/if}
-      {/each}
-      {#if errno !== 1}
-        <Button onClick={() => (!isLoading ? onApprove() : null)}>Approve</Button>
-      {/if}
-      <Button>Decline</Button>
+    <Card padded>
+      <Content>
+        <h3>Looks like you are trying to...</h3>
+        {#each actions as action, i}
+          {#if action.type === GenericTxSupportedActions.TRANSFER}
+            <p>
+              transfer <AmountFormatter
+                bal={action.amount}
+                {chain}
+                {tokenInfo}
+              />
+              to {recipientUser}
+            </p>
+          {:else if action.type === GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN}
+            <p>
+              transfer <AmountFormatter
+                bal={action.amount}
+                {chain}
+                isNativeToken={false}
+                {tokenInfo}
+              /> to {recipientUser} for contract
+              {action.contractAddress}
+            </p>
+          {:else}
+            An error occured, an unsupported action type was passed in!
+          {/if}
+        {/each}
+      </Content>
+      <Actions>
+        <Button
+          variant="raised"
+          on:click={() => (!isLoading ? onApprove() : null)}>Approve</Button
+        >
+        <!-- TODO action -->
+        <Button styleType="danger" on:click={onCancel}>Decline</Button>
+      </Actions>
     </Card>
   {/if}
 {:catch e}
@@ -135,23 +164,17 @@
     The following error occured: {e && console.error(e)}
   {/if}
 {/await}
-<div class="flex flex-row justify-center py-4">
+<div>
   {#if attemptedApprove}
     {#if isLoading}
       <p>Beep bop beep boop, trying to send your transaction</p>
-      <Spinner 
-        size="{size}"
-        speed="{speed}"
-        color="{color}"
-        thickness="{thickness}"
-        gap="{gap}"
-      />
+      <Spinner {size} {speed} {color} {thickness} {gap} />
     {:else if error}
-      <ErrorIcon />
+      <Icon class="material-icons">error</Icon>
     {:else}
       <p>Success!</p>
-      <SuccessIcon />
-      <span class="text-center"
+      <Icon class="material-icons">check</Icon>
+      <span
         >Explorer: <a
           target="_blank"
           rel="noopener noreferrer"

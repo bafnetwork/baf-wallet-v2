@@ -1,0 +1,48 @@
+name: DeployCI
+
+on:
+  push:
+    branches: [ main, deploy-work ]
+
+  workflow_dispatch:
+
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - uses: actions/checkout@main
+      - run: |
+          sudo apt-get -y install nodejs npm
+          npm i
+          npm run client-gen
+          npx nx run api:build:test
+          node scripts/create-dist-api-package-json.js
+          echo 'npm start' > dist/apps/api/Procfile
+      - uses: seanmiddleditch/gha-publish-to-git@master
+        with:
+          repository: bafnetwork/baf-wallet-deploy-api
+          branch: main
+          github_token: '${{ secrets.GITHUB_TOKEN  }}'
+          github_pat: '${{ secrets.GH_PAT }}'
+          source_folder: dist/apps/api
+  
+  build-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+      - run: |
+          sudo apt-get -y install nodejs npm
+          npm i
+          npx nx run bot:build:test
+          node scripts/create-dist-bot-package-json.js
+          echo 'worker: npm start' > dist/apps/bot/Procfile
+      - uses: seanmiddleditch/gha-publish-to-git@master
+        with:
+          repository: bafnetwork/baf-wallet-deploy-bot
+          branch: main
+          github_token: '${{ secrets.GITHUB_TOKEN  }}'
+          github_pat: '${{ secrets.GH_PAT }}'
+          source_folder: dist/apps/bot

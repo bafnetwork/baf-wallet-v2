@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Button from './base/Button.svelte';
-  import Card from './base/Card.svelte';
-  import Icon from './base/Icon.svelte';
+  import Button from '@smui/button';
+  import Card from '@smui/card';
+  import OAuthIcon from '@baf-wallet/base-components/OAuthIcon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1Marker } from '@baf-wallet/interfaces';
@@ -13,10 +13,10 @@
   import { buildKeyStateFromSecpSk, SiteKeyStore } from '../state/keys.svelte';
   import { apiClient } from '../config/api';
   import { constants } from '../config/constants';
-  import { skFromString } from '@baf-wallet/utils';
   import { reinitApp } from '../config/init.svelte';
   import Spinner from 'svelte-spinner';
-  
+  import { skFromString } from '@baf-wallet/crypto';
+
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 50;
   let speed = 750;
@@ -65,20 +65,16 @@
   }
 </script>
 
-<Card classExtra="w-1/2 object-center flex flex-col items-center">
-  <h1 class="pb-4 text-xl">Sign in with a social provider</h1>
-  <div class="social-is">
-    <Button classExtra="w-12" onClick={discordLogin}>
-      <Icon iconName="Discord" />
-    </Button>
-    {#if isLoading}
-      <Spinner 
-        size="{size}"
-        speed="{speed}"
-        color="{color}"
-        thickness="{thickness}"
-        gap="{gap}"
-      />
-    {/if}
-  </div>
+<Card padded>
+  <h2>Welcome to BAF Wallet</h2>
+  <h4>Sign in with a social provider</h4>
+  <Button on:click={discordLogin} variant="raised">
+    <OAuthIcon iconName="Discord" />
+  </Button>
+  {#if isLoading}
+    <Spinner {size} {speed} {color} {thickness} {gap} />
+  {/if}
 </Card>
+
+<style>
+</style>

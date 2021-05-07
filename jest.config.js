@@ -13,5 +13,7 @@ module.exports = {
     '<rootDir>/libs/torus',
     '<rootDir>/libs/baf-contract',
     '<rootDir>/libs/crypto',
+    '<rootDir>/libs/base-components',
+    '<rootDir>/libs/errors',
   ],
 };

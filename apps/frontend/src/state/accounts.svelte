@@ -1,27 +1,8 @@
 <script lang="ts" context="module">
-  import { ChainAccount, Encoding } from '@baf-wallet/interfaces';
-
   import { writable } from 'svelte/store';
-  import { apiClient } from '../config/api';
-  import { constants } from '../config/constants';
   import { ChainsState, initChains } from './chains.svelte';
   import { clearKeysFromStorage, loadKeys, SiteKeyStore } from './keys.svelte';
-  export interface Account {
-    displayName: string;
-    pubkey: string;
-  }
-
-  interface OAuthState {
-    verifierId: string;
-    name: string;
-    email: string;
-  }
-
-  export interface AccountState {
-    loggedIn: boolean;
-    oauthInfo?: OAuthState;
-  }
-
+  import { AccountState, Encoding, OAuthState } from '@baf-wallet/interfaces';
   export const AccountStore = writable<AccountState | null>(null);
   const oauthInfoStoreName = 'oauthInfo';
 
@@ -37,7 +18,7 @@
   }
 
   export function storeTorusAccessToken(accessToken: string) {
-    window.localStorage.setItem('accessToken', accessToken)
+    window.localStorage.setItem('accessToken', accessToken);
   }
 
   export async function initAccount(): Promise<{
@@ -54,7 +35,7 @@
         : JSON.parse(window.localStorage.getItem(oauthInfoStoreName)),
     };
     AccountStore.set(accountState);
-    return { accountState, chainsState};
+    return { accountState, chainsState };
   }
 
   export function storeOauthState(oauthInfo: OAuthState) {

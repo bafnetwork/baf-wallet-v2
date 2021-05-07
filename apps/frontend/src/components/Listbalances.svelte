@@ -1,89 +1,168 @@
 <script lang="ts">
-  import { Chain, ChainBalance } from '@baf-wallet/interfaces';
-  import { ChainInfo } from '@baf-wallet/trust-wallet-assets';
-  import AmountFormatter from './base/AmountFormatter.svelte';
-  import trustWalletAssets from '../trust-wallet-assets';
+  import {
+    Balance,
+    Chain,
+    ChainContractTokenConstant,
+    SupportedTransferTypes,
+  } from '@baf-wallet/interfaces';
+  import {
+    getTokenLogoUrl,
+    TokenInfo,
+    getTokenInfo,
+  } from '@baf-wallet/trust-wallet-assets';
+  import { constants } from '../config/constants';
+  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import { ChainStores } from '../state/chains.svelte';
-  import Button from './base/Button.svelte';
+  import Button from '@smui/button';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
   const { open } = getContext('modal');
 
-  function openSendModal(chain: Chain) {
-    open(SendModal, {chain});
+  function openSendModal(
+    chain: Chain,
+    tokenInfo: TokenInfo,
+    transferType: SupportedTransferTypes,
+    opts?: {
+      contractAddress: string;
+    }
+  ) {
+    open(SendModal, { chain, transferType, tokenInfo, ...(opts || {}) });
   }
 
-  const { getChainLogoUrl, getChainInfo } = trustWalletAssets;
+  async function getContractTokenInfo(
+    chain: Chain,
+    contract: ChainContractTokenConstant,
+    balance: Balance
+  ): Promise<ContractTokenInfo | null> {
+    const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
+    if (balance === '0' || !balance) {
+      return null;
+    }
+    return {
+      tokenInfo,
+      address: contract.contractAddress,
+      balance,
+    };
+  }
 
-  async function initBalances(): Promise<
-    { chainInfo: ChainInfo; bal: ChainBalance }[]
-  > {
+  interface ContractTokenInfo {
+    tokenInfo: TokenInfo;
+    address: string;
+    balance: Balance;
+  }
+
+  interface ChainBalance {
+    chain: Chain;
+    chainTokenInfo: TokenInfo;
+    balance: Balance;
+    contractTokens: (ContractTokenInfo | null)[];
+  }
+
+  async function initChainBalances(): Promise<ChainBalance[]> {
     const balanceProms: Promise<ChainBalance>[] = Object.keys($ChainStores).map(
       async (chain: Chain) => {
         const chainInfo = $ChainStores[chain];
+        const chainTokenInfo = await getTokenInfo(chain);
         return {
           chain,
+          chainTokenInfo,
           balance: await chainInfo.accounts
             .getGenericMasterAccount()
             .getBalance(),
-        } as ChainBalance;
+          contractTokens: await Promise.all(
+            chainInfo
+              .getConstants(constants.env)
+              .tokens.map(async (contract) =>
+                getContractTokenInfo(
+                  chain,
+                  contract,
+                  await chainInfo.accounts
+                    .getGenericMasterAccount()
+                    .getContractTokenBalance(contract.contractAddress)
+                )
+              )
+          ),
+        };
       }
     );
-    const balances: ChainBalance[] = await Promise.all(balanceProms);
-    return Promise.all(
-      balances.map((bal: ChainBalance) => {
-        return getChainInfo(bal.chain).then((chainInfo) => {
-          return {
-            bal,
-            chainInfo,
-          };
-        });
-      })
-    );
+    return Promise.all(balanceProms);
   }
 </script>
 
-<div class="container px-2 mx-auto sm">
-  <table class="w-full table-fixed">
-    <thead>
-      <tr>
-        <th class="w-8" />
-        <th class="w-auto">Asset</th>
-        <th class="w-auto">Balance</th>
-        <th class="w-auto">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#await initBalances() then chains}
-        {#each chains as chain, i}
-          <tr>
-            <td class="mr-2">
-              <img
-                class="object-scale-down mx-2"
-                src={getChainLogoUrl(chain.bal.chain)}
-                alt={`${chain.bal.chain}.png`}
-              />
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              {`$${chain.chainInfo.symbol}`}
-            </td>
-            <td class={i % 2 == 0 ? 'bg-gray-100 text-center' : 'text-center'}>
-              <AmountFormatter bal={chain.bal} />
-            </td>
-            <td class='text-center'>
-              <Button
-                onClick={() => openSendModal(chain.bal.chain)}
-                color="blue"
-                classExtra="col-start-12 col-span-1">Transfer</Button
-              >
-            </td>
-          </tr>
-        {/each}
-      {:catch error}
-        <span
-          >An error occurred when attempting to fetch asset data: {error}</span
+<div class="wrapper">
+  <th />
+  <th>Chain</th>
+  <th>Balance</th>
+  <th>Actions</th>
+  {#await initChainBalances() then chains}
+    {#each chains as chain, i}
+      <img
+        src={getTokenLogoUrl(chain.chain)}
+        alt={`${chain.chainTokenInfo.name}.png`}
+      />
+      <div>
+        {chain.chainTokenInfo.name}
+      </div>
+      <div>
+        <AmountFormatter
+          chain={chain.chain}
+          bal={chain.balance}
+          isNativeToken={true}
+          tokenInfo={chain.chainTokenInfo}
+        />
+      </div>
+      <Button
+        on:click={() =>
+          openSendModal(
+            chain.chain,
+            chain.chainTokenInfo,
+            SupportedTransferTypes.NativeToken
+          )}>Transfer</Button
+      >
+      {#each chain.contractTokens.filter((tok) => tok !== null) as contractToken}
+        <img
+          src={getTokenLogoUrl(chain.chain, contractToken.address)}
+          alt={`${contractToken.tokenInfo.name}.png`}
+        />
+        <div>
+          {chain.chainTokenInfo.name}
+        </div>
+        <div>
+          <AmountFormatter
+            chain={chain.chain}
+            bal={contractToken.balance}
+            tokenInfo={contractToken.tokenInfo}
+            isNativeToken={false}
+          />
+        </div>
+        <Button
+          on:click={() =>
+            openSendModal(
+              chain.chain,
+              contractToken.tokenInfo,
+              SupportedTransferTypes.ContractToken,
+              {
+                contractAddress: contractToken.address,
+              }
+            )}>Transfer</Button
         >
-      {/await}
-    </tbody>
-  </table>
+      {/each}
+    {/each}
+  {:catch error}
+    <span>An error occurred when attempting to fetch asset data: {error}</span>
+  {/await}
 </div>
+
+<style>
+  /* your styles go here */
+  .wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 2rem 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+  img {
+    width: 100%;
+  }
+</style>

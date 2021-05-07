@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "cli": { "defaultCollection": "@nrwl/express" },
+  "cli": {
+    "defaultCollection": "@nrwl/express"
+  },
   "defaultProject": "api",
   "projects": {
     "frontend-e2e": {
@@ -16,7 +18,9 @@
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/frontend-e2e/**/*.{js,ts}"] }
+          "options": {
+            "lintFilePatterns": ["apps/frontend-e2e/**/*.{js,ts}"]
+          }
         }
       }
     },
@@ -62,13 +66,17 @@
         },
         "serve": {
           "executor": "@nrwl/node:execute",
-          "options": { "buildTarget": "api:build" }
+          "options": {
+            "buildTarget": "api:build"
+          }
         },
         "tsoa": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              { "command": "rm -r apps/api/build; mkdir apps/api/build" },
+              {
+                "command": "rm -r apps/api/build; mkdir apps/api/build"
+              },
               {
                 "command": "$(npm bin)/tsoa --configuration apps/api/tsoa.json spec-and-routes"
               }
@@ -77,7 +85,9 @@
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/api/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["apps/api/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -96,7 +106,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/api-client/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/api-client/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -147,16 +159,31 @@
                   "with": "apps/bot/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "test": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/bot/src/environments/environment.ts",
+                  "with": "apps/bot/src/environments/environment.test.ts"
+                }
+              ]
             }
           }
         },
         "serve": {
           "executor": "@nrwl/node:execute",
-          "options": { "buildTarget": "bot:build" }
+          "options": {
+            "buildTarget": "bot:build"
+          }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/bot/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["apps/bot/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -175,7 +202,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/multi-chain/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/multi-chain/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -194,7 +223,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/redirect-generator/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/redirect-generator/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -213,7 +244,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/interfaces/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/interfaces/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -308,7 +341,9 @@
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["apps/frontend/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["apps/frontend/**/*.ts"]
+          }
         },
         "check": {
           "executor": "@nrwl/workspace:run-commands",
@@ -334,7 +369,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/near/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/near/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -353,7 +390,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/utils/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/utils/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -372,12 +411,16 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/torus/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/torus/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/torus"],
-          "options": { "jestConfig": "libs/torus/jest.config.js" }
+          "options": {
+            "jestConfig": "libs/torus/jest.config.js"
+          }
         }
       }
     },
@@ -388,7 +431,9 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/baf-contract/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/baf-contract/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
@@ -407,13 +452,57 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": { "lintFilePatterns": ["libs/crypto/**/*.ts"] }
+          "options": {
+            "lintFilePatterns": ["libs/crypto/**/*.ts"]
+          }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/crypto"],
           "options": {
             "jestConfig": "libs/crypto/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "base-components": {
+      "root": "libs/base-components",
+      "sourceRoot": "libs/base-components/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/base-components/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/base-components"],
+          "options": {
+            "jestConfig": "libs/base-components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "errors": {
+      "root": "libs/errors",
+      "sourceRoot": "libs/errors/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/errors/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/errors"],
+          "options": {
+            "jestConfig": "libs/errors/jest.config.js",
             "passWithNoTests": true
           }
         }

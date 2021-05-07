@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
-import { transactions } from 'near-api-js';
+import { formatAmountToIndivisibleUnit } from '@baf-wallet/multi-chain';
 import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
 import {
@@ -59,7 +59,7 @@ export default class SendMoney extends Command {
     // Recipient should look like <@86890631690977280>
     let recipientParsed: string;
     try {
-      recipientParsed = recipient.split('<@')[1].split('>')[0];
+      recipientParsed = recipient.split('<@!')[1].split('>')[0];
     } catch (e) {
       await super.respond(
         message.channel,
@@ -78,7 +78,7 @@ export default class SendMoney extends Command {
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
-            amount: amount.toString(),
+            amount: formatAmountToIndivisibleUnit(amount, Chain.NEAR),
           },
         ],
         oauthProvider: 'discord',
@@ -88,7 +88,8 @@ export default class SendMoney extends Command {
         environment.BASE_WALLET_URL,
         tx
       );
-      await super.respond(message.channel, link);
+
+      await message.author.send(link);
     } catch (err) {
       console.error(err);
       await super.respond(

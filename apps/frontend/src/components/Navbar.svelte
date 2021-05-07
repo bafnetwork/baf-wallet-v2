@@ -1,35 +1,45 @@
 <script lang="ts">
   import { link } from 'svelte-spa-router';
-  import Button from './base/Button.svelte';
+  import Button from '@smui/button';
+  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+  import IconButton from '@smui/icon-button';
   import { AccountStore, logout } from '../state/accounts.svelte';
 
+  let prominent = false;
+  let dense = false;
+  let secondaryColor = false;
 </script>
 
-<div
-  class="sticky top-0 z-30 grid grid-cols-12 gap-2 p-4 shadow-md bg-cyan-600 h-min"
->
-  {#if $AccountStore.loggedIn}
-    <a
-      class="col-span-1 col-start-10 text-lg text-center text-white"
-      href="/"
-      use:link>Account</a
-    >
-    <a
-      class="col-span-1 col-start-11 text-lg text-center text-white"
-      href="/apps"
-      use:link>Apps</a
-    >
-    <!-- TODO: different color -->
-    <Button
-      onClick={logout}
-      classExtra="col-start-12 col-span-1 logout" color="white">Logout</Button
-    >
-    {:else}
-    <a href="/login" use:link>Login</a>
-  {/if}
-</div>
+{#if $AccountStore.loggedIn}
+  <TopAppBar
+    variant="static"
+    {prominent}
+    {dense}
+    color={secondaryColor ? 'secondary' : 'primary'}
+  >
+    <Row>
+      <Section align="end" toolbar>
+        <a href="/" use:link>
+          <IconButton class="material-icons" aria-label="Home">home</IconButton>
+        </a>
+        <a href="/settings" use:link>
+          <IconButton class="material-icons" aria-label="Account Page">
+            account_circle
+          </IconButton>
+        </a>
+        <Button color="secondary" on:click={logout} variant="raised"
+          >Logout</Button
+        >
+      </Section>
+    </Row>
+  </TopAppBar>
+{:else}
+  <div />
+{/if}
+
 <style>
-  .logout {
-    background-color: var(--danger-color);
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 </style>

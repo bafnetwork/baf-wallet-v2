@@ -1,3 +1,4 @@
+import { BafError } from '@baf-wallet/errors';
 import {
   PublicKey,
   SecretKey,
@@ -48,7 +49,7 @@ export function pkFromSk<Curve>(sk: SecretKey<Curve>): PublicKey<Curve> {
       return bufferConverter.pkToUnified(data, sk.curve);
     }
     default:
-      throw new Error(`Unsupported curve ${sk.curve.toString()}`);
+      throw BafError.UnsupportedKeyCurve(sk.curve.toString());
   }
 }
 
@@ -74,7 +75,7 @@ export function skFromSeed<Curve>(
       return bufferConverter.pkToUnified(data, curveMarker);
     }
     default:
-      throw new Error(`Unsupported curve ${curveMarker.toString()}`);
+      throw BafError.UnsupportedKeyCurve(curveMarker.toString());
   }
 }
 
@@ -92,6 +93,6 @@ export function skFromRng<Curve>(curveMarker: Curve): SecretKey<Curve> {
       return bufferConverter.pkToUnified(data, curveMarker);
     }
     default:
-      throw new Error(`Unsupported curve ${curveMarker.toString()}`);
+      throw BafError.UnsupportedKeyCurve(curveMarker.toString());
   }
 }

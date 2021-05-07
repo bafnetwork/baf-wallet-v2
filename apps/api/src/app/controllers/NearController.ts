@@ -22,9 +22,8 @@ import {
   secp256k1Marker,
 } from '@baf-wallet/interfaces';
 import { getTorusPublicAddress } from '@baf-wallet/torus';
-import { constants } from '../config/constants';
 import { hexString } from './common';
-import { pkFromString } from '@baf-wallet/utils';
+import { pkFromString } from '@baf-wallet/crypto';
 
 interface CreateNearAccountParams {
   userID: string;

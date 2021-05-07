@@ -1,4 +1,6 @@
+import { BafError } from '@baf-wallet/errors';
 import { Env } from '@baf-wallet/interfaces';
+import { Account, Contract, utils } from 'near-api-js';
 
 export enum NearNetworkID {
   DEVNET = 'testnet',
@@ -15,7 +17,7 @@ export function stringToNetworkID(str: string): NearNetworkID {
     case NearNetworkID.MAINNET:
       return NearNetworkID.MAINNET;
     default:
-      throw new Error(`Unknown network identifier ${str}`);
+      throw BafError.UnknownNetworkIdent;
   }
 }
 
@@ -30,4 +32,9 @@ export function getNearNetworkID(env: Env): NearNetworkID {
     default:
       return NearNetworkID.DEVNET;
   }
+}
+
+export function nearToYoctoNear(amount: number): string {
+  const amountYoctoNearBN = utils.format.NEAR_NOMINATION.muln(amount);
+  return amountYoctoNearBN.toString(10);
 }

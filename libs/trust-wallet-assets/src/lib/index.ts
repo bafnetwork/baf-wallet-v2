@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { BafError } from '@baf-wallet/errors';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
 import { Chain } from '@baf-wallet/interfaces';
+
+const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -16,15 +19,15 @@ export class SocialMediaInfo {
 }
 
 @jsonObject
-export class ChainInfo {
+class _TokenInfo {
   @jsonMember
-  public name: Chain;
+  public name: string;
   @jsonMember
-  public website: string;
+  public website?: string;
   @jsonMember
-  public source_code: string;
+  public source_code?: string;
   @jsonMember
-  public white_paper: string;
+  public white_paper?: string;
   @jsonMember
   public description: string;
   @jsonArrayMember(SocialMediaInfo)
@@ -41,6 +44,10 @@ export class ChainInfo {
   public status: 'active' | 'abandoned';
   @jsonArrayMember(String)
   public tags?: string[];
+}
+
+export interface TokenInfo extends _TokenInfo {
+  chain: Chain;
 }
 
 // TODO: have some intelligent way to get the rest
@@ -79,19 +86,40 @@ export type DappUrl =
   | 'yearn.finance';
 
 export const getChainFolderPrefix = (chain: Chain): string =>
-  `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chain}`;
+  `${baseRawUrl}/blockchains/${chain}`;
 
-export const getChainInfoUrl = (chain: Chain): string =>
+const getNonNativeTokenInfoUrl = (
+  chain: Chain,
+  contractAddress: string
+): string => `${getChainFolderPrefix(chain)}/${contractAddress}/info.json`;
+
+const getChainInfoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
 
-export const getChainLogoUrl = (chain: Chain): string =>
+const getNonNativeTokenLogoUrl = (
+  chain: Chain,
+  contractAddress: string
+): string => `${getChainFolderPrefix(chain)}/${contractAddress}/logo.png`;
+
+const getChainLogoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/logo.png`;
 
-export const getDappLogoUrl = (dappUrl: DappUrl): string =>
-  `https://raw.githubusercontent.com/trustwallet/assets/master/dapps/${dappUrl}.png`;
+export const getTokenLogoUrl = (chain: Chain, contractAddress?: string) =>
+  chain === contractAddress || !contractAddress
+    ? getChainLogoUrl(chain)
+    : getNonNativeTokenLogoUrl(chain, contractAddress);
 
-export async function getChainInfo(chain: Chain): Promise<ChainInfo> {
-  const url = getChainInfoUrl(chain);
+export const getDappLogoUrl = (dappUrl: DappUrl): string =>
+  `${baseRawUrl}/dapps/${dappUrl}.png`;
+
+export async function getTokenInfo(
+  chain: Chain,
+  contractAddress?: string
+): Promise<TokenInfo> {
+  const tokenIsChain = chain === contractAddress || !contractAddress;
+  const url = tokenIsChain
+    ? getChainInfoUrl(chain)
+    : getNonNativeTokenInfoUrl(chain, contractAddress);
   try {
     const res = await axios.get(url);
     const { data } = res;
@@ -101,17 +129,19 @@ export async function getChainInfo(chain: Chain): Promise<ChainInfo> {
       delete data.research;
     }
 
-    const serializer = new TypedJSON(ChainInfo);
-    return serializer.parse(data);
+    const serializer = new TypedJSON(_TokenInfo);
+    const _tokInfo = serializer.parse(data);
+    return {
+      ..._tokInfo,
+      chain,
+    };
   } catch (err) {
     if (err.isAxiosError) {
       console.log(
-        'Chain not found: only chains in https://raw.githubusercontent.com/trustwallet/assets/master/blockchains are supported.'
+        `Chain not found: only chains in ${baseRawUrl} are supported.`
       );
       return null;
     }
-    throw new Error(
-      `Received invalid info.json: ${err}. See \`ChainInfo\` in trust-wallet-assets/src/lib/index.ts for more information`
-    );
+    throw BafError.InvalidTrustWalletJSON(err);
   }
 }

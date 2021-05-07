@@ -1,9 +1,6 @@
 import {
   SecretKey,
   PublicKey,
-  KeyPair,
-  secp256k1,
-  ed25519,
   ED25519_STR,
   SECP256K1_STR,
   Encoding,
@@ -12,7 +9,7 @@ import { keccak256, sha256 } from './hash';
 import { ec as EC } from 'elliptic';
 import * as nacl from 'tweetnacl';
 import { encodeBytes } from '@baf-wallet/utils';
-import { encodeSecpSigBafContract } from '@baf-wallet/baf-contract';
+import { BafError } from '@baf-wallet/errors';
 
 const ellipticSecp256k1 = new EC('secp256k1');
 
@@ -39,7 +36,7 @@ export function verifySignature<Curve>(
       );
     }
     default:
-      throw new Error(`Unsupported curve ${pk.curve.toString()}`);
+      throw BafError.UnsupportedKeyCurve(pk.curve.toString());
   }
 }
 
@@ -58,7 +55,7 @@ export function signMsg<Curve>(
         canonical: true,
       });
       return bafContractFormat
-        ? encodeSecpSigBafContract(ellipticSig)
+        ? encodeSecpSigRustContract(ellipticSig)
         : Buffer.from(ellipticSig.toDER('hex'), 'hex');
     }
     case ED25519_STR: {
@@ -68,6 +65,13 @@ export function signMsg<Curve>(
       );
     }
     default:
-      throw new Error(`Unsupported curve ${sk.curve.toString()}`);
+      throw BafError.UnsupportedKeyCurve(sk.curve.toString());
   }
+}
+
+export function encodeSecpSigRustContract(sig: EC.Signature): Buffer {
+  return Buffer.from(
+    `${sig.r.toString('hex', 64)}${sig.s.toString('hex', 64)}`,
+    'hex'
+  );
 }
