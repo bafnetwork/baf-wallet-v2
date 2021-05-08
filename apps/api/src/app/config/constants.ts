@@ -1,7 +1,6 @@
 import { ed25519, ed25519Marker, Encoding, Env } from '@baf-wallet/interfaces';
-import { keyPairFromSk } from '@baf-wallet/crypto';
+import { keyPairFromSk, skFromString } from '@baf-wallet/crypto';
 import { NearInitParams, getNearNetworkID } from '@baf-wallet/near';
-import { skFromString } from '@baf-wallet/utils';
 import { environment, initDotEnv } from '../../environments/environment';
 
 initDotEnv();

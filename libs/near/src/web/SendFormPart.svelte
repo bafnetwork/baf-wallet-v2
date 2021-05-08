@@ -16,11 +16,13 @@
     formatTokenAmountToIndivisibleUnit,
   } from '@baf-wallet/multi-chain';
   import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
-  import Input from '@baf-wallet/base-components/Input.svelte';
-  import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
+  import Textfield from '@smui/textfield';
+  import HelperText from '@smui/textfield/helper-text/index';
+
   import { BafError } from '@baf-wallet/errors';
 
-  let recipientAccountID: string, amountFormatted: number;
+  let recipientAccountID: string = null,
+    amountFormatted: number = NaN;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
   export let tokenInfo: TokenInfo;
@@ -60,15 +62,12 @@
   };
 </script>
 
-<Input
-  label="Sending to"
-  placeholder="JohnDoe.near"
+<Textfield
   bind:value={recipientAccountID}
-  required={true}
-/>
-<InputNumeric
-  label="Amount"
-  placeholder={`0 ${tokenInfo.name}`}
-  bind:value={amountFormatted}
-  required={true}
-/>
+  label="Recipient NEAR Account"
+  required
+>
+  <HelperText slot="helper">Ex. johndoe.testnet</HelperText>
+</Textfield>
+<Textfield bind:value={amountFormatted} label="$NEAR" type="number" required>
+</Textfield>

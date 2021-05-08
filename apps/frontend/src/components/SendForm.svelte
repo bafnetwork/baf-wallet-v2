@@ -6,7 +6,7 @@
     GenericTxAction,
     SupportedTransferTypes,
   } from '@baf-wallet/interfaces';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
   import Lazy from '@baf-wallet/base-components/Lazy.svelte';
   import TxModal from './TxModal.svelte';
   import { ChainStores } from '../state/chains.svelte';
@@ -16,7 +16,6 @@
 
   let createTX: <T>() => Promise<CreateTxReturn<T>>;
   export let postSubmitHook: () => void | undefined;
-  export let onCancel: () => void | undefined;
   export let chain: Chain;
   export let transferType: SupportedTransferTypes;
   export let tokenInfo: TokenInfo;
@@ -38,7 +37,7 @@
   const ChainSendFormPart = (chain: Chain) => () =>
     import(`../../../../libs/${chain}/src/web/SendFormPart.svelte`);
 
-  const handleSubmit = async (e: Event) => {
+  export const handleSubmit = async (e: Event) => {
     e.preventDefault();
     console.log(chainSendFormPart);
     createTX = chainSendFormPart.createTX;
@@ -61,34 +60,26 @@
   };
 </script>
 
-<form on:submit={handleSubmit}>
-  {#if transferType === SupportedTransferTypes.NativeToken}
-    <Lazy
-      component={ChainSendFormPart(chain)}
-      chainInterface={$ChainStores[chain]}
-      edPK={$SiteKeyStore.edPK}
-      secpPK={$SiteKeyStore.secpPK}
-      {tokenInfo}
-      bind:selfBind={chainSendFormPart}
-    />
-  {:else if transferType === SupportedTransferTypes.ContractToken}
-    <Lazy
-      component={ChainSendFormPart(chain)}
-      chainInterface={$ChainStores[chain]}
-      edPK={$SiteKeyStore.edPK}
-      secpPK={$SiteKeyStore.secpPK}
-      isContractToken={true}
-      {tokenInfo}
-      {contractAddress}
-      bind:selfBind={chainSendFormPart}
-    /><!-- else if content here -->
-  {:else}
-    Transfering {transferType} is unsupported
-  {/if}
-  <div class="">
-    {#if onCancel !== undefined}
-      <Button onClick={onCancel} styleType="danger">Cancel</Button>
-    {/if}
-    <Button type="submit">Submit</Button>
-  </div>
-</form>
+{#if transferType === SupportedTransferTypes.NativeToken}
+  <Lazy
+    component={ChainSendFormPart(chain)}
+    chainInterface={$ChainStores[chain]}
+    edPK={$SiteKeyStore.edPK}
+    secpPK={$SiteKeyStore.secpPK}
+    {tokenInfo}
+    bind:selfBind={chainSendFormPart}
+  />
+{:else if transferType === SupportedTransferTypes.ContractToken}
+  <Lazy
+    component={ChainSendFormPart(chain)}
+    chainInterface={$ChainStores[chain]}
+    edPK={$SiteKeyStore.edPK}
+    secpPK={$SiteKeyStore.secpPK}
+    isContractToken={true}
+    {tokenInfo}
+    {contractAddress}
+    bind:selfBind={chainSendFormPart}
+  /><!-- else if content here -->
+{:else}
+  Transfering {transferType} is unsupported
+{/if}

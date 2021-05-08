@@ -38,5 +38,5 @@
 </script>
 
 <span>
-  {`${getStrFormatted()} ${tokenInfo.name}`}
+  {`${getStrFormatted()} ${tokenInfo.symbol}`}
 </span>

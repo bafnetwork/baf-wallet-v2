@@ -4,8 +4,7 @@ import {
   KeySourceInitFn,
   SECP256K1_STR,
 } from '@baf-wallet/interfaces';
-import { skFromString } from '@baf-wallet/utils';
-import { keyPairFromSk, skFromSeed } from '@baf-wallet/crypto';
+import { keyPairFromSk, skFromSeed, skFromString } from '@baf-wallet/crypto';
 
 import DirectWebSdk, {
   LOGIN_TYPE,
