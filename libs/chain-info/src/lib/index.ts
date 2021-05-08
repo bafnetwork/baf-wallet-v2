@@ -142,6 +142,6 @@ export async function getTokenInfo(
       );
       return null;
     }
-    throw BafError.InvalidTrustWalletJSON(err);
+    throw BafError.InvalidChainInfoJSON(err);
   }
 }
