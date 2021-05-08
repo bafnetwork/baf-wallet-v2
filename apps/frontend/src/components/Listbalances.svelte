@@ -9,7 +9,7 @@
     getTokenLogoUrl,
     TokenInfo,
     getTokenInfo,
-  } from '@baf-wallet/trust-wallet-assets';
+  } from '@baf-wallet/chain-info';
   import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import { ChainStores } from '../state/chains.svelte';

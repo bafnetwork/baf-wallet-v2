@@ -6,7 +6,7 @@ module.exports = {
     '<rootDir>/apps/bot',
     '<rootDir>/libs/multi-chain',
     '<rootDir>/libs/redirect-generator',
-    '<rootDir>/libs/trust-wallet-assets',
+    '<rootDir>/libs/chain-info',
     '<rootDir>/apps/frontend',
     '<rootDir>/libs/near',
     '<rootDir>/libs/utils',

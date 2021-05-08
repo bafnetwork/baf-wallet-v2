@@ -258,22 +258,22 @@
         }
       }
     },
-    "trust-wallet-assets": {
-      "root": "libs/trust-wallet-assets",
-      "sourceRoot": "libs/trust-wallet-assets/src",
+    "chain-info": {
+      "root": "libs/chain-info",
+      "sourceRoot": "libs/chain-info/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/trust-wallet-assets/**/*.ts"]
+            "lintFilePatterns": ["libs/chain-info/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/trust-wallet-assets"],
+          "outputs": ["coverage/libs/chain-info"],
           "options": {
-            "jestConfig": "libs/trust-wallet-assets/jest.config.js",
+            "jestConfig": "libs/chain-info/jest.config.js",
             "passWithNoTests": true
           }
         }

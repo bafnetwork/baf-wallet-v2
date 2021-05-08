@@ -10,7 +10,7 @@
 
   import { getContext } from 'svelte';
   import { Chain, SupportedTransferTypes } from '@baf-wallet/interfaces';
-  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
+  import { TokenInfo } from '@baf-wallet/chain-info';
   const { close } = getContext('modal');
   let submit: (e: Event) => Promise<void>;
 
