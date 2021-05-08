@@ -26,7 +26,8 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
@@ -82,6 +83,7 @@
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-svelte3": "^2.7.3",
+    "husky": "^6.0.0",
     "jest": "26.2.2",
     "mini-css-extract-plugin": "^1.4.1",
     "node-polyfill-webpack-plugin": "^1.1.0",
