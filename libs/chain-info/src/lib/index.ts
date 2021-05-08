@@ -5,6 +5,7 @@ import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
 import { Chain } from '@baf-wallet/interfaces';
 
 const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
+const contentsApiUrl = 'https://api.github.com/repos/bafnetwork/assets/contents';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -91,7 +92,7 @@ export const getChainFolderPrefix = (chain: Chain): string =>
 const getNonNativeTokenInfoUrl = (
   chain: Chain,
   contractAddress: string
-): string => `${getChainFolderPrefix(chain)}/${contractAddress}/info.json`;
+): string => `${getChainFolderPrefix(chain)}/assets/${contractAddress}/info.json`;
 
 const getChainInfoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
@@ -111,6 +112,19 @@ export const getTokenLogoUrl = (chain: Chain, contractAddress?: string) =>
 
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `${baseRawUrl}/dapps/${dappUrl}.png`;
+
+export async function getNonNativeContractAddresses(chain: Chain): Promise<string[]> {
+  const url = `${contentsApiUrl}/${chain}/assets`;
+  try {
+    const res = await axios.get(url);
+    const { data } = res;
+
+    return data.map(item => item.name);
+  } catch (err) {
+    console.error(`could not fetch addresses: ${err}`);
+    return null;
+  }
+}
 
 export async function getTokenInfo(
   chain: Chain,
@@ -137,7 +151,7 @@ export async function getTokenInfo(
     };
   } catch (err) {
     if (err.isAxiosError) {
-      console.log(
+      console.error(
         `Chain not found: only chains in ${baseRawUrl} are supported.`
       );
       return null;
