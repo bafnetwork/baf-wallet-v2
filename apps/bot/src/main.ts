@@ -5,10 +5,10 @@ import { Client } from './Client';
 
 // Initialize the Client using the IoC.
 const client = Container.get<Client>(Client);
-
+console.log(environment.DISCORD_BOT_TOKEN);
 client
-  .login(environment.DISCORD_TOKEN)
+  .login(environment.DISCORD_BOT_TOKEN)
   .then(() => {
-    console.log('tokenbot happily hodling along');
+    console.log('tokenbot happily watching AoT');
   })
   .catch((e) => console.error(e));

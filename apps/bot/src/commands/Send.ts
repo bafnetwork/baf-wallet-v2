@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
-import { formatAmountToIndivisibleUnit } from '@baf-wallet/multi-chain';
+import { formatNativeTokenAmountToIndivisibleUnit } from '@baf-wallet/multi-chain';
 import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
 import {
@@ -14,7 +14,7 @@ export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
     super(client, {
       name: 'sendMoney',
-      description: 'sends NEAR or NEP-5 tokens on NEAR testnet',
+      description: 'sends NEAR or NEP-141 tokens on NEAR testnet',
       category: 'Utility',
       usage: `${client.settings.prefix}send [amount in yoctoNear] [asset (optional, defaults to 'NEAR')]  [recipient]`,
       cooldown: 1000,
@@ -78,7 +78,7 @@ export default class SendMoney extends Command {
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
-            amount: formatAmountToIndivisibleUnit(amount, Chain.NEAR),
+            amount: formatNativeTokenAmountToIndivisibleUnit(amount, Chain.NEAR),
           },
         ],
         oauthProvider: 'discord',
@@ -89,7 +89,9 @@ export default class SendMoney extends Command {
         tx
       );
 
-      await message.author.send(link);
+      await super.respond(message.channel, 'Please check your direct message for the link to approve the transaction!');
+
+      await message.author.send('Click on the following link to approve your transaction: ' + link);
     } catch (err) {
       console.error(err);
       await super.respond(

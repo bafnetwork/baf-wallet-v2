@@ -79,13 +79,6 @@
       return $transactionForm.fields.recipientAccountID.valid && $transactionForm.fields.amount.valid;
     }
   };
-
-  // const handleChange = async (v: any) => {
-  //   console.log(`change: ${v}`);
-  //   if (postSubmitHook !== undefined) {
-  //     postSubmitHook();
-  //   }
-  // };
   
   function openSendModal(chain: Chain) {
     open(SendModal, {chain});

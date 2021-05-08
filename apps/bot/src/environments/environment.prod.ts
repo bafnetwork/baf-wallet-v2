@@ -5,5 +5,5 @@ if (!process.env.NON_LOCAL)
 
 export const environment = {
   production: true,
-  DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+  DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
 };
