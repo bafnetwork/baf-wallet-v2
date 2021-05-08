@@ -9,6 +9,7 @@
     getTokenLogoUrl,
     TokenInfo,
     getTokenInfo,
+    getNonNativeTokenAddresses
   } from '@baf-wallet/chain-info';
   import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
@@ -31,16 +32,16 @@
 
   async function getContractTokenInfo(
     chain: Chain,
-    contract: ChainContractTokenConstant,
+    contractAddress: string,
     balance: Balance
   ): Promise<ContractTokenInfo | null> {
-    const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
+    const tokenInfo = await getTokenInfo(chain, contractAddress);
     if (balance === '0' || !balance) {
       return null;
     }
     return {
       tokenInfo,
-      address: contract.contractAddress,
+      address: contractAddress,
       balance,
     };
   }
@@ -69,24 +70,25 @@
           balance: await chainInfo.accounts
             .getGenericMasterAccount()
             .getBalance(),
-          contractTokens: await Promise.all(
-            chainInfo
-              .getConstants(constants.env)
-              .tokens.map(async (contract) =>
+          contractTokens: await getNonNativeTokenAddresses(chain)
+            .then(contractAddrs => Promise.all(
+              contractAddrs.map(async (addr) => {
                 getContractTokenInfo(
                   chain,
-                  contract,
+                  addr,
                   await chainInfo.accounts
                     .getGenericMasterAccount()
-                    .getContractTokenBalance(contract.contractAddress)
+                    .getContractTokenBalance(addr)
                 )
-              )
-          ),
+              })
+            )),
         };
       }
     );
     return Promise.all(balanceProms);
   }
+
+
 </script>
 
 <div class="wrapper">
