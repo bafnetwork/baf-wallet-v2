@@ -12,7 +12,7 @@ import { NearState } from './near';
 /**
  * The following are definitions for standard Near Contracts
  */
-export interface NEP141Contract extends NearContractMethods {
+export interface NEP141Contract extends NearContract {
   // TODO: fill in, see https://github.com/bafnetwork/baf-wallet-v2/issues/69
   ft_balance_of: (args: { account_id: NearAccountID }) => Promise<string>;
   ft_total_supply: () => Promise<string>;
@@ -39,41 +39,35 @@ type contractChangeMethod = (
 /**
  * End definitions for standard Near Contracts
  */
-export type NearContractMethods = {
+export type NearContract = {
   [fn_name: string]: contractViewMethod | contractChangeMethod;
 };
 
 export interface NearInitContractParams {
-  contractName: string;
   callerAccount?: Account;
   viewMethods: string[];
   changeMethods: string[];
 }
 
-export const initContract = (nearMasterAccount: Account) => async <
-  ContractMethods extends NearContractMethods
->(
+export const initContract = (nearMasterAccount: Account, contractAccountID) => async <Contract>(
   params: NearInitContractParams
 ) => {
   const contract = new NearNativeContract(
     params.callerAccount ?? nearMasterAccount,
-    params.contractName,
+    contractAccountID,
     {
       viewMethods: params.viewMethods,
       changeMethods: params.changeMethods,
     }
   );
-  return (contract as unknown) as ContractMethods & NearNativeContract;
+  return (contract as unknown) as Contract;
 };
 
-export function nearContract(
-  nearState: NearState
-): ContractInterface<
-  NearNativeContract,
-  NearContractMethods,
-  NearInitContractParams
-> {
+export function getContract<Contract, ContractInitParams>(
+  nearState: NearState,
+  contractAccountID: string
+) {
   return {
-    init: initContract(nearState.nearMasterAccount),
-  };
+    init: initContract(nearState.nearMasterAccount, contractAccountID)
+  }
 }

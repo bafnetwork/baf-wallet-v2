@@ -41,7 +41,7 @@ export async function wrapChainInterface<T>(
     accounts: unwrapped.accounts(innerSdk),
     convert: unwrapped.convert,
     getConstants: unwrapped.getConstants,
-    contract: unwrapped.contract(innerSdk),
+    getContract: (address: string) => unwrapped.getContract(innerSdk, address),
 
     // Note: in the future, some chainInterfaces might want to do stuff in this fn
     getInner: () => innerSdk,

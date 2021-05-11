@@ -2,14 +2,13 @@
   import {
     Balance,
     Chain,
-    ChainContractTokenConstant,
     SupportedTransferTypes,
   } from '@baf-wallet/interfaces';
   import {
     getTokenLogoUrl,
     TokenInfo,
     getTokenInfo,
-    getNonNativeTokenAddresses
+    getContractAddresses
   } from '@baf-wallet/chain-info';
   import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
@@ -17,6 +16,7 @@
   import Button from '@smui/button';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
+   import { BafError } from '@baf-wallet/errors';
   const { open } = getContext('modal');
 
   function openSendModal(
@@ -70,18 +70,21 @@
           balance: await chainInfo.accounts
             .getGenericMasterAccount()
             .getBalance(),
-          contractTokens: await getNonNativeTokenAddresses(chain)
+          contractTokens: await getContractAddresses(chain)
             .then(contractAddrs => Promise.all(
-              contractAddrs.map(async (addr) => {
-                getContractTokenInfo(
-                  chain,
-                  addr,
-                  await chainInfo.accounts
-                    .getGenericMasterAccount()
-                    .getContractTokenBalance(addr)
-                )
-              })
-            )),
+              contractAddrs.map(addr => chainInfo.accounts
+                .getGenericMasterAccount()
+                .getContractTokenBalance(addr)
+                .then(balance => getContractTokenInfo(chain, addr, balance))
+                .catch(e => {
+                  throw BafError.InvalidTokenContractAddress(addr)
+                })
+              )
+            ))
+            .catch(e => {
+              throw e
+            })
+
         };
       }
     );

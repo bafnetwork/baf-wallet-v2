@@ -36,8 +36,9 @@ export interface WrappedChainInterface<
   Account,
   AccountLookupParams,
   AccountCreateParams,
+  ContractInitParamsBase,
 > {
-  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
+            rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: AccountsInterface<
     Account,
@@ -47,9 +48,9 @@ export interface WrappedChainInterface<
   convert: Converter<PK, SK, KP>;
   getConstants: (env: Env) => ChainConstants;
   getInner: () => Inner;
-  getContract: <ContractBase, ContractMethodsBase, ContractInitParams>(
+  getContract: <Contract, ContractInitParams, ContractInitParamsBase>(
     address: string
-  ) => ContractInterface<ContractBase, ContractMethodsBase, ContractInitParams>;
+  ) => ContractInterface<Contract, ContractInitParams>;
 }
 
 // interface that every chain implementation is expected to implement
@@ -75,6 +76,7 @@ export interface ChainInterface<
   Account,
   AccountLookupParams,
   AccountCreateParams,
+  ContractInitParamsBase,
 > {
   init: (params: InitParams) => Promise<Inner>;
   rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
@@ -86,10 +88,10 @@ export interface ChainInterface<
   ) => AccountsInterface<Account, AccountLookupParams, AccountCreateParams>;
   convert: Converter<PK, SK, KP>;
   getConstants: (env: Env) => ChainConstants;
-  getContract: <ContractBase, ContractMethodsBase, ContractInitParams>(
+  getContract: <Contract, ContractInitParams extends ContractInitParamsBase>(
     innerSdk: Inner,
     address: string
-  ) => ContractInterface<ContractBase, ContractMethodsBase, ContractInitParams>;
+  ) => ContractInterface<Contract, ContractInitParams>;
 }
 
 export interface ChainContractTokenConstant {
@@ -150,13 +152,12 @@ export interface TxInterface<
 }
 
 export interface ContractInterface<
-  ContractBase,
-  ContractMethodsBase,
+  Contract,
   ContractInitParams
 > {
-  init: <ContractMethods extends ContractMethodsBase>(
+  init: <Contract>(
     params: ContractInitParams
-  ) => Promise<ContractMethods & ContractBase>;
+  ) => Promise<Contract>;
 }
 
 // utility for going to/from key BAF Wallet unified types
@@ -190,7 +191,8 @@ export type InferChainInterface<T> = T extends ChainInterface<
   infer SendResult,
   infer Account,
   infer AccountLookupParams,
-  infer AccountCreateParams
+  infer AccountCreateParams,
+  infer ContractInitParamsBase
 >
   ? ChainInterface<
       PK,
@@ -206,7 +208,8 @@ export type InferChainInterface<T> = T extends ChainInterface<
       SendResult,
       Account,
       AccountLookupParams,
-      AccountCreateParams
+      AccountCreateParams,
+      ContractInitParamsBase
     >
   : never;
 export type InferWrappedChainInterface<T> = T extends WrappedChainInterface<
@@ -222,7 +225,8 @@ export type InferWrappedChainInterface<T> = T extends WrappedChainInterface<
   infer SendResult,
   infer Account,
   infer AccountLookupParams,
-  infer AccountCreateParams
+  infer AccountCreateParams,
+  infer ContractInitParamsBase
 >
   ? WrappedChainInterface<
       PK,
@@ -237,7 +241,8 @@ export type InferWrappedChainInterface<T> = T extends WrappedChainInterface<
       SendResult,
       Account,
       AccountLookupParams,
-      AccountCreateParams
+      AccountCreateParams,
+      ContractInitParamsBase
     >
   : never;
 
@@ -255,7 +260,8 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
   infer SendResult,
   infer Account,
   infer AccountLookupParams,
-  infer AccountCreateParams
+  infer AccountCreateParams,
+  infer ContractInitParamsBase
 >
   ? WrappedChainInterface<
       PK,
@@ -270,12 +276,14 @@ export type InferWrapChainInterface<T> = T extends ChainInterface<
       SendResult,
       Account,
       AccountLookupParams,
-      AccountCreateParams
+      AccountCreateParams,
+      ContractInitParamsBase
     >
   : never;
 
 export type InferPK<T> = T extends ChainInterface<
   infer PK,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -306,6 +314,7 @@ export type InferSK<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
   ? SK
@@ -314,6 +323,7 @@ export type InferKP<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer KP,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -342,6 +352,7 @@ export type InferInitParams<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
   ? InitParams
@@ -360,9 +371,10 @@ export type InferInner<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
-  ? Inner & CommonChainState
+  ? Inner
   : never;
 export type InferTx<T> = T extends ChainInterface<
   infer _,
@@ -371,6 +383,7 @@ export type InferTx<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer Tx,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -396,6 +409,7 @@ export type InferTxBuildParams<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
   ? TxBuildParams
@@ -415,10 +429,12 @@ export type InferSignedTx<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
   ? SignedTx
   : never;
+
 export type InferSignOpts<T> = T extends ChainInterface<
   infer _,
   infer _,
@@ -433,11 +449,16 @@ export type InferSignOpts<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
   infer _
 >
   ? SignOpts
   : never;
+
 export type InferSendOpts<T> = T extends ChainInterface<
+  infer _,
+  infer _,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -449,13 +470,15 @@ export type InferSendOpts<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
-  infer _,
-  infer _,
   infer _
 >
   ? SendOpts
   : never;
+
 export type InferSendResult<T> = T extends ChainInterface<
+  infer _,
+  infer _,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -467,13 +490,15 @@ export type InferSendResult<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
-  infer _,
-  infer _,
   infer _
 >
   ? SendResult
   : never;
+
 export type InferAccount<T> = T extends ChainInterface<
+  infer _,
+  infer _,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -485,13 +510,15 @@ export type InferAccount<T> = T extends ChainInterface<
   infer Account,
   infer _,
   infer _,
-  infer _,
-  infer _,
   infer _
 >
-  ? Account
+  ? Account 
   : never;
+
 export type InferAccountLookupParams<T> = T extends ChainInterface<
+  infer _,
+  infer _,
+  infer _,
   infer _,
   infer _,
   infer _,
@@ -503,12 +530,11 @@ export type InferAccountLookupParams<T> = T extends ChainInterface<
   infer _,
   infer AccountLookupParams,
   infer _,
-  infer _,
-  infer _,
   infer _
 >
-  ? AccountLookupParams
+  ? AccountLookupParams 
   : never;
+
 export type InferAccountCreateParams<T> = T extends ChainInterface<
   infer _,
   infer _,
@@ -520,15 +546,16 @@ export type InferAccountCreateParams<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
+  infer _,
+  infer _,
+  infer _,
   infer AccountCreateParams,
-  infer _,
-  infer _,
   infer _
 >
-  ? AccountCreateParams
+  ? AccountCreateParams 
   : never;
 
-export type InferContract<T> = T extends ChainInterface<
+export type InferContractInitParamsBase<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
@@ -540,47 +567,10 @@ export type InferContract<T> = T extends ChainInterface<
   infer _,
   infer _,
   infer _,
-  infer Contract,
   infer _,
-  infer _
+  infer _,
+  infer _,
+  infer ContractInitParamsBase
 >
-  ? Contract
-  : never;
-
-export type InferContractMethodsBase<T> = T extends ChainInterface<
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer ContractMethodsBase,
-  infer _
->
-  ? ContractMethodsBase
-  : never;
-
-export type InferContractInitParams<T> = T extends ChainInterface<
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer _,
-  infer ContractInitParams
->
-  ? ContractInitParams
+  ? ContractInitParamsBase 
   : never;

@@ -113,8 +113,8 @@ export const getTokenLogoUrl = (chain: Chain, contractAddress?: string) =>
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `${baseRawUrl}/dapps/${dappUrl}.png`;
 
-export async function getNonNativeContractAddresses(chain: Chain, filterFn?: (contractInfoJSON: any) => boolean): Promise<string[]> {
-  const url = `${contentsApiUrl}/${chain}/assets`;
+export async function getContractAddresses(chain: Chain, filterFn?: (contractInfoJSON: any) => boolean): Promise<string[]> {
+  const url = `${contentsApiUrl}/blockchains/${chain}/assets`;
   try {
     const res = await axios.get(url);
     const { data } = res;

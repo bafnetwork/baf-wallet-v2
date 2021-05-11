@@ -58,6 +58,10 @@ export namespace BafError {
     emitError(`${chain} only supports one recipient for a set of Tx Actions`);
   export const MissingContractAddress = () =>
     emitError(`The contract address must be specified`);
+  export const InvalidTokenContractAddress = (addr: string) => 
+    emitError(`Address ${addr} does not exist or is not a token contract`);
+  export const InvalidContractAddress = (addr: string) => 
+    emitError(`Address ${addr} does not exist or is not a contract`);
 }
 
 // A wrapper function to emit an error, this would allow us to do things such as easier Sentry logging
