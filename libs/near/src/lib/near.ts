@@ -19,7 +19,11 @@ import {
 
 import { NearBuildTxParams, NearSignTxOpts, nearTx } from './tx';
 import { getConstants } from './constants';
-import { initContract, NEP141Contract } from './contract';
+import {
+  initContract,
+  NearInitContractParams,
+  NEP141Contract,
+} from './contract';
 import { nearRpc, NearSendOpts, NearSendResult } from './rpc';
 import {
   NearAccountID,
@@ -31,11 +35,7 @@ import { NearNetworkID } from './utils';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 import { BafError } from '@baf-wallet/errors';
-import {
-  nearContract,
-  NearContractMethods,
-  NearInitContractParams,
-} from './contract';
+import { getContract } from './contract';
 
 export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type {
@@ -61,8 +61,6 @@ export type NearChainInterface = ChainInterface<
   Account,
   NearAccountID,
   NearCreateAccountParams,
-  NearNativeContract,
-  NearContractMethods,
   NearInitContractParams
 >;
 
@@ -81,7 +79,7 @@ export const nearChainInterface: NearChainInterface = {
   rpc: nearRpc,
   getConstants,
   init,
-  contract: nearContract,
+  getContract,
 };
 
 export interface NearInitParams {
@@ -130,9 +128,11 @@ async function init({
     networkID,
     rpcProvider: new providers.JsonRpcProvider(nodeUrl),
     nearMasterAccount,
-    getFungibleTokenContract: (contractName: string) =>
-      initContract(nearMasterAccount)({
-        contractName,
+    getFungibleTokenContract: (contractAccountID: string) =>
+      initContract(
+        nearMasterAccount,
+        contractAccountID
+      )({
         viewMethods: ['ft_balance_of', 'ft_total_supply', 'storage_balance_of'],
         changeMethods: ['ft_transfer'],
       }),

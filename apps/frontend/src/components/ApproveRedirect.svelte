@@ -25,7 +25,7 @@
   import { getTorusPublicAddress } from '@baf-wallet/torus';
   import { keyPairFromSk } from '@baf-wallet/crypto';
   import BN from 'bn.js';
-  import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
+  import { getTokenInfo, TokenInfo } from '@baf-wallet/chain-info';
 
   export let params = {} as any;
   export let isGenericTx = true;

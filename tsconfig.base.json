@@ -22,9 +22,7 @@
         "libs/redirect-generator/src/index.ts"
       ],
       "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
-      "@baf-wallet/trust-wallet-assets": [
-        "libs/trust-wallet-assets/src/index.ts"
-      ],
+      "@baf-wallet/chain-info": ["libs/chain-info/src/index.ts"],
       "@baf-wallet/near": ["libs/near/src/index.ts"],
       "@baf-wallet/utils": ["libs/utils/src/index.ts"],
       "@baf-wallet/torus/web": ["libs/torus/src/web/index.ts"],

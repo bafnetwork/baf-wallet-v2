@@ -40,9 +40,9 @@ export namespace BafError {
   };
   export const UnknownNetworkIdent = (identifier: string) =>
     emitError(`Unknown network identifier ${identifier}`);
-  export const InvalidTrustWalletJSON = (err: any) =>
+  export const InvalidChainInfoJSON = (err: any) =>
     emitError(
-      `Received invalid info.json: ${err}. See \`ChainInfo\` in trust-wallet-assets/src/lib/index.ts for more information`
+      `Received invalid info.json: ${err}. See \`ChainInfo\` in chain-info/src/lib/index.ts for more information`
     );
   export const UnsupportedEncoding = (fmt: any) =>
     emitError(`Encoding for format ${fmt} is unsupported`);
@@ -58,6 +58,10 @@ export namespace BafError {
     emitError(`${chain} only supports one recipient for a set of Tx Actions`);
   export const MissingContractAddress = () =>
     emitError(`The contract address must be specified`);
+  export const InvalidTokenContractAddress = (addr: string) =>
+    emitError(`Address ${addr} does not exist or is not a token contract`);
+  export const InvalidContractAddress = (addr: string) =>
+    emitError(`Address ${addr} does not exist or is not a contract`);
 }
 
 // A wrapper function to emit an error, this would allow us to do things such as easier Sentry logging

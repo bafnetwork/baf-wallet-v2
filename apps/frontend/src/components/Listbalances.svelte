@@ -2,20 +2,21 @@
   import {
     Balance,
     Chain,
-    ChainContractTokenConstant,
     SupportedTransferTypes,
   } from '@baf-wallet/interfaces';
   import {
     getTokenLogoUrl,
     TokenInfo,
     getTokenInfo,
-  } from '@baf-wallet/trust-wallet-assets';
+    getContractAddresses
+  } from '@baf-wallet/chain-info';
   import { constants } from '../config/constants';
   import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
   import { ChainStores } from '../state/chains.svelte';
   import Button from '@smui/button';
   import { getContext } from 'svelte';
   import SendModal from './SendModal.svelte';
+   import { BafError } from '@baf-wallet/errors';
   const { open } = getContext('modal');
 
   function openSendModal(
@@ -31,16 +32,16 @@
 
   async function getContractTokenInfo(
     chain: Chain,
-    contract: ChainContractTokenConstant,
+    contractAddress: string,
     balance: Balance
   ): Promise<ContractTokenInfo | null> {
-    const tokenInfo = await getTokenInfo(chain, contract.contractAddress);
-    if (balance === '0' || !balance) {
+    const tokenInfo = await getTokenInfo(chain, contractAddress);
+    if ( balance === '0' || !balance) {
       return null;
     }
     return {
       tokenInfo,
-      address: contract.contractAddress,
+      address: contractAddress,
       balance,
     };
   }
@@ -63,30 +64,35 @@
       async (chain: Chain) => {
         const chainInfo = $ChainStores[chain];
         const chainTokenInfo = await getTokenInfo(chain);
-        return {
+        const res = {
           chain,
           chainTokenInfo,
           balance: await chainInfo.accounts
             .getGenericMasterAccount()
             .getBalance(),
-          contractTokens: await Promise.all(
-            chainInfo
-              .getConstants(constants.env)
-              .tokens.map(async (contract) =>
-                getContractTokenInfo(
-                  chain,
-                  contract,
-                  await chainInfo.accounts
-                    .getGenericMasterAccount()
-                    .getContractTokenBalance(contract.contractAddress)
-                )
+          contractTokens: await getContractAddresses(chain)
+            .then(contractAddrs => Promise.all(
+              contractAddrs.map(addr => chainInfo.accounts
+                .getGenericMasterAccount()
+                .getContractTokenBalance(addr)
+                .then(balance => getContractTokenInfo(chain, addr, balance))
+                .catch(_e => {
+                  throw BafError.InvalidTokenContractAddress(addr)
+                })
               )
-          ),
+            ))
+            .catch(e => {
+              throw e
+            })
         };
+
+        return res
       }
     );
     return Promise.all(balanceProms);
   }
+
+
 </script>
 
 <div class="wrapper">
