@@ -2,7 +2,7 @@
   import Card, { Content, ActionButton, Actions } from '@smui/card';
   import Button from '@smui/button';
   import { Icon} from '@smui/common';
-  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import AmountFormatter from '@baf-wallet/svelte-lib/base-components/AmountFormatter.svelte';
   import { BafError } from '@baf-wallet/errors';
   import Spinner from 'svelte-spinner';
   

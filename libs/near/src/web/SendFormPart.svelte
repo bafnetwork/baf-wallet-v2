@@ -64,10 +64,16 @@
 
 <Textfield
   bind:value={recipientAccountID}
+  name="recipientAddress"
   label="Recipient NEAR Account"
   required
 >
   <HelperText slot="helper">Ex. johndoe.testnet</HelperText>
 </Textfield>
-<Textfield bind:value={amountFormatted} label="$NEAR" type="number" required>
-</Textfield>
+<Textfield
+  bind:value={amountFormatted}
+  label="$NEAR"
+  type="number"
+  name="amount"
+  required
+/>

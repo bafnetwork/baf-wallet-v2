@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { form as svelteForms } from 'svelte-forms';
 
   import { ChainBalance, SupportedTransferTypes } from '@baf-wallet/interfaces';
   import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
@@ -8,7 +7,7 @@
   import Button, { Label } from '@smui/button';
   import SendModal from './SendModal.svelte';
   import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
-  import Lazy from '@baf-wallet/base-components/Lazy.svelte';
+  import Lazy from '@baf-wallet/svelte-lib/base-components/Lazy.svelte';
   import TxModal from './TxModal.svelte';
   import { ChainStores } from '../state/chains.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
@@ -28,21 +27,21 @@
   let amount: number = 0;
   let recipientAccountID: string = '';
 
-  const transactionForm = svelteForms(
-    () => ({
-      recipientAccountID: {
-        value: recipientAccountID,
-        validators: ['required'],
-      },
-      amount: { value: amount, validators: ['required', 'min:0'] },
-    }),
-    {
-      initCheck: false,
-      validateOnChange: false,
-      stopAtFirstError: false,
-      stopAtFirstFieldError: false,
-    }
-  );
+  // const transactionForm = svelteForms(
+  //   () => ({
+  //     recipientAccountID: {
+  //       value: recipientAccountID,
+  //       validators: ['required'],
+  //     },
+  //     amount: { value: amount, validators: ['required', 'min:0'] },
+  //   }),
+  //   {
+  //     initCheck: false,
+  //     validateOnChange: false,
+  //     stopAtFirstError: false,
+  //     stopAtFirstFieldError: false,
+  //   }
+  // );
 
   if (
     transferType === SupportedTransferTypes.ContractToken &&
@@ -57,7 +56,7 @@
 
   export const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    if (!postDetailValid()) return;
+    // if (!postDetailValid()) return;
     console.log(chainSendFormPart);
     createTX = chainSendFormPart.createTX;
     if (postSubmitHook !== undefined) {
@@ -75,12 +74,12 @@
       isComplete,
     });
 
-    function postDetailValid() {
-      return (
-        $transactionForm.fields.recipientAccountID.valid &&
-        $transactionForm.fields.amount.valid
-      );
-    }
+    // function postDetailValid() {
+    //   return (
+    //     $transactionForm.fields.recipientAccountID.valid &&
+    //     $transactionForm.fields.amount.valid
+    //   );
+    // }
   };
 
   // const handleChange = async (v: any) => {

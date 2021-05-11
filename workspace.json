@@ -466,22 +466,22 @@
         }
       }
     },
-    "base-components": {
-      "root": "libs/base-components",
-      "sourceRoot": "libs/base-components/src",
+    "svelte-lib": {
+      "root": "libs/svelte-lib",
+      "sourceRoot": "libs/svelte-lib/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/base-components/**/*.ts"]
+            "lintFilePatterns": ["libs/svelte-lib/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/base-components"],
+          "outputs": ["coverage/libs/svelte-lib"],
           "options": {
-            "jestConfig": "libs/base-components/jest.config.js",
+            "jestConfig": "libs/svelte-lib/jest.config.js",
             "passWithNoTests": true
           }
         }

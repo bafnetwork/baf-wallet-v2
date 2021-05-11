@@ -30,7 +30,7 @@
     "torus": { "tags": [] },
     "baf-contract": { "tags": [] },
     "crypto": { "tags": [] },
-    "base-components": { "tags": [] },
+    "svelte-lib": { "tags": [] },
     "errors": { "tags": [] }
   }
 }

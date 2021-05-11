@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'base-components',
+  displayName: 'svelte-lib',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,5 +10,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/base-components',
+  coverageDirectory: '../../coverage/libs/svelte-lib',
 };

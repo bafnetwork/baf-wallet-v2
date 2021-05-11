@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getEnumValues } from '@baf-wallet/utils';
   import { Chain } from '@baf-wallet/interfaces';
-  import Lazy from '@baf-wallet/base-components/Lazy.svelte';
+  import Lazy from '@baf-wallet/svelte-lib/base-components/Lazy.svelte';
   import { ChainStores, checkChainInit } from '../../state/chains.svelte';
   import { reinitApp } from '../../config/init.svelte';
   import { apiClient } from '../../config/api';

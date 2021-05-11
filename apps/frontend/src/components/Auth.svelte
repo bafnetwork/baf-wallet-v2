@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '@smui/button';
   import Card from '@smui/card';
-  import OAuthIcon from '@baf-wallet/base-components/OAuthIcon.svelte';
+  import OAuthIcon from '@baf-wallet/svelte-lib/base-components/OAuthIcon.svelte';
   import { initTorusKeySource } from '@baf-wallet/torus/web';
   import { TorusLoginResponse } from '@toruslabs/torus-direct-web-sdk';
   import { secp256k1Marker } from '@baf-wallet/interfaces';

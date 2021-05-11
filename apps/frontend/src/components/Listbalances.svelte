@@ -11,7 +11,7 @@
     getTokenInfo,
   } from '@baf-wallet/trust-wallet-assets';
   import { constants } from '../config/constants';
-  import AmountFormatter from '@baf-wallet/base-components/AmountFormatter.svelte';
+  import AmountFormatter from '@baf-wallet/svelte-lib/base-components/AmountFormatter.svelte';
   import { ChainStores } from '../state/chains.svelte';
   import Button from '@smui/button';
   import { getContext } from 'svelte';
