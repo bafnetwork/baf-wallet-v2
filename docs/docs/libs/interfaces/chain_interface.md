@@ -1,16 +1,11 @@
+
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-# Interfaces
+# `ChainInterface`
 
-## Purpose
-
-In order to stay sane and productive when integrating many blockchains into a single project, we need to be able to decouple each integration from core wallet functionality as much as possible. Every chain worth integrating has its own SDK, which we should use in order to avoid re-inventing wheels. However, a separate SDK for each chain means separate types and interfaces for public keys, secret keys, key pairs, RPC calls, transactions, transaction signing, transaction sending, accounts, account metadata, and more, not to mention the fact that they are often object-orented and thus _stateful_, each in their own particular way. To not isolate all of this from our core functionality would quickly result in an epidemic of fugly code that's incredibly difficult to work with spreading across the BAF Wallet codebase.
-
-In order to do this, we need some well-chosen unifying types and interfaces that abstract over the specific chain implementations - this is the purpose of `@baf-wallet/interfaces`.
-
-## `ChainInterface`
+## Explanation
 
 `ChainInterface` is by far the most complicated of the unifying interfaces supplied by `@baf-wallet/interfaces`. Take a gander at it. Totally understandable if it seems overwhelming - just know that it's defined in such a matter that 99% of the time you should never have to use it in a way that is overwhelming.
 
@@ -67,7 +62,8 @@ export interface WrappedChainInterface<
   SendResult,
   Account,
   AccountLookupParams,
-  AccountCreateParams
+  AccountCreateParams,
+  ContractInitParamsBase
 > {
   rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
@@ -77,16 +73,45 @@ export interface WrappedChainInterface<
     AccountCreateParams
   >;
   convert: Converter<PK, SK, KP>;
+  getConstants: (env: Env) => ChainConstants;
   getInner: () => Inner;
+  getContract: <Contract, ContractInitParams, ContractInitParamsBase>(
+    address: string
+  ) => ContractInterface<Contract, ContractInitParams>;
 }
 ```
 
-as you can see, `WrappedChainInterface` is exactly the same as `ChainInterface`, but the functions have already been called for you, all using a single instance of `Inner`. Then we also provide a function in `@baf-wallet/multi-chain` that takes does exactly this.
+As you can see, `WrappedChainInterface` is exactly the same as `ChainInterface`, but the functions have already been called for you, all using a single instance of `Inner`. Then we also provide [a function in `@baf-wallet/multi-chain` that takes does exactly this](https://github.com/bafnetwork/baf-wallet-v2/blob/7baf9cc62220b0e023120d728ef2405793a89c8f/libs/multi-chain/src/lib/switches.ts#L14). For the vast majority of use cases, this is sufficient. For cases where it's not, you can construct your own instances of inner, either using the relevant baf wallet library (e.g. `@baf-wallet/near` for `NearChainInterface`'s `Inner`, which can be extracted via ["infer types"](infer.md)), via an underlying SDK (e.g. `near-api-js`), or by some other means and pass it in as a parameter to the functions in `ChainInterface` as you need the functionality.
 
-## `KeySource`
+## Usage
 
-TODO
+With the number of type parameters, this interface might be a little scary, but luckily the individual parameters should almost never need to be used. That said, the steps for using these interfaces are:
 
-## "Infer" types
+1. include the `@baf-wallet` libraries of every chain you want to use as a peer dependency. For example, if you wanted to use NEAR Protocol, you'd add `@baf-wallet/near`.
+2. call `getWrappedInterface<ChainInterfaceOfChainYouWantToUse>` or `getChainInterface<ChainInterfaceOfChainYouWantToUse>` to get a `WrappedChainInterface` or `WrappedInterface` respectively.
+3. Use the methods provided by `getWrappedInterface` and `getChainInterface` respectively to do literally whatever you want.
 
-TODO
+
+### NEAR Protocol Example
+```ts
+import { WrappedChainInterface, Chain } from "@baf-wallet/interfaces";
+import { getWrappedInterfaces } from "@baf-wallet/multi-chain";
+import { NearChainInterface, NEP141Contract } from "@baf-wallet/near";
+
+(async () => {
+  const near = await getWrappedChainInterface<NearChainInterface>(chain.NEAR);
+  const callerAccount = near.accounts.getGenericMasterAccount();
+  const tokenContract = await chainInterface
+    .getContract<NEP141Contract>("ft.levtester.tesnet")
+    .init({
+      callerAccount,
+      viewMethods: ["ft_balance_of"],
+      chaingeMethods: [],
+    });
+  
+  const balance = tokenContract.ft_balance_of({ account_id: "someone.tesnet" }):
+  // ... go nuts
+})()
+
+```
+

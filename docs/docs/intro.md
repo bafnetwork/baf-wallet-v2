@@ -10,15 +10,21 @@ This project is in early stages of development. **Do not use it on any mainnet w
 
 ## What is BAF Wallet?
 
-BAF Wallet is, first an foremost, a crypto wallet that:
+BAF Wallet is, first an foremost, not a wallet, but *ecosystem of libraries that make it as easy as possible to develop **antimaximalist** applications and libraries*:
+> antimaximalism *adj*. *1*. The perspective that there is no "one true blockchain" that places strong emphasis on knowing a lot about a lot of networks, understanding precisely what each can do, can't do, is good at, and isn't good at, and selecting the networks used to build a project based off of this knowledge. *2*. The opposite of [maximalism](https://media.consensys.net/why-is-there-maximalism-in-crypto-27967ce9025e).
 
-- Can be used across any blockchain
+In other words, it is a toolkit of libraries for building decenralized applications and libraries that:
+- Can be used on multiple blockchains
+- That directly builds off of multiple blockchains
 - Can use any key storage / management system
-- Is at least as easy to get started with as any Web2 app
+- Are at least as easy to get started with as Web2 Apps
+- Are chain-agnostic
 
-However, BAF Wallet is quickly becoming a synergestic ecosystem of libraries that make it as easy as possible to perform operations across multiple blockchains, which is something that we foresee being quite useful in a lot of different contexts.
+Currently, there are two applications being built using the BAF Wallet libraries:
+* BAF Web Wallet - a staunchly antimaximalist web wallet that integrates very nicely with pretty much anything you could ever want to integrate with it.
+* BAF Wallet Discord Bot - a discord bot that integrates with the web wallet and uses BAF Wallet libraries to allow discord users to send any cryptoasset by tagging the recipient in a server where the bot is present.
 
-Currently, we do not have a public demo ready yet.
+Throughout the libraries, you may notice we use a lot of "fancy" types. We do this because we believe having well-typed code goes a long way towards having self-documented code, and we'd like to make `tsc` be as helpful for you as possible, especially when it comes to bug-catching and editor completions.
 
 ## Getting Started
 
@@ -36,7 +42,6 @@ Prerequisites: have `npm` and `near-cli` installed.
 - For `TORUS_VERIFIER_NAME`, use `baf wallet-discord-testnet`
 - For the client-secret, you will need to ask Lev or Sebastien. We still have yet to set up a painless way to manage these environment variables so that everyone can use their own Discord OAuth endpoint.
 
-5. repeat steps 3-4 for `libs/baf-contract/env`
-6. `npx nx serve+api frontend`.
+5. `npx nx serve+api frontend`.
 
 For more information about the project, it's code structure / philosophy, it's various libraries and applications, and how to contribute, see the relevant section on the sidebar.
