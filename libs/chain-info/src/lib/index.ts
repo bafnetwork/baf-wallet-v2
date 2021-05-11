@@ -113,13 +113,17 @@ export const getTokenLogoUrl = (chain: Chain, contractAddress?: string) =>
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `${baseRawUrl}/dapps/${dappUrl}.png`;
 
-export async function getNonNativeContractAddresses(chain: Chain): Promise<string[]> {
+export async function getNonNativeContractAddresses(chain: Chain, filterFn?: (contractInfoJSON: any) => boolean): Promise<string[]> {
   const url = `${contentsApiUrl}/${chain}/assets`;
   try {
     const res = await axios.get(url);
     const { data } = res;
 
-    return data.map(item => item.name);
+    if (filterFn) {
+      return data.filter(filterFn).map(infoJSON => infoJSON.name);
+    }
+
+    return data.map(infoJSON => infoJSON.name);
   } catch (err) {
     console.error(`could not fetch addresses: ${err}`);
     return null;
