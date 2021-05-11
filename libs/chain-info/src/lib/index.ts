@@ -5,7 +5,8 @@ import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
 import { Chain } from '@baf-wallet/interfaces';
 
 const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
-const contentsApiUrl = 'https://api.github.com/repos/bafnetwork/assets/contents';
+const contentsApiUrl =
+  'https://api.github.com/repos/bafnetwork/assets/contents';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
@@ -92,7 +93,8 @@ export const getChainFolderPrefix = (chain: Chain): string =>
 const getNonNativeTokenInfoUrl = (
   chain: Chain,
   contractAddress: string
-): string => `${getChainFolderPrefix(chain)}/assets/${contractAddress}/info.json`;
+): string =>
+  `${getChainFolderPrefix(chain)}/assets/${contractAddress}/info.json`;
 
 const getChainInfoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
@@ -113,17 +115,20 @@ export const getTokenLogoUrl = (chain: Chain, contractAddress?: string) =>
 export const getDappLogoUrl = (dappUrl: DappUrl): string =>
   `${baseRawUrl}/dapps/${dappUrl}.png`;
 
-export async function getContractAddresses(chain: Chain, filterFn?: (contractInfoJSON: any) => boolean): Promise<string[]> {
+export async function getContractAddresses(
+  chain: Chain,
+  filterFn?: (contractInfoJSON: any) => boolean
+): Promise<string[]> {
   const url = `${contentsApiUrl}/blockchains/${chain}/assets`;
   try {
     const res = await axios.get(url);
     const { data } = res;
 
     if (filterFn) {
-      return data.filter(filterFn).map(infoJSON => infoJSON.name);
+      return data.filter(filterFn).map((infoJSON) => infoJSON.name);
     }
 
-    return data.map(infoJSON => infoJSON.name);
+    return data.map((infoJSON) => infoJSON.name);
   } catch (err) {
     console.error(`could not fetch addresses: ${err}`);
     return null;

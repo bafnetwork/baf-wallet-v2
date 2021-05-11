@@ -49,9 +49,10 @@ export interface NearInitContractParams {
   changeMethods: string[];
 }
 
-export const initContract = (nearMasterAccount: Account, contractAccountID) => async <Contract>(
-  params: NearInitContractParams
-) => {
+export const initContract = (
+  nearMasterAccount: Account,
+  contractAccountID
+) => async <Contract>(params: NearInitContractParams) => {
   const contract = new NearNativeContract(
     params.callerAccount ?? nearMasterAccount,
     contractAccountID,
@@ -68,6 +69,6 @@ export function getContract<Contract, ContractInitParams>(
   contractAccountID: string
 ) {
   return {
-    init: initContract(nearState.nearMasterAccount, contractAccountID)
-  }
+    init: initContract(nearState.nearMasterAccount, contractAccountID),
+  };
 }

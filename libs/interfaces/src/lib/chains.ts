@@ -36,9 +36,9 @@ export interface WrappedChainInterface<
   Account,
   AccountLookupParams,
   AccountCreateParams,
-  ContractInitParamsBase,
+  ContractInitParamsBase
 > {
-            rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
+  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: AccountsInterface<
     Account,
@@ -76,7 +76,7 @@ export interface ChainInterface<
   Account,
   AccountLookupParams,
   AccountCreateParams,
-  ContractInitParamsBase,
+  ContractInitParamsBase
 > {
   init: (params: InitParams) => Promise<Inner>;
   rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
@@ -151,13 +151,8 @@ export interface TxInterface<
   extractGenericActionsFromTx: (params: BuildTxParams) => GenericTxAction[];
 }
 
-export interface ContractInterface<
-  Contract,
-  ContractInitParams
-> {
-  init: <Contract>(
-    params: ContractInitParams
-  ) => Promise<Contract>;
+export interface ContractInterface<Contract, ContractInitParams> {
+  init: <Contract>(params: ContractInitParams) => Promise<Contract>;
 }
 
 // utility for going to/from key BAF Wallet unified types
@@ -512,7 +507,7 @@ export type InferAccount<T> = T extends ChainInterface<
   infer _,
   infer _
 >
-  ? Account 
+  ? Account
   : never;
 
 export type InferAccountLookupParams<T> = T extends ChainInterface<
@@ -532,7 +527,7 @@ export type InferAccountLookupParams<T> = T extends ChainInterface<
   infer _,
   infer _
 >
-  ? AccountLookupParams 
+  ? AccountLookupParams
   : never;
 
 export type InferAccountCreateParams<T> = T extends ChainInterface<
@@ -552,7 +547,7 @@ export type InferAccountCreateParams<T> = T extends ChainInterface<
   infer AccountCreateParams,
   infer _
 >
-  ? AccountCreateParams 
+  ? AccountCreateParams
   : never;
 
 export type InferContractInitParamsBase<T> = T extends ChainInterface<
@@ -572,5 +567,5 @@ export type InferContractInitParamsBase<T> = T extends ChainInterface<
   infer _,
   infer ContractInitParamsBase
 >
-  ? ContractInitParamsBase 
+  ? ContractInitParamsBase
   : never;
