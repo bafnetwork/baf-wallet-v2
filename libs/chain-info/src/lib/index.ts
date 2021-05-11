@@ -129,10 +129,7 @@ export async function getContractAddresses(
       return data.filter(filterFn).map((infoJSON) => infoJSON.name);
     }
 
-    return data.map((infoJSON) => {
-      // console.log(infoJSON)
-      return infoJSON.name;
-    });
+    return data.map((infoJSON) => infoJSON.name);
   } catch (err) {
     console.error(`could not fetch addresses: ${err}`);
     return null;
@@ -148,7 +145,6 @@ export async function getTokenInfo(
     ? getChainInfoUrl(chain)
     : getNonNativeTokenInfoUrl(chain, contractAddress);
   try {
-    console.log(url);
     const res = await axios.get(url);
     const { data } = res;
 
