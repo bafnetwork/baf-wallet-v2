@@ -36,7 +36,7 @@
     balance: Balance
   ): Promise<ContractTokenInfo | null> {
     const tokenInfo = await getTokenInfo(chain, contractAddress);
-    if (balance === '0' || !balance) {
+    if ( balance === '0' || !balance) {
       return null;
     }
     return {
@@ -64,7 +64,7 @@
       async (chain: Chain) => {
         const chainInfo = $ChainStores[chain];
         const chainTokenInfo = await getTokenInfo(chain);
-        return {
+        const res = {
           chain,
           chainTokenInfo,
           balance: await chainInfo.accounts
@@ -84,8 +84,11 @@
             .catch(e => {
               throw e
             })
-
         };
+
+        console.log(res)
+
+        return res
       }
     );
     return Promise.all(balanceProms);

@@ -102,7 +102,8 @@ const getChainInfoUrl = (chain: Chain): string =>
 const getNonNativeTokenLogoUrl = (
   chain: Chain,
   contractAddress: string
-): string => `${getChainFolderPrefix(chain)}/${contractAddress}/logo.png`;
+): string =>
+  `${getChainFolderPrefix(chain)}/assets/${contractAddress}/logo.png`;
 
 const getChainLogoUrl = (chain: Chain): string =>
   `${getChainFolderPrefix(chain)}/info/logo.png`;
@@ -128,7 +129,10 @@ export async function getContractAddresses(
       return data.filter(filterFn).map((infoJSON) => infoJSON.name);
     }
 
-    return data.map((infoJSON) => infoJSON.name);
+    return data.map((infoJSON) => {
+      // console.log(infoJSON)
+      return infoJSON.name;
+    });
   } catch (err) {
     console.error(`could not fetch addresses: ${err}`);
     return null;
@@ -144,6 +148,7 @@ export async function getTokenInfo(
     ? getChainInfoUrl(chain)
     : getNonNativeTokenInfoUrl(chain, contractAddress);
   try {
+    console.log(url);
     const res = await axios.get(url);
     const { data } = res;
 
