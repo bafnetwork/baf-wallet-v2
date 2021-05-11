@@ -36,7 +36,7 @@ export default function Home() {
     >
       <HomepageHeader />
       <main>
-        <Antimaximalism/>
+        <Antimaximalism />
       </main>
     </Layout>
   );
