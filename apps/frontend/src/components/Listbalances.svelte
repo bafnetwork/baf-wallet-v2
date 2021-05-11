@@ -76,7 +76,7 @@
                 .getGenericMasterAccount()
                 .getContractTokenBalance(addr)
                 .then(balance => getContractTokenInfo(chain, addr, balance))
-                .catch(e => {
+                .catch(_e => {
                   throw BafError.InvalidTokenContractAddress(addr)
                 })
               )
@@ -85,8 +85,6 @@
               throw e
             })
         };
-
-        console.log(res)
 
         return res
       }
