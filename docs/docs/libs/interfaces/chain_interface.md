@@ -1,4 +1,3 @@
-
 ---
 sidebar_position: 2
 ---
@@ -91,8 +90,8 @@ With the number of type parameters, this interface might be a little scary, but 
 2. call `getWrappedInterface<ChainInterfaceOfChainYouWantToUse>` or `getChainInterface<ChainInterfaceOfChainYouWantToUse>` to get a `WrappedChainInterface` or `WrappedInterface` respectively.
 3. Use the methods provided by `getWrappedInterface` and `getChainInterface` respectively to do literally whatever you want.
 
-
 ### NEAR Protocol Example
+
 ```ts
 import { WrappedChainInterface, Chain } from "@baf-wallet/interfaces";
 import { getWrappedInterfaces } from "@baf-wallet/multi-chain";
@@ -100,18 +99,52 @@ import { NearChainInterface, NEP141Contract } from "@baf-wallet/near";
 
 (async () => {
   const near = await getWrappedChainInterface<NearChainInterface>(chain.NEAR);
+  // go nuts, eg
   const callerAccount = near.accounts.getGenericMasterAccount();
   const tokenContract = await chainInterface
     .getContract<NEP141Contract>("ft.levtester.tesnet")
     .init({
       callerAccount,
       viewMethods: ["ft_balance_of"],
-      chaingeMethods: [],
+      changeMethods: [],
     });
-  
-  const balance = tokenContract.ft_balance_of({ account_id: "someone.tesnet" }):
-  // ... go nuts
+
+  const balance = await tokenContract.ft_balance_of({ account_id: "someone.tesnet" }):
 })()
 
 ```
 
+### non-wrapped `ChainInterface` example
+
+```ts
+import { WrappedChainInterface, Chain } from "@baf-wallet/interfaces";
+import { getWrappedInterfaces } from "@baf-wallet/multi-chain";
+import { NearChainInterface, NEP141Contract } from "@baf-wallet/near";
+
+// Let's imagine I was writing an application where I want to separate the "state" of the connection to the blockchain from the functionality itself.
+// For many "object-oriented" SDK's, you can't do that, because, well, they're "object-oriented".
+// By doing this with the un-wrapped chain interface, I can do the following:
+
+// in global scope, do this exactly once
+const chainInterface = getChainInterface<NearChainInterface>(chain.NEAR);
+
+    // ... in some async function where you want a different configuration, or maybe you just don't have access the single instance from before, or maybe you're trying to do something clever
+async function foo(params: InferInitParams<NearChainInterface>>) {
+  const nearState = chainInterface.init(params);
+  const accounts = chainInterface.accounts(nearState);
+
+  // do stuff with AccountsInterface
+  const callerAccount = accounts.getGenericMasterAccount();
+
+  // pass the state into getContract
+  const tokenContract = await chainInterface
+    .getContract<NEP141Contract>(nearState, "ft.levtester.testnet")
+    .init({
+      callerAccount,
+      viewMethods: ["ft_balance_of"],
+      changeMethods: []
+    });
+
+  const balance = await tokenContract.ft_balance_of({ account_id: "someone.tesnet" });
+}
+```
