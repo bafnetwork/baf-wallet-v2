@@ -1,55 +1,13 @@
 import axios from 'axios';
 import { BafError } from '@baf-wallet/errors';
 import 'reflect-metadata';
-import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, TokenInfo, TokenInfoJSON } from '@baf-wallet/interfaces';
+import { TypedJSON } from 'typedjson';
 
 const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
 
 // typed JSON objects for parsing info.json's from trustwallet's assets repo
 // e.g. https://github.com/trustwallet/assets/blob/master/blockchains/bitcoin/info/info.json
-@jsonObject
-export class SocialMediaInfo {
-  @jsonMember
-  public name: string; // platform
-  @jsonMember
-  public url: string;
-  @jsonMember
-  public handle: string;
-}
-
-@jsonObject
-class _TokenInfo {
-  @jsonMember
-  public name: string;
-  @jsonMember
-  public website?: string;
-  @jsonMember
-  public source_code?: string;
-  @jsonMember
-  public white_paper?: string;
-  @jsonMember
-  public description: string;
-  @jsonArrayMember(SocialMediaInfo)
-  public socials?: SocialMediaInfo[];
-  @jsonMember
-  public explorer: string;
-  @jsonMember
-  public symbol: string;
-  @jsonMember
-  public type: 'COIN';
-  @jsonMember
-  public decimals: number;
-  @jsonMember
-  public status: 'active' | 'abandoned';
-  @jsonArrayMember(String)
-  public tags?: string[];
-}
-
-export interface TokenInfo extends _TokenInfo {
-  chain: Chain;
-}
-
 // TODO: have some intelligent way to get the rest
 export type DappUrl =
   | '0x.org'
@@ -129,7 +87,7 @@ export async function getTokenInfo(
       delete data.research;
     }
 
-    const serializer = new TypedJSON(_TokenInfo);
+    const serializer = new TypedJSON(TokenInfoJSON);
     const _tokInfo = serializer.parse(data);
     return {
       ..._tokInfo,

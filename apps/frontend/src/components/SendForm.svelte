@@ -1,9 +1,13 @@
 <script lang="ts">
   import { getContext } from 'svelte';
 
-  import { ChainBalance, SupportedTransferTypes } from '@baf-wallet/interfaces';
-  import { getTokenInfo, TokenInfo } from '@baf-wallet/trust-wallet-assets';
-  import Card, { Content, Actions } from '@smui/card';
+  import {
+    ChainBalance,
+    SupportedTransferTypes,
+    TokenInfo,
+  } from '@baf-wallet/interfaces';
+  import { getTokenInfo } from '@baf-wallet/trust-wallet-assets';
+  import { Content, Actions } from '@smui/card';
   import Button, { Label } from '@smui/button';
   import SendModal from './SendModal.svelte';
   import { Chain, CreateTxReturn } from '@baf-wallet/interfaces';
@@ -12,6 +16,7 @@
   import { ChainStores } from '../state/chains.svelte';
   import { SiteKeyStore } from '../state/keys.svelte';
   import { BafError } from '@baf-wallet/errors';
+  import { buildSendFormRules, checkForm } from '@baf-wallet/svelte-lib/forms';
 
   let createTX: <T>() => Promise<CreateTxReturn<T>>;
   export let postSubmitHook: () => void | undefined;
@@ -56,6 +61,16 @@
 
   export const handleSubmit = async (e: Event) => {
     e.preventDefault();
+    const formRet = await checkForm(
+      tokenInfo,
+      $ChainStores[chain],
+      buildSendFormRules($ChainStores[chain]),
+      {
+        recipientAddress: chainSendFormPart.recipientAccountID,
+        amount: chainSendFormPart.amountFormatted,
+      }
+    );
+    console.log(formRet);
     // if (!postDetailValid()) return;
     console.log(chainSendFormPart);
     createTX = chainSendFormPart.createTX;
@@ -81,17 +96,6 @@
     //   );
     // }
   };
-
-  // const handleChange = async (v: any) => {
-  //   console.log(`change: ${v}`);
-  //   if (postSubmitHook !== undefined) {
-  //     postSubmitHook();
-  //   }
-  // };
-
-  function openSendModal(chain: Chain) {
-    open(SendModal, { chain });
-  }
 
   async function initBalances(): Promise<
     { chainInfo: TokenInfo; bal: ChainBalance }[]

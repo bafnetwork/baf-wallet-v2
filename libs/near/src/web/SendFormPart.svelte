@@ -6,6 +6,7 @@
     ed25519,
     PublicKey,
     GenericTxAction,
+    TokenInfo,
   } from '@baf-wallet/interfaces';
   import {
     NearBuildTxParams,
@@ -15,13 +16,12 @@
     formatNativeTokenAmountToIndivisibleUnit,
     formatTokenAmountToIndivisibleUnit,
   } from '@baf-wallet/multi-chain';
-  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
   import Textfield from '@smui/textfield';
   import HelperText from '@smui/textfield/helper-text/index';
 
   import { BafError } from '@baf-wallet/errors';
 
-  let recipientAccountID: string = null,
+  export let recipientAccountID: string = null,
     amountFormatted: number = NaN;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
@@ -77,3 +77,5 @@
   name="amount"
   required
 />
+
+<svelte:options accessors/>

@@ -1,5 +1,7 @@
-import { Chain } from './chains';
+import { FormValidationRules } from 'ts-form-validation';
+import { Chain, InferWrapChainInterface, InferWrappedChainInterface } from './chains';
 import { ed25519, PublicKey, secp256k1, SecretKey } from './crypto';
+import { TokenInfo } from './token-info';
 
 export interface KeyState {
   edPK: PublicKey<ed25519>;
@@ -37,3 +39,8 @@ export interface AccountState {
   loggedIn: boolean;
   oauthInfo?: OAuthState;
 }
+
+export type FormValidationFn<Chain, FormInterface> = (
+  tokenInfo: TokenInfo,
+  chain: Chain
+) => Promise<FormValidationRules<FormInterface>>;

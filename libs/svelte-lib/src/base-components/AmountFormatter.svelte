@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { Chain, Balance } from '@baf-wallet/interfaces';
+  import { Chain, Balance, TokenInfo } from '@baf-wallet/interfaces';
   import { BafError } from '@baf-wallet/errors';
-  import { TokenInfo } from '@baf-wallet/trust-wallet-assets';
 
   import { formatNearAmount as nearFormat } from 'near-api-js/lib/utils/format';
 

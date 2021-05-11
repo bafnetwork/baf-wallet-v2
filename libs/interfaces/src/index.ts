@@ -1,3 +1,4 @@
+export * from './lib/token-info'
 export * from './lib/platforms';
 export * from './lib/configs';
 export * from './lib/chains';

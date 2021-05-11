@@ -32,7 +32,7 @@
       "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"],
       "@baf-wallet/crypto": ["libs/crypto/src/index.ts"],
       "@baf-wallet/svelte-lib/base-components/*": ["libs/svelte-lib/src/base-components/*"],
-      "@baf-wallet/svelte-lib/formatter/*": ["libs/svelte-lib/src/formatter/*"],
+      "@baf-wallet/svelte-lib/forms": ["libs/svelte-lib/src/forms/index.ts"],
       "@baf-wallet/errors": ["libs/errors/src/index.ts"]
     }
   },
