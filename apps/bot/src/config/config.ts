@@ -3,8 +3,8 @@ import { BotSettings } from '../types';
 export const settings: BotSettings = {
   presence: {
     activity: {
-      name: 'Just HODL',
-      type: 'PLAYING',
+      name: 'Attack on Titan',
+      type: 'WATCHING',
     },
   },
   prefix: '%',
