@@ -14,7 +14,7 @@ export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
     super(client, {
       name: 'sendMoney',
-      description: 'sends NEAR or NEP-5 tokens on NEAR testnet',
+      description: 'sends NEAR or NEP-141 tokens on NEAR testnet',
       category: 'Utility',
       usage: `${client.settings.prefix}send [amount in yoctoNear] [asset (optional, defaults to 'NEAR')]  [recipient]`,
       cooldown: 1000,
@@ -78,7 +78,10 @@ export default class SendMoney extends Command {
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
-            amount: formatNativeTokenAmountToIndivisibleUnit(amount, Chain.NEAR),
+            amount: formatNativeTokenAmountToIndivisibleUnit(
+              amount,
+              Chain.NEAR
+            ),
           },
         ],
         oauthProvider: 'discord',
@@ -89,7 +92,13 @@ export default class SendMoney extends Command {
         tx
       );
 
-      await message.author.send(link);
+      await super.respond(
+        message.channel,
+        "Please check your DM's for a link to approve the transaction!"
+      );
+      await message.author.send(
+        `To open BAF Wallet and approve your transaction, please open this link: ${link}`
+      );
     } catch (err) {
       console.error(err);
       await super.respond(

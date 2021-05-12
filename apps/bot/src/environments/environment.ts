@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 
-if (!process.env.NON_LOCAL)
-  dotenv.config({ path: './env/.env.dev' });
+if (!process.env.NON_LOCAL) dotenv.config({ path: './env/.env.dev' });
 
 export const environment = {
   production: false,
