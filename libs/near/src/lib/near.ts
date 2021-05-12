@@ -84,7 +84,7 @@ export const nearChainInterface: NearChainInterface = {
 
 export interface NearInitParams {
   networkID: NearNetworkID;
-  masterAccountID: NearAccountID;
+  masterAccountID?: NearAccountID;
   keyPath?: string;
   keyPair?: KeyPair<ed25519>;
 }

@@ -13,7 +13,7 @@
 
   import { bufferConverter, encodeBytes } from '@baf-wallet/utils';
   import { writable } from 'svelte/store';
-import { BafError } from '@baf-wallet/errors';
+  import { BafError } from '@baf-wallet/errors';
 
   const keyStoreName = 'key-store';
 

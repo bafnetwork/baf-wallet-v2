@@ -38,7 +38,7 @@
   })();
 </script>
 
-<Layout>
+<Layout isLoggedIn={true}>
   {#if noChainInit}
     <h1>Hi there!</h1>
     <p>

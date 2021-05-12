@@ -2,11 +2,12 @@
   import Navbar from './Navbar.svelte';
   import Footer from './Footer.svelte';
 
-  export let classes = "default"
+  export let classes = "default";
+  export let isLoggedIn: boolean;
 </script>
 
 <div class="container">
-  <Navbar />
+  <Navbar isLoggedIn={isLoggedIn}/>
   <div class={classes}>
     <slot />
   </div>

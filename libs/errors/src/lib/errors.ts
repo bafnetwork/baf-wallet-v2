@@ -35,9 +35,8 @@ export namespace BafError {
     emitError(
       `An initial balance must be specified when initializing an account on ${chain}`
     );
-  export const MissingKeyPair = () => {
+  export const MissingKeyPair = () => 
     emitError('A key path or key pair must be provided');
-  };
   export const UnknownNetworkIdent = (identifier: string) =>
     emitError(`Unknown network identifier ${identifier}`);
   export const InvalidChainInfoJSON = (err: any) =>

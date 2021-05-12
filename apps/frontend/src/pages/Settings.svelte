@@ -14,7 +14,7 @@
   }
 </script>
 
-<Layout>
+<Layout isLoggedIn={true}>
   <ChainSettings />
   <div>
     <h3>Danger Zone</h3>
