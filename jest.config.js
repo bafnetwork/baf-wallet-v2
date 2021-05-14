@@ -15,5 +15,6 @@ module.exports = {
     '<rootDir>/libs/crypto',
     '<rootDir>/libs/base-components',
     '<rootDir>/libs/errors',
+    '<rootDir>/libs/ethereum',
   ],
 };
