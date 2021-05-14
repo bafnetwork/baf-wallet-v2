@@ -1,11 +1,13 @@
 import { PublicKey, SecretKey, KeyPair, secp256k1, ed25519 } from './crypto';
-import { Pair } from '@baf-wallet/utils';
 import { Account as NearAccount } from 'near-api-js';
 import { GenericTxAction, GenericTxParams } from './tx';
 import { Env } from './configs';
+import { Pair } from './misc';
 
+export type ChainAsType = 'near' | 'ethereum';
 export enum Chain {
   NEAR = 'near',
+  ETHEREUM = 'ethereum',
 }
 
 // Or the type with all the supported chain account types

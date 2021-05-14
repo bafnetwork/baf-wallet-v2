@@ -21,7 +21,6 @@
       "@baf-wallet/redirect-generator": [
         "libs/redirect-generator/src/index.ts"
       ],
-      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
       "@baf-wallet/chain-info": ["libs/chain-info/src/index.ts"],
       "@baf-wallet/near": ["libs/near/src/index.ts"],
       "@baf-wallet/utils": ["libs/utils/src/index.ts"],
@@ -30,7 +29,10 @@
       "@baf-wallet/baf-contract": ["libs/baf-contract/src/index.ts"],
       "@baf-wallet/crypto": ["libs/crypto/src/index.ts"],
       "@baf-wallet/base-components/*": ["libs/base-components/src/*"],
-      "@baf-wallet/errors": ["libs/errors/src/index.ts"]
+      "@baf-wallet/errors": ["libs/errors/src/index.ts"],
+      "@baf-wallet/tt": ["libs/t/src/index.ts"],
+      "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
+      "@baf-wallet/core": ["libs/core-publishable/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "libs/baf-contract/contract"]

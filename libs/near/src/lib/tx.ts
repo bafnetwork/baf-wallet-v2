@@ -11,8 +11,8 @@ import {
   GenericTxActionTransfer,
   GenericTxActionTransferContractToken,
   Chain,
+  Pair,
 } from '@baf-wallet/interfaces';
-import { Pair, getEnumValues } from '@baf-wallet/utils';
 import { sha256 } from '@baf-wallet/crypto';
 import { Buffer } from 'buffer';
 import BN from 'bn.js';
