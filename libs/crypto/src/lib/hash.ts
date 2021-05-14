@@ -9,4 +9,4 @@ export function sha256(msg: Buffer): Buffer {
   return Buffer.from(js_sha256(msg), 'hex');
 }
 
-// add more wrappers here as needed
+// add more wrappers here as we need

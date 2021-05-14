@@ -1,1 +1,1 @@
-export * from '@baf-wallet/utils'
+export * from '@baf-wallet/utils';
