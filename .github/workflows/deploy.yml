@@ -9,8 +9,6 @@ on:
 jobs:
   build-api:
     runs-on: ubuntu-latest
-
-
     steps:
       - uses: actions/checkout@main
       - run: |
