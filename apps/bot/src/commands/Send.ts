@@ -78,7 +78,10 @@ export default class SendMoney extends Command {
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
-            amount: formatNativeTokenAmountToIndivisibleUnit(amount, Chain.NEAR),
+            amount: formatNativeTokenAmountToIndivisibleUnit(
+              amount,
+              Chain.NEAR
+            ),
           },
         ],
         oauthProvider: 'discord',
@@ -89,9 +92,14 @@ export default class SendMoney extends Command {
         tx
       );
 
-      await super.respond(message.channel, 'Please check your direct message for the link to approve the transaction!');
+      await super.respond(
+        message.channel,
+        'Please check your direct message for the link to approve the transaction!'
+      );
 
-      await message.author.send('Click on the following link to approve your transaction: ' + link);
+      await message.author.send(
+        'Click on the following link to approve your transaction: ' + link
+      );
     } catch (err) {
       console.error(err);
       await super.respond(

@@ -15,9 +15,11 @@ export default class Help extends Command {
   }
 
   public async run(message: Message): Promise<void> {
-    await super.respond(message.channel, 
-        'Help - List out all the commands \n'+
+    await super.respond(
+      message.channel,
+      'Help - List out all the commands \n' +
         'Ping - Respond Pong! \n' +
-        'Send - sends NEAR or NEP-141 tokens on NEAR testnet');
+        'Send - sends NEAR or NEP-141 tokens on NEAR testnet'
+    );
   }
 }
