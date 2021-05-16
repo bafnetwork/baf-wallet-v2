@@ -4,6 +4,7 @@ import {
   Encoding,
   InferWrapChainInterface,
   KeyPair,
+  NearAccountID,
 } from '@baf-wallet/interfaces';
 import {
   Account,
@@ -26,7 +27,6 @@ import {
 } from './contract';
 import { nearRpc, NearSendOpts, NearSendResult } from './rpc';
 import {
-  NearAccountID,
   nearAccounts,
   NearCreateAccountParams,
 } from './accounts';
@@ -37,7 +37,6 @@ import { KeyPairEd25519 as NearKeyPairEd25519 } from 'near-api-js/lib/utils';
 import { BafError } from '@baf-wallet/errors';
 import { getContract } from './contract';
 
-export type { NearAccountID, NearCreateAccountParams } from './accounts';
 export type {
   NearTransaction,
   NearBuildTxParams,

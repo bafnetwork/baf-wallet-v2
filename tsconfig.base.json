@@ -30,7 +30,6 @@
       "@baf-wallet/crypto": ["libs/crypto/src/index.ts"],
       "@baf-wallet/base-components/*": ["libs/base-components/src/*"],
       "@baf-wallet/errors": ["libs/errors/src/index.ts"],
-      "@baf-wallet/tt": ["libs/t/src/index.ts"],
       "@baf-wallet/interfaces": ["libs/interfaces/src/index.ts"],
       "@baf-wallet/core": ["libs/core-publishable/src/index.ts"]
     }

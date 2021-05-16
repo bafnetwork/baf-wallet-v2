@@ -6,3 +6,4 @@ export * from './lib/crypto';
 export * from './lib/frontend';
 export * from './lib/tx';
 export * from './lib/misc';
+export * from './lib/near'

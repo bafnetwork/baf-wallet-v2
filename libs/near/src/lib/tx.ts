@@ -12,6 +12,7 @@ import {
   GenericTxActionTransferContractToken,
   Chain,
   Pair,
+  NearAccountID,
 } from '@baf-wallet/interfaces';
 import { sha256 } from '@baf-wallet/crypto';
 import { Buffer } from 'buffer';
@@ -20,7 +21,6 @@ import { KeyPair as NearKeyPair, transactions, utils } from 'near-api-js';
 
 import { NearState } from './near';
 import { NearSendOpts, NearSendResult } from './rpc';
-import { NearAccountID } from './accounts';
 import { nearConverter } from './convert';
 import {
   Action as NearNativeAction,

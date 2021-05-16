@@ -213,6 +213,17 @@
             "jestConfig": "libs/multi-chain/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/multi-chain",
+            "tsConfig": "libs/multi-chain/tsconfig.lib.json",
+            "packageJson": "libs/multi-chain/package.json",
+            "main": "libs/multi-chain/src/index.ts",
+            "assets": ["libs/multi-chain/*.md"]
+          }
         }
       }
     },
@@ -370,6 +381,17 @@
             "jestConfig": "libs/near/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/near",
+            "tsConfig": "libs/near/tsconfig.lib.json",
+            "packageJson": "libs/near/package.json",
+            "main": "libs/near/src/index.ts",
+            "assets": ["libs/near/*.md"]
+          }
         }
       }
     },
@@ -442,6 +464,17 @@
           "options": {
             "jestConfig": "libs/baf-contract/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/baf-contract",
+            "tsConfig": "libs/baf-contract/tsconfig.lib.json",
+            "packageJson": "libs/baf-contract/package.json",
+            "main": "libs/baf-contract/src/index.ts",
+            "assets": ["libs/baf-contract/*.md"]
           }
         }
       }
