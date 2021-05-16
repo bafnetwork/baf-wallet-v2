@@ -3,6 +3,7 @@ import {
   Balance,
   Chain,
   ed25519,
+  NearAccountID,
   secp256k1,
 } from '@baf-wallet/interfaces';
 import { Account, Account as NearAccount, Contract } from 'near-api-js';
@@ -17,8 +18,6 @@ import { PublicKey } from '@baf-wallet/interfaces';
 import { NearState } from './near';
 import { nearConverter } from './convert';
 import { BafError } from '@baf-wallet/errors';
-
-export type NearAccountID = string;
 
 const NEP141ViewMethods = [
   'ft_balance_of',

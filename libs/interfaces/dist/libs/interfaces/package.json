@@ -1,0 +1,13 @@
+{
+  "name": "@baf-wallet/interfaces",
+  "version": "0.0.3",
+  "license": "MIT",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "dependencies": {
+    "near-api-js": "^0.39.0",
+    "buffer": "^5.7.1",
+    "@toruslabs/torus-direct-web-sdk": "^4.11.1"
+  },
+  "peerDependencies": {}
+}

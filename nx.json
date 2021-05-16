@@ -22,7 +22,6 @@
     "bot": { "tags": [] },
     "multi-chain": { "tags": [] },
     "redirect-generator": { "tags": [] },
-    "interfaces": { "tags": [] },
     "chain-info": { "tags": [] },
     "frontend": { "tags": [] },
     "near": { "tags": [] },
@@ -31,6 +30,8 @@
     "baf-contract": { "tags": [] },
     "crypto": { "tags": [] },
     "base-components": { "tags": [] },
-    "errors": { "tags": [] }
+    "errors": { "tags": [] },
+    "interfaces": { "tags": [] },
+    "core-publishable": { "tags": [] }
   }
 }

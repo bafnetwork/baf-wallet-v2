@@ -1,14 +1,15 @@
 import { Message } from 'discord.js';
 import { Command } from '../Command';
 import { BotClient } from '../types';
-import { formatNativeTokenAmountToIndivisibleUnit } from '@baf-wallet/multi-chain';
 import { createApproveRedirectURL } from '@baf-wallet/redirect-generator';
 import { environment } from '../environments/environment';
+import { getTokenInfo } from '@baf-wallet/chain-info';
 import {
   Chain,
   GenericTxParams,
   GenericTxSupportedActions,
 } from '@baf-wallet/interfaces';
+import { tokenAmountToIndivisible } from '@baf-wallet/utils';
 
 export default class SendMoney extends Command {
   constructor(protected client: BotClient) {
@@ -72,16 +73,14 @@ export default class SendMoney extends Command {
     const recipientUserReadable = `${recipientUser.username}#${recipientUser.discriminator}`;
 
     try {
+      const nearInfo = await getTokenInfo(Chain.NEAR);
       const tx: GenericTxParams = {
         recipientUserId: recipientParsed,
         recipientUserIdReadable: recipientUserReadable,
         actions: [
           {
             type: GenericTxSupportedActions.TRANSFER,
-            amount: formatNativeTokenAmountToIndivisibleUnit(
-              amount,
-              Chain.NEAR
-            ),
+            amount: tokenAmountToIndivisible(amount, nearInfo.decimals),
           },
         ],
         oauthProvider: 'discord',

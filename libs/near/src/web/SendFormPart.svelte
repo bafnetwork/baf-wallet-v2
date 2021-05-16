@@ -11,10 +11,7 @@
     NearBuildTxParams,
     WrappedNearChainInterface,
   } from '@baf-wallet/near';
-  import {
-    formatNativeTokenAmountToIndivisibleUnit,
-    formatTokenAmountToIndivisibleUnit,
-  } from '@baf-wallet/multi-chain';
+  import { tokenAmountToIndivisible } from '@baf-wallet/utils';
   import { TokenInfo } from '@baf-wallet/chain-info';
   import Textfield from '@smui/textfield';
   import HelperText from '@smui/textfield/helper-text/index';
@@ -39,18 +36,12 @@
     const action: GenericTxAction = isContractToken
       ? {
           type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
-          amount: formatTokenAmountToIndivisibleUnit(
-            amountFormatted,
-            tokenInfo.decimals
-          ),
+          amount: tokenAmountToIndivisible(amountFormatted, tokenInfo.decimals),
           contractAddress: contractAddress,
         }
       : {
           type: GenericTxSupportedActions.TRANSFER,
-          amount: formatNativeTokenAmountToIndivisibleUnit(
-            amountFormatted,
-            Chain.NEAR
-          ),
+          amount: tokenAmountToIndivisible(amountFormatted, tokenInfo.decimals),
         };
     const txParams: NearBuildTxParams = {
       actions: [action],
@@ -60,6 +51,7 @@
     };
     return { txParams, recipientUser: recipientAccountID };
   };
+
 </script>
 
 <Textfield
@@ -69,5 +61,4 @@
 >
   <HelperText slot="helper">Ex. johndoe.testnet</HelperText>
 </Textfield>
-<Textfield bind:value={amountFormatted} label="$NEAR" type="number" required>
-</Textfield>
+<Textfield bind:value={amountFormatted} label="$NEAR" type="number" required />

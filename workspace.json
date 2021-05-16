@@ -213,6 +213,17 @@
             "jestConfig": "libs/multi-chain/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/multi-chain",
+            "tsConfig": "libs/multi-chain/tsconfig.lib.json",
+            "packageJson": "libs/multi-chain/package.json",
+            "main": "libs/multi-chain/src/index.ts",
+            "assets": ["libs/multi-chain/*.md"]
+          }
         }
       }
     },
@@ -237,27 +248,6 @@
         }
       }
     },
-    "interfaces": {
-      "root": "libs/interfaces",
-      "sourceRoot": "libs/interfaces/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/interfaces/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/interfaces"],
-          "options": {
-            "jestConfig": "libs/interfaces/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "chain-info": {
       "root": "libs/chain-info",
       "sourceRoot": "libs/chain-info/src",
@@ -275,6 +265,17 @@
           "options": {
             "jestConfig": "libs/chain-info/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/chain-info",
+            "tsConfig": "libs/chain-info/tsconfig.lib.json",
+            "packageJson": "libs/chain-info/package.json",
+            "main": "libs/chain-info/src/index.ts",
+            "assets": ["libs/chain-info/*.md"]
           }
         }
       }
@@ -380,6 +381,17 @@
             "jestConfig": "libs/near/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/near",
+            "tsConfig": "libs/near/tsconfig.lib.json",
+            "packageJson": "libs/near/package.json",
+            "main": "libs/near/src/index.ts",
+            "assets": ["libs/near/*.md"]
+          }
         }
       }
     },
@@ -400,6 +412,17 @@
           "options": {
             "jestConfig": "libs/utils/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/utils",
+            "tsConfig": "libs/utils/tsconfig.lib.json",
+            "packageJson": "libs/utils/package.json",
+            "main": "libs/utils/src/index.ts",
+            "assets": ["libs/utils/*.md"]
           }
         }
       }
@@ -442,6 +465,17 @@
             "jestConfig": "libs/baf-contract/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/baf-contract",
+            "tsConfig": "libs/baf-contract/tsconfig.lib.json",
+            "packageJson": "libs/baf-contract/package.json",
+            "main": "libs/baf-contract/src/index.ts",
+            "assets": ["libs/baf-contract/*.md"]
+          }
         }
       }
     },
@@ -462,6 +496,17 @@
           "options": {
             "jestConfig": "libs/crypto/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/crypto",
+            "tsConfig": "libs/crypto/tsconfig.lib.json",
+            "packageJson": "libs/crypto/package.json",
+            "main": "libs/crypto/src/index.ts",
+            "assets": ["libs/crypto/*.md"]
           }
         }
       }
@@ -504,6 +549,81 @@
           "options": {
             "jestConfig": "libs/errors/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/errors",
+            "tsConfig": "libs/errors/tsconfig.lib.json",
+            "packageJson": "libs/errors/package.json",
+            "main": "libs/errors/src/index.ts",
+            "assets": ["libs/errors/*.md"]
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "root": "libs/interfaces",
+      "sourceRoot": "libs/interfaces/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/interfaces/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/interfaces"],
+          "options": {
+            "jestConfig": "libs/interfaces/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/interfaces",
+            "tsConfig": "libs/interfaces/tsconfig.lib.json",
+            "packageJson": "libs/interfaces/package.json",
+            "main": "libs/interfaces/src/index.ts",
+            "assets": ["libs/interfaces/*.md"]
+          }
+        }
+      }
+    },
+    "core-publishable": {
+      "root": "libs/core-publishable",
+      "sourceRoot": "libs/core-publishable/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/core-publishable/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/core-publishable"],
+          "options": {
+            "jestConfig": "libs/core-publishable/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/core-publishable",
+            "tsConfig": "libs/core-publishable/tsconfig.lib.json",
+            "packageJson": "libs/core-publishable/package.json",
+            "main": "libs/core-publishable/src/index.ts",
+            "assets": ["libs/core-publishable/*.md"]
           }
         }
       }

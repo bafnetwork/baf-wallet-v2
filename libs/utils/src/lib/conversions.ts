@@ -1,12 +1,13 @@
+import BN from 'bn.js';
 import {
   Converter,
   SecretKey,
   PublicKey,
   Encoding,
   KeyPair,
+  Pair,
 } from '@baf-wallet/interfaces';
 import { formatBytes } from './bytes';
-import { Pair } from './types';
 import { Buffer } from 'buffer';
 
 export const bufferConverter: Converter<
@@ -69,4 +70,24 @@ function keyPairToUnified<Curve>(
     sk: skToUnified(skBytes, curveMarker),
     pk: pkToUnified(pkBytes, curveMarker),
   };
+}
+
+export function indivisibleToTokenAmount(
+  indivisAmount: string | BN,
+  decimals: number
+): number {
+  const base = new BN(10).pow(new BN(decimals));
+  const div = new BN(indivisAmount).div(base);
+  const mod = new BN(indivisAmount).mod(base);
+  const valStr = `${div.toString(10)}.${mod.toString(10, decimals)}`;
+  return parseFloat(valStr);
+}
+
+export function tokenAmountToIndivisible(
+  amount: number,
+  decimals: number
+): string {
+  const expStr = `${1}${new Array(decimals).fill('0').join('')}`;
+  const exp = new BN(expStr);
+  return exp.muln(amount).toString(10);
 }

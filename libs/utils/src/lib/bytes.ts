@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { Encoding, PublicKey, SecretKey } from '@baf-wallet/interfaces';
 import { BafError } from '@baf-wallet/errors';
 import * as bs58 from 'bs58';

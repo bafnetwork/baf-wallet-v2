@@ -1,13 +1,12 @@
 import { Account, Contract, Near } from 'near-api-js';
 import { BafError } from '@baf-wallet/errors';
 import ContractConfig from '../../config.json';
-import { ec as EC } from 'elliptic';
 import {
   PublicKey,
   RustEncodedSecpSig,
   secp256k1,
+  NearAccountID
 } from '@baf-wallet/interfaces';
-import { NearAccountID } from '@baf-wallet/near';
 import { pkToArray } from '@baf-wallet/crypto';
 
 interface BafContract {

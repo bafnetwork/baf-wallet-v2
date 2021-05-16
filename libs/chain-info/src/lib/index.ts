@@ -2,7 +2,7 @@ import axios from 'axios';
 import { BafError } from '@baf-wallet/errors';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, TypedJSON, jsonArrayMember } from 'typedjson';
-import { Chain } from '@baf-wallet/interfaces';
+import { Chain, ChainAsType } from '@baf-wallet/interfaces';
 
 const baseRawUrl = 'https://raw.githubusercontent.com/bafnetwork/assets/master';
 const contentsApiUrl =
@@ -49,7 +49,7 @@ class _TokenInfo {
 }
 
 export interface TokenInfo extends _TokenInfo {
-  chain: Chain;
+  chain: Chain | ChainAsType;
 }
 
 // TODO: have some intelligent way to get the rest
@@ -87,16 +87,16 @@ export type DappUrl =
   | 'uniswap.exchange'
   | 'yearn.finance';
 
-export const getChainFolderPrefix = (chain: Chain): string =>
+export const getChainFolderPrefix = (chain: Chain | ChainAsType): string =>
   `${baseRawUrl}/blockchains/${chain}`;
 
 const getNonNativeTokenInfoUrl = (
-  chain: Chain,
+  chain: Chain | ChainAsType,
   contractAddress: string
 ): string =>
   `${getChainFolderPrefix(chain)}/assets/${contractAddress}/info.json`;
 
-const getChainInfoUrl = (chain: Chain): string =>
+const getChainInfoUrl = (chain: Chain | ChainAsType): string =>
   `${getChainFolderPrefix(chain)}/info/info.json`;
 
 const getNonNativeTokenLogoUrl = (
@@ -137,7 +137,7 @@ export async function getContractAddresses(
 }
 
 export async function getTokenInfo(
-  chain: Chain,
+  chain: Chain | ChainAsType,
   contractAddress?: string
 ): Promise<TokenInfo> {
   const tokenIsChain = chain === contractAddress || !contractAddress;
