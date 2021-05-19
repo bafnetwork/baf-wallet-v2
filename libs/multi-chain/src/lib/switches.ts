@@ -36,7 +36,7 @@ export async function wrapChainInterface<T>(
   const innerSdk = await (unwrapped.init(initParams) as Promise<InferInner<T>>);
 
   const wrapped = {
-    rpc: unwrapped.rpc(innerSdk),
+    rpc: unwrapped.rpc,
     tx: unwrapped.tx(innerSdk),
     accounts: unwrapped.accounts(innerSdk),
     convert: unwrapped.convert,

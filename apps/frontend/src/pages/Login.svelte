@@ -74,6 +74,7 @@ import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
     alert('Success');
     state = FlowState.PROCEED;
   }
+
 </script>
 
 <Layout>

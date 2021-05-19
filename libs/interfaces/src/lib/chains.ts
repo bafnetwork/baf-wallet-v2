@@ -38,13 +38,13 @@ export interface WrappedChainInterface<
   AccountCreateParams,
   ContractInitParamsBase
 > {
-  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: AccountsInterface<
     Account,
     AccountLookupParams,
     AccountCreateParams
   >;
+  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   convert: Converter<PK, SK, KP>;
   getConstants: (env: Env) => ChainConstants;
   getInner: () => Inner;
@@ -79,13 +79,13 @@ export interface ChainInterface<
   ContractInitParamsBase
 > {
   init: (params: InitParams) => Promise<Inner>;
-  rpc: (innerSdk: Inner) => RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   tx: (
     innerSdk: Inner
   ) => TxInterface<Tx, BuildTxParams, SignedTx, SignOpts, SendOpts, SendResult>;
   accounts: (
     innerSdk: Inner
   ) => AccountsInterface<Account, AccountLookupParams, AccountCreateParams>;
+  rpc: RpcInterface<Tx, SignedTx, SendOpts, SendResult>;
   convert: Converter<PK, SK, KP>;
   getConstants: (env: Env) => ChainConstants;
   getContract: <Contract, ContractInitParams extends ContractInitParamsBase>(
@@ -120,6 +120,11 @@ export interface GenericAccount {
 // chains are expected to extend this with their own functions and/or values
 export interface RpcInterface<Tx, SignedTx, SendOpts, SendResult> {
   endpoint: (network?: string) => string;
+  other: RpcInterfaceOther<Tx, SignedTx, SendOpts, SendResult>;
+}
+
+export interface RpcInterfaceOther<Tx, SignedTx, SendOpts, SendResult> {
+  [name: string]: (params: any, network?: string) => Promise<SendResult>;
 }
 
 // minimum interface representing all transaction-related operations
