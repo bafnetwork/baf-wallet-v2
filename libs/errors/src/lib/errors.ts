@@ -61,7 +61,8 @@ export namespace BafError {
     emitError(`Address ${addr} does not exist or is not a token contract`);
   export const InvalidContractAddress = (addr: string) =>
     emitError(`Address ${addr} does not exist or is not a contract`);
-  export const RpcFailure = (url: string, errStr: string) => emitError(`Error while making RPC request to ${url}: ${errStr}`);
+  export const RpcFailure = (url: string, errStr: string) =>
+    emitError(`Error while making RPC request to ${url}: ${errStr}`);
 }
 
 // A wrapper function to emit an error, this would allow us to do things such as easier Sentry logging

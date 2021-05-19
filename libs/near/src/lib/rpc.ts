@@ -1,4 +1,8 @@
-import { RpcInterface, JsonRpcResult, makeJsonRpc } from '@baf-wallet/interfaces';
+import {
+  RpcInterface,
+  JsonRpcResult,
+  makeJsonRpc,
+} from '@baf-wallet/interfaces';
 import { BafError } from '@baf-wallet/errors';
 import { transactions } from 'near-api-js';
 import { NearNetworkID, stringToNetworkID } from './utils';
@@ -24,10 +28,10 @@ export type NearSendResult = JsonRpcResult<NearResponseOk, NearResponseErr>;
 
 export const nearRpc: NearRpcInterface = {
   endpoint: getNodeUrl,
-  other: { 
-    viewAccount
-  }
-}
+  other: {
+    viewAccount,
+  },
+};
 
 export function getNodeUrl(network?: string): string {
   const networkID: NearNetworkID = stringToNetworkID(network ?? 'mainnet');
@@ -55,7 +59,10 @@ export interface ViewAccountArgs {
   finality?: string;
 }
 
-async function viewAccount(args: ViewAccountArgs, network?: string): Promise<JsonRpcResult<ViewAccountOk, ViewAccountErr>> {
+async function viewAccount(
+  args: ViewAccountArgs,
+  network?: string
+): Promise<JsonRpcResult<ViewAccountOk, ViewAccountErr>> {
   const url = getNodeUrl(network);
   const sendArgs = makeJsonRpc(args, 'query');
   const res = await axios.post(url, sendArgs);
