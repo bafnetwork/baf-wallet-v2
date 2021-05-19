@@ -7,7 +7,7 @@ import { Client } from './Client';
 const client = Container.get<Client>(Client);
 
 client
-  .login(environment.DISCORD_TOKEN)
+  .login(environment.DISCORD_BOT_TOKEN)
   .then(() => {
     console.log('tokenbot happily hodling along');
   })
