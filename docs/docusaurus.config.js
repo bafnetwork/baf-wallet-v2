@@ -3,7 +3,7 @@ module.exports = {
   title: 'BAF Wallet',
   tagline: 'The antimaximalist library people can actually use.',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: 'https://bafnetwork.github.io',
+  baseUrl: 'https://bafnetwork.github.io/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
