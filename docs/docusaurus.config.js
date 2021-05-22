@@ -1,14 +1,14 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'BAF Wallet',
-  tagline: 'The antimaximalist wallet people can actually use.',
+  tagline: 'The antimaximalist library people can actually use.',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  baseUrl: 'https://bafnetwork.github.io',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'bafnetwork', // Usually your GitHub org/user name.
-  projectName: 'BAF Wallet', // Usually your repo name.
+  projectName: 'baf-wallet-docs', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'BAF Wallet Docs',
