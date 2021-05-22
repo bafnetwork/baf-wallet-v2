@@ -1,12 +1,13 @@
 <script lang="ts">
-  import Input from '@baf-wallet/base-components/Input.svelte';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
+  import Textfield from '@smui/textfield';
+  import HelperText from '@smui/textfield/helper-text/index';
   import { Encoding, KeyState, AccountState } from '@baf-wallet/interfaces';
   import { createUserVerifyMessage, formatBytes } from '@baf-wallet/utils';
   import { signMsg } from '@baf-wallet/crypto';
   import { DefaultApi } from '@baf-wallet/api-client';
   import Spinner from 'svelte-spinner';
-  
+
   //TODO: Change to global color vairable. See https://github.com/bafnetwork/baf-wallet-v2/issues/53
   let size = 40;
   let speed = 750;
@@ -15,12 +16,12 @@
   let gap = 40;
 
   let isLoading = false;
-  let newAccountId: string;
+  let newAccountId: string = null;
 
   export let apiClient: DefaultApi;
   export let keyState: KeyState;
   export let accountState: AccountState;
-  export let cb: () => void = () => {}
+  export let cb: () => void = () => {};
 
   async function initNearAccount() {
     isLoading = true;
@@ -53,7 +54,7 @@
         secpSigHex: formatBytes(secpSig, Encoding.HEX),
       },
     });
-    
+
     alert('Success');
     cb();
     isLoading = false;
@@ -68,21 +69,13 @@
       initNearAccount();
     }}
   >
-    <Input
-      label="Account ID"
-      placeholder="john.doe.testnet"
-      bind:value={newAccountId}
-    />
-    <Button type="submit">Initialize Account with Near</Button>
+    <Textfield bind:value={newAccountId} label="Account ID" required>
+      <HelperText slot="helper">Ex. johndoe.testnet</HelperText>
+    </Textfield>
+    <Button type="submit" variant="raised">Initialize Account with Near</Button>
     {#if isLoading}
       <p>Beep bop beep boop, creating your account</p>
-      <Spinner 
-        size="{size}"
-        speed="{speed}"
-        color="{color}"
-        thickness="{thickness}"
-        gap="{gap}"
-      /> 
+      <Spinner {size} {speed} {color} {thickness} {gap} />
     {/if}
   </form>
 </div>

@@ -1,3 +1,4 @@
+import { BafError } from '@baf-wallet/errors';
 import {
   InferChainInterface,
   Chain,
@@ -24,7 +25,7 @@ export function getChainInterface<T>(chain: Chain): InferChainInterface<T> {
     case Chain.NEAR:
       return nearChainInterface as InferChainInterface<T>;
     default:
-      throw new Error(`Unsupported chain ${chain}`);
+      throw BafError.UnsupportedChain(chain);
   }
 }
 
@@ -39,6 +40,8 @@ export async function wrapChainInterface<T>(
     tx: unwrapped.tx(innerSdk),
     accounts: unwrapped.accounts(innerSdk),
     convert: unwrapped.convert,
+    getConstants: unwrapped.getConstants,
+    getContract: (address: string) => unwrapped.getContract(innerSdk, address),
 
     // Note: in the future, some chainInterfaces might want to do stuff in this fn
     getInner: () => innerSdk,

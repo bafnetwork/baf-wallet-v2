@@ -1,4 +1,5 @@
 import { Account, Contract, Near } from 'near-api-js';
+import { BafError } from '@baf-wallet/errors';
 import ContractConfig from '../../config.json';
 import { ec as EC } from 'elliptic';
 import {
@@ -7,7 +8,7 @@ import {
   secp256k1,
 } from '@baf-wallet/interfaces';
 import { NearAccountID } from '@baf-wallet/near';
-import { pkToArray, pkToString } from '@baf-wallet/utils';
+import { pkToArray } from '@baf-wallet/crypto';
 
 interface BafContract {
   getAccountId: (pk: PublicKey<secp256k1>) => Promise<NearAccountID | null>;
@@ -34,9 +35,7 @@ export async function setBafContract(account: Account): Promise<BafContract> {
 
 export function getBafContract(): BafContract {
   if (bafContract) return bafContract;
-  throw new Error(
-    'BAF Contract is not initialized yet, please call setBafContract'
-  );
+  throw BafError.UnintBafContract();
 }
 
 async function buildBafContract(account: Account): Promise<BafContract> {
@@ -70,11 +69,4 @@ async function buildBafContract(account: Account): Promise<BafContract> {
         secp_sig_s: [...secp_sig_s],
       }),
   };
-}
-
-export function encodeSecpSigBafContract(sig: EC.Signature): Buffer {
-  return Buffer.from(
-    `${sig.r.toString('hex', 64)}${sig.s.toString('hex', 64)}`,
-    'hex'
-  );
 }

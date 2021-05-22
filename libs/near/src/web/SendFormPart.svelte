@@ -5,34 +5,55 @@
     CreateTxReturn,
     ed25519,
     PublicKey,
+    GenericTxAction,
   } from '@baf-wallet/interfaces';
   import {
     NearBuildTxParams,
     WrappedNearChainInterface,
   } from '@baf-wallet/near';
+  import {
+    formatNativeTokenAmountToIndivisibleUnit,
+    formatTokenAmountToIndivisibleUnit,
+  } from '@baf-wallet/multi-chain';
+  import { TokenInfo } from '@baf-wallet/chain-info';
+  import Textfield from '@smui/textfield';
+  import HelperText from '@smui/textfield/helper-text/index';
 
-  import Input from '@baf-wallet/base-components/Input.svelte';
-  import InputNumeric from '@baf-wallet/base-components/InputNumeric.svelte';
-  import { utils } from 'near-api-js';
-  import BN from 'bn.js';
-  let recipientAccountID: string, amountNear: number;
+  import { BafError } from '@baf-wallet/errors';
+
+  let recipientAccountID: string = null,
+    amountFormatted: number = NaN;
   export let chainInterface: WrappedNearChainInterface;
   export let edPK: PublicKey<ed25519>;
+  export let tokenInfo: TokenInfo;
+
+  export let isContractToken = false;
+  export let contractAddress: string;
 
   export const createTX = async (): Promise<
     CreateTxReturn<NearBuildTxParams>
   > => {
     if (!chainInterface || !edPK) {
-      throw new Error('You must have an initialized account with NEAR');
+      throw BafError.UninitChain(Chain.NEAR);
     }
-    const amountYoctoNearBN = utils.format.NEAR_NOMINATION.muln(amountNear)
-    const txParams: NearBuildTxParams = {
-      actions: [
-        {
+    const action: GenericTxAction = isContractToken
+      ? {
+          type: GenericTxSupportedActions.TRANSFER_CONTRACT_TOKEN,
+          amount: formatTokenAmountToIndivisibleUnit(
+            amountFormatted,
+            tokenInfo.decimals
+          ),
+          contractAddress: contractAddress,
+        }
+      : {
           type: GenericTxSupportedActions.TRANSFER,
-          amount: amountYoctoNearBN.toString(10),
-        },
-      ],
+          amount: formatNativeTokenAmountToIndivisibleUnit(
+            amountFormatted,
+            Chain.NEAR
+          ),
+        };
+    const txParams: NearBuildTxParams = {
+      actions: [action],
       senderPk: edPK,
       senderAccountID: chainInterface.getInner().nearMasterAccount.accountId,
       recipientAccountID,
@@ -41,15 +62,12 @@
   };
 </script>
 
-<Input
-  label="Sending to"
-  placeholder="JohnDoe.near"
+<Textfield
   bind:value={recipientAccountID}
-  required={true}
-/>
-<InputNumeric
-  label="Sending to"
-  placeholder="0 Near"
-  bind:value={amountNear}
-  required={true}
-/>
+  label="Recipient NEAR Account"
+  required
+>
+  <HelperText slot="helper">Ex. johndoe.testnet</HelperText>
+</Textfield>
+<Textfield bind:value={amountFormatted} label="$NEAR" type="number" required>
+</Textfield>

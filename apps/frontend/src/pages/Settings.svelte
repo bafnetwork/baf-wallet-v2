@@ -1,7 +1,7 @@
 <script lang="ts">
   import Layout from '../components/Layout.svelte';
   import ChainSettings from '../components/chains/ChainSettings.svelte';
-  import Button from '@baf-wallet/base-components/Button.svelte';
+  import Button from '@smui/button';
   import { saveAs } from 'file-saver';
   import { packKey, SiteKeyStore } from '../state/keys.svelte';
 
@@ -19,7 +19,7 @@
   <div>
     <h3>Danger Zone</h3>
     <div>
-      <Button onClick={downloadKeys}>Download your keys</Button>
+      <Button on:click={downloadKeys}>Download your keys</Button>
     </div>
   </div>
 </Layout>

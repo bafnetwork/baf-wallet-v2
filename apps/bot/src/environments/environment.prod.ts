@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+if (!process.env.NON_LOCAL) dotenv.config({ path: './env/.env.prod' });
 
 export const environment = {
   production: true,
-  DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+  DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
 };

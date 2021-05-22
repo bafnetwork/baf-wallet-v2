@@ -23,13 +23,14 @@
     "multi-chain": { "tags": [] },
     "redirect-generator": { "tags": [] },
     "interfaces": { "tags": [] },
-    "trust-wallet-assets": { "tags": [] },
+    "chain-info": { "tags": [] },
     "frontend": { "tags": [] },
     "near": { "tags": [] },
     "utils": { "tags": [] },
     "torus": { "tags": [] },
     "baf-contract": { "tags": [] },
     "crypto": { "tags": [] },
-    "base-components": { "tags": [] }
+    "base-components": { "tags": [] },
+    "errors": { "tags": [] }
   }
 }

@@ -159,6 +159,17 @@
                   "with": "apps/bot/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "test": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/bot/src/environments/environment.ts",
+                  "with": "apps/bot/src/environments/environment.test.ts"
+                }
+              ]
             }
           }
         },
@@ -247,22 +258,22 @@
         }
       }
     },
-    "trust-wallet-assets": {
-      "root": "libs/trust-wallet-assets",
-      "sourceRoot": "libs/trust-wallet-assets/src",
+    "chain-info": {
+      "root": "libs/chain-info",
+      "sourceRoot": "libs/chain-info/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/trust-wallet-assets/**/*.ts"]
+            "lintFilePatterns": ["libs/chain-info/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/trust-wallet-assets"],
+          "outputs": ["coverage/libs/chain-info"],
           "options": {
-            "jestConfig": "libs/trust-wallet-assets/jest.config.js",
+            "jestConfig": "libs/chain-info/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -471,6 +482,27 @@
           "outputs": ["coverage/libs/base-components"],
           "options": {
             "jestConfig": "libs/base-components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "errors": {
+      "root": "libs/errors",
+      "sourceRoot": "libs/errors/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/errors/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/errors"],
+          "options": {
+            "jestConfig": "libs/errors/jest.config.js",
             "passWithNoTests": true
           }
         }

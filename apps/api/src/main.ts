@@ -6,6 +6,7 @@ import * as cors from 'cors';
 import { setBafContract } from '@baf-wallet/baf-contract';
 import { Chain, Env } from '@baf-wallet/interfaces';
 import { getNearChain, initChains } from './app/chains/singletons';
+import { BafError } from '@baf-wallet/errors';
 
 const app = express();
 
@@ -29,7 +30,7 @@ async function init() {
     'http://localhost:8080',
     'https://baf-wallet.netlify.app',
     'https://baf-wallet-v2-git-deploy-work-baf-wallet.vercel.app',
-    'https://baf-wallet-v2.vercel.app'
+    'https://baf-wallet-v2.vercel.app',
   ];
   const corsOptions = {
     origin: function (origin, callback) {
@@ -45,7 +46,7 @@ async function init() {
       ) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(BafError.BlockedByCors());
       }
     },
   };

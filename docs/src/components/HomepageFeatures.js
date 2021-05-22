@@ -6,29 +6,22 @@ const FeatureList = [
   {
     title: 'Easy to Use',
     Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        something something Docusaurus is great.
-      </>
-    ),
+    description: <>something something Docusaurus is great.</>,
   },
   {
     title: 'Focus on What Matters',
     Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        at some point I need to write something to replace all of these shills but it's not a priority rn.
+        at some point I need to write something to replace all of these shills
+        but it's not a priority rn.
       </>
     ),
   },
   {
     title: 'Powered by React',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        actually no, svelte better.
-      </>
-    ),
+    description: <>actually no, svelte better.</>,
   },
 ];
 
