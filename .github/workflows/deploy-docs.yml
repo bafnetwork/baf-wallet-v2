@@ -1,12 +1,12 @@
 # this is a basic workflow to help you get started with actions
 
-name: DeployAPI 
+name: DeployDocs
 
 # controls when the action will run. 
 on:
   # triggers the workflow on push to main, which includes when a pr is merged.
   push:
-    branches: [ main, deploy-work ]
+    branches: [ main, deploy-docs ]
 
   # allows you to run this workflow manually from the actions tab
   workflow_dispatch:
@@ -24,14 +24,12 @@ jobs:
       - uses: actions/checkout@main
       - run: |
           sudo apt-get -y install nodejs npm
+          cd docs
           npm i
-          npm run client-gen
-          npx nx run api:build:test
-          node scripts/create-dist-api-package-json.js
-          echo 'npm start' > dist/apps/api/procfile
+          npm run build
       - uses: seanmiddleditch/gha-publish-to-git@master
         with:
-          repository: bafnetwork/baf-wallet-deploy-api
+          repository: bafnetwork/baf-wallet-docs
           branch: main
           github_token: '${{ secrets.github_token  }}'
           github_pat: '${{ secrets.gh_pat }}'
