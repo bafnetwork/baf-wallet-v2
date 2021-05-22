@@ -33,4 +33,4 @@ jobs:
           branch: main
           github_token: '${{ secrets.github_token  }}'
           github_pat: '${{ secrets.gh_pat }}'
-          source_folder: dist/apps/api
+          source_folder: docs/build
